@@ -104,8 +104,8 @@ def plot_0(dict_G, dict_D, cmd):
     data10 = trans_data(sValue)
     data10_G = trans_data(sValue_G)
 
-    plt.plot(data10, 'go', data10_G, 'r.')
-    plt.legend(['dut', 'golden'])
+    plt.plot(data10_G, 'go', data10, 'r.')
+    plt.legend(['golden', 'dut'])
     plt.grid()
     plt.title(cmd)
 
@@ -145,11 +145,11 @@ def plot_1(dict_G, dict_D, cmd):
            y1_G.append(data10_G[j])
 
     if is_substring("freq", cmd) or (is_substring("Att", cmd)):
-        plt.plot(y1, x, 'go', y1_G, x_G, 'r.')
+        plt.plot(y1_G, x_G, 'go', y1, x, 'r.')
     else:
-        plt.plot(x, y1, 'go', x_G, y1_G, 'r.')
+        plt.plot(x_G, y1_G, 'go', x, y1, 'r.')
 
-    plt.legend(['dut', 'golden'])
+    plt.legend(['golden', 'dut'])
     plt.grid()
     plt.title(cmd)
 
@@ -187,11 +187,11 @@ def plot_2(dict_G, dict_D, cmd_x):
     data10_y_G = trans_data(values_y_G)
 
     if is_substring("VGLinTable_", cmd_x):
-        plt.plot(data10_y, data10_x, 'g--', data10_y_G, data10_x_G, 'r-')
+        plt.plot(data10_y_G, data10_x_G, 'g--', data10_y, data10_x, 'r-')
     else:
-        plt.plot(data10_x, data10_y, 'g--', data10_x_G, data10_y_G, 'r-')
+        plt.plot(data10_x_G, data10_y_G, 'g--', data10_x, data10_y, 'r-')
 
-    plt.legend(['dut', 'golden'])
+    plt.legend(['golden', 'dut'])
     plt.grid()
     plt.title(cmd_x)
 
@@ -255,8 +255,8 @@ def plot_3(dict_G, dict_D, cmd_im):
     mag_G = 20 * numpy.log10(numpy.absolute(values_G) / 10e3)
     phase_G = numpy.angle(values_G)
 
-    plt.plot(data10_fr, mag, 'go', data10_fr_G, mag_G, 'r.')
-    plt.legend(['mag-freq', 'mag-freq_G'])
+    plt.plot(data10_fr_G, mag_G, 'go', data10_fr, mag, 'r.')
+    plt.legend(['mag-freq_G', 'mag-freq'])
     plt.grid()
     plt.xlabel("freq")
     plt.ylabel("mag")
@@ -265,8 +265,8 @@ def plot_3(dict_G, dict_D, cmd_im):
 
     mr.save_output(title)
 
-    plt.plot(data10_fr, phase, 'go', data10_fr_G, phase_G, 'r.')
-    plt.legend(['phase-freq', 'phase-freq_G'])
+    plt.plot(data10_fr_G, phase_G, 'go', data10_fr, phase, 'r.')
+    plt.legend(['phase-freq_G', 'phase-freq'])
     plt.grid()
     plt.xlabel("freq")
     plt.ylabel("phase")
