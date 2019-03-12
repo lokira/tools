@@ -53,19 +53,21 @@ def send_mail():
     var_box = tk.messagebox.askyesno(title='Info', message='Send the result by mail?')
 
     if var_box:
-        app = MyMailApp()
-        app.mainloop()
+        #app = MyMailApp()
+        #app.mainloop()
 
         outlook = win32.Dispatch('outlook.application')
         mail = outlook.CreateItem(0)
+        """
         receivers = []
         receivers.append(MyMailApp.rec_mailbox)
         mail.To = receivers[0]
+        """
         mail.Subject = 'DB check result'
         mail.Body = "Hi,\nThe DB check result is attached."
-
         mail.Attachments.Add(os.path.abspath('output\\DbCheckReport.docx'))
-        mail.Send()
+        # mail.Send()
+        mail.display()
         print("DB check result has been sent to %s." % MyMailApp.rec_mailbox)
     else:
         print("Won't send the result by mail.")
