@@ -1,0 +1,21 @@
+#/hw/DVSWR/txA/abcCal/freq 0
+#/hw/DVSWR/txA/a/re 3
+#/hw/DVSWR/txA/a/im 3
+#/hw/DVSWR/txA/b/re 3
+#/hw/DVSWR/txA/b/im 3
+#/hw/DVSWR/txA/c/re 3
+#/hw/DVSWR/txA/c/im 3
+#
+#/hw/txA/fu/S21/freq 3
+#/hw/txA/fu/S21/im 3
+#/hw/txA/fu/S21/re 3
+#
+/hw/txA/mainAtt/gainTabTempRef 0
+#/dl/rf_bA/delayFreqCompTable_x 2
+/hw/txA/mainAtt/gainTab 1
+#/hw/DVSWR/txA/abcCal/freq 3
+#/hw/ant/antVoltCal 1
+#/antCal/couplerPhaseCompensationVec_yD 0 -diff no
+#/hw/rx2B1/gainFreqCompTable_x 2
+#/hw/rx1A/VGLinTable_x 2 diff
+#/hw/rx2B1/gainFreqCompTable_x 2 nodiff

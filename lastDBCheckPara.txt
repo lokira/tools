@@ -1,0 +1,5 @@
+product number: KRC 161 735/1 R8I
+tester: Iris
+Requirement File: C:/Users/exqiwng/Desktop/automation/DbCheck/NewDbCheck/database_requirement.txt
+Golden File: C:/Users/exqiwng/Desktop/automation/DbCheck/NewDbCheck/golden.txt
+DUT File: C:/Users/exqiwng/Desktop/automation/DbCheck/NewDbCheck/list db prod.txt
