@@ -79,11 +79,14 @@ def trans_data(value):
     return data10
 
 
+def plot_fmt_G(*data):
+    plt.plot(*data, color='#9DCBE1', marker='o',
+             markersize=8, linestyle='-', alpha=0.7, linewidth=1)
 
 
-
-
-
+def plot_fmt(*data):
+    plt.plot(*data, color='#124984', marker='.',
+             markersize=6, linestyle=':', linewidth=1)
 
 
 def plot_0(dict_G, dict_D, cmd):
@@ -103,13 +106,17 @@ def plot_0(dict_G, dict_D, cmd):
 
     data10 = trans_data(sValue)
     data10_G = trans_data(sValue_G)
+    plot_fmt_G(data10_G)  # Golden Data (Bottom)
+    plot_fmt(data10)  # Current Data (Top)
 
-    plt.plot(data10_G, 'go', data10, 'r.')
     plt.legend(['golden', 'dut'])
     plt.grid()
     plt.title(cmd)
 
     mr.save_output(cmd)
+    # clear previous figure
+    plt.clf()
+    plt.cla()
 
 
 def plot_1(dict_G, dict_D, cmd):
@@ -145,15 +152,21 @@ def plot_1(dict_G, dict_D, cmd):
            y1_G.append(data10_G[j])
 
     if is_substring("freq", cmd) or (is_substring("Att", cmd)):
-        plt.plot(y1_G, x_G, 'go', y1, x, 'r.')
+        plot_fmt_G(y1_G, x_G)  # Golden Data (Bottom)
+        plot_fmt(y1, x)  # Current Data (Top)
     else:
-        plt.plot(x_G, y1_G, 'go', x, y1, 'r.')
+        plot_fmt_G(x_G, y1_G)  # Golden Data (Bottom)
+        plot_fmt(x, y1)  # Current Data (Top)
 
     plt.legend(['golden', 'dut'])
-    plt.grid()
+    plt.xticks(rotation=90)
+    # plt.grid()
     plt.title(cmd)
 
     mr.save_output(cmd)
+    # clear previous figure
+    plt.clf()
+    plt.cla()
 
 
 def plot_2(dict_G, dict_D, cmd_x):
@@ -196,6 +209,9 @@ def plot_2(dict_G, dict_D, cmd_x):
     plt.title(cmd_x)
 
     mr.save_output(cmd_x)
+    # clear previous figure
+    plt.clf()
+    plt.cla()
 
 
 def plot_3(dict_G, dict_D, cmd_im):
@@ -274,6 +290,9 @@ def plot_3(dict_G, dict_D, cmd_im):
     plt.title(title)
 
     mr.save_output(title)
+    # clear previous figure
+    plt.clf()
+    plt.cla()
 
 
 
