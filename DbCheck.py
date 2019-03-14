@@ -123,6 +123,11 @@ def main_test():
                 dp.plot_3(dict_G, dict_D, cmd)
             else:
                 continue
+        elif tag == 4:
+            if dp.is_substring("DVSWR", cmd) and dp.is_substring("/im", cmd):
+                dp.plot_4(dict_G, dict_D, cmd)
+            else:
+                continue
         else:
             print('This DB format is not supported.')
 
