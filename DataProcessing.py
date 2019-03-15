@@ -85,14 +85,33 @@ def trans_data(value):
     return data10
 
 
-def plot_fmt_G(*data):
-    plt.plot(*data, color='#9DCBE1', marker='o',
-             markersize=8, linestyle='-', alpha=0.7, linewidth=1)
+def plot_fmt_G(*data, style='unknown'):
+    if style == 'p':
+        m_marker = '*'
+        m_style = ''
+    elif style == 'l':
+        m_marker = ''
+        m_style = ':'
+    else:
+        m_marker = '*'
+        m_style = ':'
+
+    plt.plot(*data, color='#FB7D07', marker=m_marker,
+             markersize=6, linestyle=m_style, alpha=0.7, linewidth=1)
 
 
-def plot_fmt(*data):
-    plt.plot(*data, color='#124984', marker='.',
-             markersize=6, linestyle=':', linewidth=1)
+def plot_fmt(*data, style='unknown'):
+    if style == 'p':
+        m_marker = '.'
+        m_style = ''
+    elif style == 'l':
+        m_marker = ''
+        m_style = '-'
+    else:
+        m_marker = '.'
+        m_style = '-'
+    plt.plot(*data, color='#0652FF', marker=m_marker,
+             markersize=4, linestyle=m_style, linewidth=1)
 
 
 def plot_0(dict_G, dict_D, cmd):
@@ -112,8 +131,8 @@ def plot_0(dict_G, dict_D, cmd):
 
     data10 = trans_data(sValue)
     data10_G = trans_data(sValue_G)
-    plot_fmt_G(data10_G)  # Golden Data (Bottom)
-    plot_fmt(data10)  # Current Data (Top)
+    plot_fmt_G(data10_G, style='p')  # Golden Data (Bottom)
+    plot_fmt(data10, style='p')  # Current Data (Top)
 
     plt.legend(['golden', 'dut'])
     plt.grid()
@@ -206,9 +225,12 @@ def plot_2(dict_G, dict_D, cmd_x):
     data10_y_G = trans_data(values_y_G)
 
     if is_substring("VGLinTable_", cmd_x):
-        plt.plot(data10_y_G, data10_x_G, 'g--', data10_y, data10_x, 'r-')
+        plot_fmt_G(data10_y_G, data10_x_G)
+        plot_fmt(data10_y, data10_x)
+
     else:
-        plt.plot(data10_x_G, data10_y_G, 'g--', data10_x, data10_y, 'r-')
+        plot_fmt_G(data10_x_G, data10_y_G)
+        plot_fmt(data10_x, data10_y)
 
     plt.legend(['golden', 'dut'])
     plt.grid()
@@ -277,7 +299,8 @@ def plot_3(dict_G, dict_D, cmd_im):
     mag_G = 20 * numpy.log10(numpy.absolute(values_G) / 10e3)
     phase_G = numpy.angle(values_G)
 
-    plt.plot(data10_fr_G, mag_G, 'go', data10_fr, mag, 'r.')
+    plot_fmt_G(data10_fr_G, mag_G)
+    plot_fmt(data10_fr, mag)
     plt.legend(['mag-freq_G', 'mag-freq'])
     plt.grid()
     plt.xlabel("freq")
@@ -290,7 +313,8 @@ def plot_3(dict_G, dict_D, cmd_im):
     plt.clf()
     plt.cla()
 
-    plt.plot(data10_fr_G, phase_G, 'go', data10_fr, phase, 'r.')
+    plot_fmt_G(data10_fr_G, phase_G)
+    plot_fmt(data10_fr, phase)
     plt.legend(['phase-freq_G', 'phase-freq'])
     plt.grid()
     plt.xlabel("freq")
@@ -323,7 +347,6 @@ def plot_4(dict_G, dict_D, cmd_re):
     data10_fr = trans_data(values_fr)
     data10_fr_G = trans_data(values_fr_G)
 
-    #cmd_re = cmd_im.replace("im", "re")
     values_re = read_data(dict_D, cmd_re)
     values_re_G = read_data(dict_G, cmd_re)
     if values_re_G is None:
@@ -371,7 +394,8 @@ def plot_4(dict_G, dict_D, cmd_re):
     mag_G = 20 * numpy.log10(numpy.absolute(values_G) / 10e3)
     phase_G = numpy.angle(values_G)
 
-    plt.plot(data10_fr_G, mag_G, 'g--', data10_fr, mag, 'r-')
+    plot_fmt_G(data10_fr_G, mag_G, style='l')
+    plot_fmt(data10_fr, mag, style='l')
     plt.legend(['mag-freq_G', 'mag-freq'])
     plt.grid()
     plt.xlabel("freq")
@@ -384,7 +408,8 @@ def plot_4(dict_G, dict_D, cmd_re):
     plt.clf()
     plt.cla()
 
-    plt.plot(data10_fr_G, phase_G, 'g--', data10_fr, phase, 'r-')
+    plot_fmt_G(data10_fr_G, phase_G, style='l')
+    plot_fmt(data10_fr, phase, style='l')
     plt.legend(['phase-freq_G', 'phase-freq'])
     plt.grid()
     plt.xlabel("freq")
