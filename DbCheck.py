@@ -124,7 +124,7 @@ def main_test():
             else:
                 continue
         elif tag == 4:
-            if dp.is_substring("DVSWR", cmd) and dp.is_substring("/im", cmd):
+            if dp.is_substring("DVSWR", cmd) and dp.is_substring("/re", cmd):
                 dp.plot_4(dict_G, dict_D, cmd)
             else:
                 continue

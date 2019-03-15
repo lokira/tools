@@ -186,7 +186,7 @@ def mainGUI():
 
     # print('g_product_number:' + g_product_number)
     # print('g_tester:' + g_tester)
-    return g_product_number, g_tester, req_filename, path_Golden, path_Golden
+    return g_product_number, g_tester, req_filename, path_Golden, path_DUT
 
 
 if __name__ == "__main__":

@@ -24,10 +24,16 @@ def read_dict(file_path):
     indexList = []
     adic = {}
 
+    wrong_patten = re.compile(r'<|>|Fatal|error|ERROR')
+
     for line in f:
         data = line.strip()
         if data.startswith('$') or data.startswith('#'):
             continue
+        elif wrong_patten.search(data):
+            print("This line has wrong patten: %s" % data)
+            continue
+
         data = data.split('\n')
 
         for i in range(len(data)):
@@ -298,12 +304,12 @@ def plot_3(dict_G, dict_D, cmd_im):
     plt.cla()
 
 
-def plot_4(dict_G, dict_D, cmd_im):
+def plot_4(dict_G, dict_D, cmd_re):
     values = []
     values_G = []
 
-    str = re.compile('[a|b|c]/im')
-    cmd_fr = str.sub('abcCal/freq', cmd_im)
+    str = re.compile('[a|b|c]/re')
+    cmd_fr = str.sub('abcCal/freq', cmd_re)
     values_fr = read_data(dict_D, cmd_fr)
     values_fr_G = read_data(dict_G, cmd_fr)
     if values_fr_G is None:
@@ -317,7 +323,7 @@ def plot_4(dict_G, dict_D, cmd_im):
     data10_fr = trans_data(values_fr)
     data10_fr_G = trans_data(values_fr_G)
 
-    cmd_re = cmd_im.replace("im", "re")
+    #cmd_re = cmd_im.replace("im", "re")
     values_re = read_data(dict_D, cmd_re)
     values_re_G = read_data(dict_G, cmd_re)
     if values_re_G is None:
@@ -331,6 +337,7 @@ def plot_4(dict_G, dict_D, cmd_im):
     data10_re = trans_data(values_re)
     data10_re_G = trans_data(values_re_G)
 
+    cmd_im = cmd_re.replace("re", "im")
     values_im = read_data(dict_D, cmd_im)
     values_im_G = read_data(dict_G, cmd_im)
     if values_im_G is None:
@@ -344,11 +351,19 @@ def plot_4(dict_G, dict_D, cmd_im):
     data10_im = trans_data(values_im)
     data10_im_G = trans_data(values_im_G)
 
+    if len(data10_re) != len(data10_im):
+        print("The length of re and im should be same.")
+        return
+
     for i in range(len(data10_im)):
         values.append(complex(int(data10_re[i]), int(data10_im[i])))
 
     mag = 20 * numpy.log10(numpy.absolute(values) / 10e3)
     phase = numpy.angle(values)
+
+    if len(data10_re_G) != len(data10_im_G):
+        print("The length of re and im in golden file should be same.")
+        return
 
     for i in range(len(values_im_G)):
         values_G.append(complex(int(data10_re_G[i]), int(data10_im_G[i])))
@@ -356,7 +371,7 @@ def plot_4(dict_G, dict_D, cmd_im):
     mag_G = 20 * numpy.log10(numpy.absolute(values_G) / 10e3)
     phase_G = numpy.angle(values_G)
 
-    plt.plot(data10_fr_G, mag_G, 'go', data10_fr, mag, 'r.')
+    plt.plot(data10_fr_G, mag_G, 'g--', data10_fr, mag, 'r-')
     plt.legend(['mag-freq_G', 'mag-freq'])
     plt.grid()
     plt.xlabel("freq")
@@ -369,7 +384,7 @@ def plot_4(dict_G, dict_D, cmd_im):
     plt.clf()
     plt.cla()
 
-    plt.plot(data10_fr_G, phase_G, 'go', data10_fr, phase, 'r.')
+    plt.plot(data10_fr_G, phase_G, 'g--', data10_fr, phase, 'r-')
     plt.legend(['phase-freq_G', 'phase-freq'])
     plt.grid()
     plt.xlabel("freq")
