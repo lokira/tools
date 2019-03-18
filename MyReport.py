@@ -54,8 +54,8 @@ def save_output(cmdline):
         os.mkdir(result_path)
     filename = os.path.abspath(result_path+'\\{}_{}.png'.format(cmdline.replace('/', '_'), index))
 
-    plt.savefig(filename)
-    mp.show_picture(filename)
+    plt.gcf().savefig(filename)
+    plt.close()
 
     print(filename)
 

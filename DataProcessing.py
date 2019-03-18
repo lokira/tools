@@ -10,6 +10,9 @@ import time
 
 import traceback
 
+from matplotlib.widgets import Button
+from tkinter import simpledialog
+from tkinter import messagebox
 
 
 
@@ -114,6 +117,44 @@ def plot_fmt(*data, style='unknown'):
              markersize=4, linestyle=m_style, linewidth=1)
 
 
+def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwargs):
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.grid()
+    plt.legend(legend)
+    plt.title(title)
+    plt.subplots_adjust(bottom=0.15)
+    b_ok = Button(plt.axes([0.7, 0.01, 0.1, 0.05]), 'Correct')
+    b_nok = Button(plt.axes([0.82, 0.01, 0.1, 0.05]), 'Wrong')
+    b_ok.on_clicked(on_click_func("Correct", title))
+    b_nok.on_clicked(on_click_func("Wrong", title))
+
+    plt.show()
+
+    # clear previous figure
+    plt.clf()
+    plt.cla()
+
+
+def on_click_func(btn, cmd):
+    if btn == "Correct":
+        def func(event):
+            mp.comments = "Correct"
+            mr.save_output(cmd)
+    else:
+        def func(event):
+            comment = simpledialog.askstring("Comment Requied", "Please input your comment:")
+            if comment and comment.strip():
+                mp.comments = comment
+                mp.test_result = 0
+                mr.save_output(cmd)
+                print(comment)
+            else:
+                messagebox.showwarning(title='Warning', message='Please input comments first!')
+
+    return func
+
+
 def plot_0(dict_G, dict_D, cmd):
     data10 = []
     data10_G = []
@@ -134,14 +175,8 @@ def plot_0(dict_G, dict_D, cmd):
     plot_fmt_G(data10_G, style='p')  # Golden Data (Bottom)
     plot_fmt(data10, style='p')  # Current Data (Top)
 
-    plt.legend(['golden', 'dut'])
-    plt.grid()
-    plt.title(cmd)
+    plot_show(cmd)
 
-    mr.save_output(cmd)
-    # clear previous figure
-    plt.clf()
-    plt.cla()
 
 
 def plot_1(dict_G, dict_D, cmd):
@@ -183,15 +218,7 @@ def plot_1(dict_G, dict_D, cmd):
         plot_fmt_G(x_G, y1_G)  # Golden Data (Bottom)
         plot_fmt(x, y1)  # Current Data (Top)
 
-    plt.legend(['golden', 'dut'])
-    plt.xticks(rotation=90)
-    # plt.grid()
-    plt.title(cmd)
-
-    mr.save_output(cmd)
-    # clear previous figure
-    plt.clf()
-    plt.cla()
+    plot_show(cmd)
 
 
 def plot_2(dict_G, dict_D, cmd_x):
@@ -232,14 +259,7 @@ def plot_2(dict_G, dict_D, cmd_x):
         plot_fmt_G(data10_x_G, data10_y_G)
         plot_fmt(data10_x, data10_y)
 
-    plt.legend(['golden', 'dut'])
-    plt.grid()
-    plt.title(cmd_x)
-
-    mr.save_output(cmd_x)
-    # clear previous figure
-    plt.clf()
-    plt.cla()
+    plot_show(cmd_x)
 
 
 def plot_3(dict_G, dict_D, cmd_im):
@@ -301,31 +321,13 @@ def plot_3(dict_G, dict_D, cmd_im):
 
     plot_fmt_G(data10_fr_G, mag_G)
     plot_fmt(data10_fr, mag)
-    plt.legend(['mag-freq_G', 'mag-freq'])
-    plt.grid()
-    plt.xlabel("freq")
-    plt.ylabel("mag")
     title = cmd_im.replace('im', 'mag')
-    plt.title(title)
-
-    mr.save_output(title)
-    # clear previous figure
-    plt.clf()
-    plt.cla()
+    plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag")
 
     plot_fmt_G(data10_fr_G, phase_G)
     plot_fmt(data10_fr, phase)
-    plt.legend(['phase-freq_G', 'phase-freq'])
-    plt.grid()
-    plt.xlabel("freq")
-    plt.ylabel("phase")
     title = cmd_im.replace('im', 'phase')
-    plt.title(title)
-
-    mr.save_output(title)
-    # clear previous figure
-    plt.clf()
-    plt.cla()
+    plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase")
 
 
 def plot_4(dict_G, dict_D, cmd_re):
@@ -396,31 +398,13 @@ def plot_4(dict_G, dict_D, cmd_re):
 
     plot_fmt_G(data10_fr_G, mag_G, style='l')
     plot_fmt(data10_fr, mag, style='l')
-    plt.legend(['mag-freq_G', 'mag-freq'])
-    plt.grid()
-    plt.xlabel("freq")
-    plt.ylabel("mag")
     title = cmd_im.replace('im', 'mag')
-    plt.title(title)
-
-    mr.save_output(title)
-    # clear previous figure
-    plt.clf()
-    plt.cla()
+    plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag")
 
     plot_fmt_G(data10_fr_G, phase_G, style='l')
     plot_fmt(data10_fr, phase, style='l')
-    plt.legend(['phase-freq_G', 'phase-freq'])
-    plt.grid()
-    plt.xlabel("freq")
-    plt.ylabel("phase")
     title = cmd_im.replace('im', 'phase')
-    plt.title(title)
-
-    mr.save_output(title)
-    # clear previous figure
-    plt.clf()
-    plt.cla()
+    plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase")
 
 
 
