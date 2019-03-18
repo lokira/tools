@@ -82,7 +82,7 @@ def trans_data(value):
             data10.append(int(value[i], 16))
         else:
             data10.append(value[i])
-    return data10
+    return list(map(int, data10))
 
 
 def plot_fmt_G(*data, style='unknown'):
