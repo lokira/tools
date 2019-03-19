@@ -1,7 +1,3 @@
-import tkinter as tk
-from tkinter import messagebox
-from PIL import Image, ImageTk
-import time
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 from tkinter import simpledialog
@@ -9,8 +5,6 @@ from tkinter import messagebox
 import report
 
 label_text = ''
-#root = tk.Tk()
-#root.withdraw()
 new_flag = 0
 
 

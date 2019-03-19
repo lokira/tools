@@ -1,23 +1,7 @@
-import matplotlib.pyplot as plt
-import os
 import re
-
-
 import numpy
-import picture
-import report
-import time
-
-import traceback
-
-from matplotlib.widgets import Button
-from tkinter import simpledialog
-from tkinter import messagebox
-
 import utilities as uti
-
 import picture
-
 
 
 def req_0(dict_G, dict_D, cmd):

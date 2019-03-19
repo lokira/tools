@@ -1,19 +1,14 @@
-import time
 import tkinter as tk
-import os
 from tkinter import filedialog
 from tkinter import messagebox
 import init_parameter as ini
 
 root = tk.Tk()
 
-#root.withdraw()
 req_entry = tk.Entry(root, width=40)
 golden_entry = tk.Entry(root, width=40)
 dut_entry = tk.Entry(root, width=40)
 
-#g_product_number = ''
-#g_tester = ''
 product_number = ''
 tester = ''
 
@@ -75,14 +70,6 @@ def confirm_callback():
 
     ini.save_last_para('lastDBCheckPara.txt', g_product_number, g_tester, req_filename, path_Golden, path_DUT)
     root.quit()
-
-    '''
-    root.withdraw()
-    time.sleep(10)
-    root.update()
-    root.deiconify()
-    '''
-
     return
 
 
@@ -170,7 +157,6 @@ def mainGUI():
     dut_button = tk.Button(root, text="select", command=dut_callback, width=10)
     dut_button.grid(sticky=tk.E + tk.N, row=4, column=3, padx=20, pady=10)
 
-    # new added
     print(path_DUT)
     dut_entry.delete(0, tk.END)
     dut_entry.insert(0, path_DUT)

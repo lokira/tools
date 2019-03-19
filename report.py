@@ -69,9 +69,6 @@ def save_output(cmdline, comments):
     if comments != "Correct":
         global test_result
         test_result = "FAILED"
-    #document.add_picture(filename)
-    #document.add_paragraph('Comments: ' + picture.comments)
-    #document.save(os.path.abspath(result_path + '\\DbCheckReport.docx'))
 
 
 def add_conclusion():
