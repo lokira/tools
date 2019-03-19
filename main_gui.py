@@ -3,7 +3,7 @@ import tkinter as tk
 import os
 from tkinter import filedialog
 from tkinter import messagebox
-import DBCheckPara as dbcp
+import init_parameter as ini
 
 root = tk.Tk()
 
@@ -73,7 +73,7 @@ def confirm_callback():
         messagebox.showwarning(title='Warning', message='Please input tester!')
         return False
 
-    dbcp.save_last_para('lastDBCheckPara.txt', g_product_number, g_tester, req_filename, path_Golden, path_DUT)
+    ini.save_last_para('lastDBCheckPara.txt', g_product_number, g_tester, req_filename, path_Golden, path_DUT)
     root.quit()
 
     '''
@@ -108,7 +108,7 @@ def mainGUI():
 
     root.title("DBCheck")
     last_product_number, last_tester, req_filename, path_Golden, path_DUT = \
-        dbcp.read_last_para('lastDBCheckPara.txt')
+        ini.read_last_para('lastDBCheckPara.txt')
 
     product_number_label = tk.Label(root, text="Product Number:")
     product_number_label.grid(sticky=tk.E, row=0, column=0, columnspan=1, padx=20, pady=10)

@@ -2,7 +2,7 @@ import time
 from docx import Document
 import os
 import matplotlib.pyplot as plt
-import MyPicture as mp
+import picture
 from docx.shared import RGBColor
 
 result_path = "output"
@@ -63,10 +63,10 @@ def save_output(cmdline):
     global g_comments
     global g_commands
     g_pictures.append(filename)
-    g_comments.append(mp.comments)
+    g_comments.append(picture.comments)
     g_commands.append(cmdline)
     #document.add_picture(filename)
-    #document.add_paragraph('Comments: ' + mp.comments)
+    #document.add_paragraph('Comments: ' + picture.comments)
     #document.save(os.path.abspath(result_path + '\\DbCheckReport.docx'))
 
 
@@ -81,7 +81,7 @@ def add_conclusion():
 
     document.add_heading('\nConclusion', level=0)
     p = document.add_paragraph('Test Result:    ')
-    if mp.test_result == 1:
+    if picture.test_result == 1:
         p.add_run('PASSED').font.color.rgb = RGBColor(0x22, 0x8B, 0x22)
         document.add_paragraph('Conclusion:     This test sw is ok to release.')
     else:

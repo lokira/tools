@@ -9,12 +9,12 @@ import time
 #from docx.shared import RGBColor
 #from docx import Document
 
-import MainGui as mg
-import DataProcessing as dp
-import MyMail as mm
+import main_gui as mg
+import data_processing as dp
+import mail
 #import MyPicture as mp
 
-import MyReport as mr
+import report
 
 
 
@@ -90,7 +90,7 @@ def main_test():
     dict_D = dp.read_dict(path_DUT)
     '''
 
-    mr.create_report(product_number, tester, req_filename, path_Golden, path_DUT)
+    report.create_report(product_number, tester, req_filename, path_Golden, path_DUT)
     db_req_file = open_file(req_filename)
 
     for line in db_req_file:
@@ -132,12 +132,12 @@ def main_test():
             print('This DB format is not supported.')
 
     db_req_file.close()
-    mr.add_conclusion()
+    report.add_conclusion()
 
-    mr.add_table()
-    mr.add_pictures()
+    report.add_table()
+    report.add_pictures()
 
-    mm.send_mail()
+    mail.send_mail()
 
 
 

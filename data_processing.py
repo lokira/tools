@@ -4,8 +4,8 @@ import re
 
 
 import numpy
-import MyPicture as mp
-import MyReport as mr
+import picture
+import report
 import time
 
 import traceback
@@ -139,15 +139,15 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
 def on_click_func(btn, cmd):
     if btn == "Correct":
         def func(event):
-            mp.comments = "Correct"
-            mr.save_output(cmd)
+            picture.comments = "Correct"
+            report.save_output(cmd)
     else:
         def func(event):
             comment = simpledialog.askstring("Comment Requied", "Please input your comment:")
             if comment and comment.strip():
-                mp.comments = comment
-                mp.test_result = 0
-                mr.save_output(cmd)
+                picture.comments = comment
+                picture.test_result = 0
+                report.save_output(cmd)
                 print(comment)
             else:
                 messagebox.showwarning(title='Warning', message='Please input comments first!')
