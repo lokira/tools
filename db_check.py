@@ -41,18 +41,6 @@ dict_G = {}
 dict_D = {}
 
 
-def open_file(filename):
-
-    try:
-        opened_file = open(filename, "r")
-    except IOError:
-        print("Open %s failed - No such file or directory." %filename)
-        sys.exit(1)
-    else:
-        print("Open %s successfully." %filename)
-    return opened_file
-
-
 def main_test():
     global dict_G
     global dict_D
@@ -90,7 +78,7 @@ def main_test():
     '''
 
     report.create_report(product_number, tester, req_filename, path_Golden, path_DUT)
-    db_req_file = open_file(req_filename)
+    db_req_file = uti.open_file(req_filename)
 
     for line in db_req_file:
         if line.startswith('#'):

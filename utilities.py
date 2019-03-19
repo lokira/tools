@@ -71,3 +71,15 @@ def trans_data(value):
         else:
             data10.append(value[i])
     return list(map(int, data10))
+
+
+def open_file(filename):
+
+    try:
+        opened_file = open(filename, "r")
+    except IOError:
+        print("Open %s failed - No such file or directory." %filename)
+        sys.exit(1)
+    else:
+        print("Open %s successfully." %filename)
+    return opened_file
