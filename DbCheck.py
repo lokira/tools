@@ -133,6 +133,8 @@ def main_test():
 
     db_req_file.close()
     mr.add_conclusion()
+
+    mr.add_table()
     mr.add_pictures()
 
     mm.send_mail()

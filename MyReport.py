@@ -98,7 +98,8 @@ def add_table():
         print('There is error when adding table in report.')
         return False
 
-    document.add_heading('\nResult for the commands', level=0)
+    document.add_page_break()
+    document.add_heading('\nThe list of commands', level=0)
     row_num = len(g_commands)
     table = document.add_table(rows=row_num + 1, cols=2, style="Medium Grid 1 Accent 1")
 
