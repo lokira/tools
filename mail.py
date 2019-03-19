@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import win32com.client as win32
 import os
+import report
 
 
 def send_mail():
@@ -15,9 +16,10 @@ def send_mail():
         mail = outlook.CreateItem(0)
         mail.Subject = 'DB check result'
         mail.Body = "Hi,\nThe DB check result is attached."
-        mail.Attachments.Add(os.path.abspath('output\\DbCheckReport.docx'))
+        #mail.Attachments.Add(os.path.abspath('output\\DbCheckReport.docx'))
+        mail.Attachments.Add(os.path.abspath(report.report_file))
         mail.display()
-        print("DB check result has been sent out.")
+        print("DB check result has been attached to the mail.")
     else:
         print("Won't send the result by mail.")
     root.destroy()
@@ -25,3 +27,4 @@ def send_mail():
 
 if __name__ == '__main__':
     send_mail()
+

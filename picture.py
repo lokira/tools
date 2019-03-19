@@ -4,9 +4,6 @@ from tkinter import simpledialog
 from tkinter import messagebox
 import report
 
-label_text = ''
-new_flag = 0
-
 
 def plot_fmt_G(*data, style='unknown'):
     if style == 'p':
@@ -60,13 +57,13 @@ def on_click_func(btn, cmd):
     if btn == "Correct":
         def func(event):
             comments = "Correct"
-            report.save_output(cmd, comments)
+            report.save_figure(cmd, comments)
     else:
         def func(event):
             m_comment = simpledialog.askstring("Comment Requied", "Please input your comment:")
             if m_comment and m_comment.strip():
                 comments = m_comment
-                report.save_output(cmd, comments)
+                report.save_figure(cmd, comments)
                 print(m_comment)
             else:
                 messagebox.showwarning(title='Warning', message='Please input comments first!')

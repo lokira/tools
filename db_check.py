@@ -1,25 +1,17 @@
 import main_gui as mg
-import data_processing as dp
-import mail
-
-import report
 import utilities as uti
-
-dict_G = {}
-dict_D = {}
+import data_processing as dp
+import report
+import mail
 
 
 def main_test():
-    global dict_G
-    global dict_D
-
-    (product_number, tester, req_filename, path_Golden, path_DUT) = mg.mainGUI()
+    (req_filename, path_Golden, path_DUT) = mg.mainGUI()
     print('path_Golden_: ' + path_Golden)
     print('path_DUT_: ' + path_DUT)
     dict_G = uti.read_dict(path_Golden)
     dict_D = uti.read_dict(path_DUT)
 
-    report.create_report(product_number, tester, req_filename, path_Golden, path_DUT)
     db_req_file = uti.open_file(req_filename)
 
     for line in db_req_file:
@@ -61,11 +53,8 @@ def main_test():
             print('This DB format is not supported.')
 
     db_req_file.close()
-    report.add_conclusion()
 
-    report.add_table()
-    report.add_pictures()
-
+    report.generate_test_report()
     mail.send_mail()
 
 

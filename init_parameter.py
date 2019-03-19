@@ -1,7 +1,7 @@
 import sys
 
 
-def read_last_para(filename):
+def read_last_parameters(filename):
     parameters =[]
     try:
         para_file = open(filename, 'r')
@@ -26,7 +26,7 @@ def read_last_para(filename):
     return parameters
 
 
-def save_last_para(filename, m_product_number, m_tester, m_req_file, m_golden_file, m_dut_file):
+def save_last_parameters(filename, m_product_number, m_tester, m_req_file, m_golden_file, m_dut_file):
     para_file = open(filename, 'w+')
     para_file.write('product number: %s\n' % m_product_number)
     para_file.write('tester: %s\n' % m_tester)

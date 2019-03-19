@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 import init_parameter as ini
+import report
 
 root = tk.Tk()
 
@@ -20,8 +21,6 @@ path_DUT = ''
 def req_callback():
     global req_entry
     global req_filename
-    global product_number
-    global tester
 
     req_filename = filedialog.askopenfilename(title='select the DB requirement file',
                                               filetypes=[('text file', '*.txt'), ('All Files', '*')])
@@ -39,6 +38,7 @@ def golden_callback():
     golden_entry.delete(0, tk.END)
     golden_entry.insert(0, path_Golden)
 
+
 def dut_callback():
     global dut_entry
     global path_DUT
@@ -52,11 +52,8 @@ def dut_callback():
 
 def confirm_callback():
     global root
-    global g_product_number
-    global g_tester
     global product_number
     global tester
-    global seen
 
     g_product_number = product_number.get()
     if len(g_product_number) == 0:
@@ -68,7 +65,8 @@ def confirm_callback():
         messagebox.showwarning(title='Warning', message='Please input tester!')
         return False
 
-    ini.save_last_para('lastDBCheckPara.txt', g_product_number, g_tester, req_filename, path_Golden, path_DUT)
+    ini.save_last_parameters('lastDBCheckPara.txt', g_product_number, g_tester, req_filename, path_Golden, path_DUT)
+    report.store_parameter(g_product_number, g_tester, req_filename, path_Golden, path_DUT)
     root.quit()
     return
 
@@ -83,36 +81,29 @@ def cancel_callback():
 
 def mainGUI():
     global root
-    global g_product_number
-    global g_tester
-
     global product_number
     global tester
     global req_filename
     global path_Golden
     global path_DUT
 
-
     root.title("DBCheck")
     last_product_number, last_tester, req_filename, path_Golden, path_DUT = \
-        ini.read_last_para('lastDBCheckPara.txt')
+        ini.read_last_parameters('lastDBCheckPara.txt')
 
     product_number_label = tk.Label(root, text="Product Number:")
     product_number_label.grid(sticky=tk.E, row=0, column=0, columnspan=1, padx=20, pady=10)
-
 
     product_number = tk.StringVar()
     product_number_entry = tk.Entry(root, textvariable=product_number, width=30)
     product_number_entry.grid(sticky=tk.W, row=0, column=1, columnspan=2, padx=20, pady=10)
 
-    # last_product_number = 'aaa'
     print(last_product_number)
     product_number_entry.delete(0, tk.END)
     product_number_entry.insert(0, last_product_number)
 
     tester_label = tk.Label(root, text="Tester:")
     tester_label.grid(sticky=tk.E, row=1, column=0, columnspan=1, padx=20, pady=10)
-
 
     tester = tk.StringVar()
     tester_entry = tk.Entry(root, textvariable=tester, width=30)
@@ -170,9 +161,7 @@ def mainGUI():
     root.mainloop()
     root.destroy()
 
-    # print('g_product_number:' + g_product_number)
-    # print('g_tester:' + g_tester)
-    return g_product_number, g_tester, req_filename, path_Golden, path_DUT
+    return req_filename, path_Golden, path_DUT
 
 
 if __name__ == "__main__":

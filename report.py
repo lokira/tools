@@ -4,55 +4,45 @@ import os
 import matplotlib.pyplot as plt
 from docx.shared import RGBColor
 
-result_path = "output"
-index = time.strftime("%Y%m%d_%H%M%S")
-date = time.strftime("%Y.%m.%d %H:%M")
-document = Document()
-
+g_product_number = ''
+g_tester = ''
+g_req_file = ''
+g_golden_file = ''
+g_dut_file = ''
 g_pictures = []
 g_comments = []
 g_commands = []
 
 test_result = "PASSED"
 
-def create_report(product_number, tester, req_file, golden_file, dut_file):
+result_path = "output"
+report_file = os.path.join(result_path, "DbCheckReport.docx")
+document = Document()
+
+
+def store_parameter(product_number, tester, req_file, golden_file, dut_file):
+    global g_product_number
+    global g_tester
+    global g_req_file
+    global g_golden_file
+    global g_dut_file
+
+    g_product_number = product_number
+    g_tester = tester
+    g_req_file = req_file
+    g_golden_file = golden_file
+    g_dut_file = dut_file
+
+
+def save_figure(cmdline, comments):
     global result_path
-    global index
     global document
 
     dir_existed = os.path.isdir(result_path)
     if not dir_existed:
         os.mkdir(result_path)
-
-    document.add_heading('DB CHECK REPORT', level=0)
-
-    document.add_paragraph('Product number: ' + product_number)
-    document.add_paragraph('Tester:         ' + tester)
-    global date
-    document.add_paragraph('DB Check Date: ' + date)
-    document.add_paragraph('Requirement File:\n' + req_file)
-    document.add_paragraph('Golden File:\n' + golden_file)
-    document.add_paragraph('DUT File:\n' + dut_file)
-
-    try:
-        document.save(os.path.abspath(result_path + '\\DbCheckReport.docx'))
-    except PermissionError:
-        print('Report file has been opened by another program.')
-        os.sys.exit(1)
-    else:
-        print("Report is created successfully.")
-    return True
-
-
-def save_output(cmdline, comments):
-    global result_path
-    global index
-    global document
-
-    dir_existed = os.path.isdir(result_path)
-    if not dir_existed:
-        os.mkdir(result_path)
-    filename = os.path.abspath(result_path+'\\{}_{}.png'.format(cmdline.replace('/', '_'), index))
+    figure_suffix = time.strftime("%Y%m%d_%H%M%S")
+    filename = os.path.abspath(result_path+'\\{}_{}.png'.format(cmdline.replace('/', '_'), figure_suffix))
 
     plt.gcf().savefig(filename)
     plt.close()
@@ -71,14 +61,32 @@ def save_output(cmdline, comments):
         test_result = "FAILED"
 
 
-def add_conclusion():
-    global result_path
-    global index
+def add_parameter():
+    global report_name
     global document
 
-    dir_existed = os.path.isdir(result_path)
-    if not dir_existed:
-        os.mkdir(result_path)
+    global g_product_number
+    global g_tester
+    global g_req_file
+    global g_golden_file
+    global g_dut_file
+
+    document.add_heading('DB CHECK REPORT', level=0)
+
+    document.add_paragraph('Product number: ' + g_product_number)
+    document.add_paragraph('Tester:         ' + g_tester)
+
+    date = time.strftime("%Y.%m.%d %H:%M")
+    document.add_paragraph('DB Check Date: ' + date)
+    document.add_paragraph('Requirement File:\n' + g_req_file)
+    document.add_paragraph('Golden File:\n' + g_golden_file)
+    document.add_paragraph('DUT File:\n' + g_dut_file)
+
+    return True
+
+
+def add_conclusion():
+    global document
 
     document.add_heading('\nConclusion', level=0)
     p = document.add_paragraph('Test Result:    ')
@@ -88,7 +96,6 @@ def add_conclusion():
     else:
         p.add_run(test_result).font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
         document.add_paragraph('Conclusion:     This test sw is NOK to release.')
-    document.save(os.path.abspath(result_path + '\\DbCheckReport.docx'))
 
 
 def add_table():
@@ -130,7 +137,29 @@ def add_pictures():
         document.add_paragraph('Comments: ' + g_comments[i])
         document.add_picture(g_pictures[i])
         document.add_page_break()
-        document.save(os.path.abspath(result_path + '\\DbCheckReport.docx'))
     return True
 
+
+def save_report():
+    global result_path
+    dir_existed = os.path.isdir(result_path)
+    if not dir_existed:
+        os.mkdir(result_path)
+
+    try:
+        document.save(report_file)
+    except PermissionError:
+        print('Report file has been opened by another program.')
+        os.sys.exit(1)
+    else:
+        print("%s is saved successfully." % os.path.abspath(report_file))
+
+
+def generate_test_report():
+    add_parameter()
+    add_conclusion()
+    add_table()
+    add_pictures()
+
+    save_report()
 
