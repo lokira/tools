@@ -14,78 +14,7 @@ from matplotlib.widgets import Button
 from tkinter import simpledialog
 from tkinter import messagebox
 
-
-
-def is_substring(s1, s2):
-    return s1 in s2
-
-
-def read_dict(file_path):
-
-    f = open(file_path, "r")
-    y1 = []
-    indexList = []
-    adic = {}
-
-    wrong_patten = re.compile(r'<|>|Fatal|error|ERROR')
-
-    for line in f:
-        data = line.strip()
-        if data.startswith('$') or data.startswith('#'):
-            continue
-        elif wrong_patten.search(data):
-            print("This line has wrong patten: %s" % data)
-            continue
-
-        data = data.split('\n')
-
-        for i in range(len(data)):
-            if "/" in data[i]:
-                data1 = data[i].strip().split(" ")
-                y1.append(data1[0])
-            else:
-                data2 = data[i].strip().split(",")
-
-                for j in range(len(data2)):
-                    tempData = data2[j].strip()
-                    if tempData != '':
-                        y1.append(tempData)
-
-    for k in range(len(y1)):
-        if is_substring("/", y1[k]):
-            indexList.append(k)
-
-    for m in range(len(indexList)):
-        key = y1[indexList[m]]
-        currentIndex = indexList[m] + 1
-        if m + 1 == len(indexList):
-            nextIndex = len(y1)
-        else:
-            nextIndex = indexList[m + 1]
-
-        adic[key] = y1[currentIndex:nextIndex]
-    return adic
-
-
-def read_data(adic, cmdName):
-    for key in adic.keys():
-        #print (key)
-        if cmdName == key:
-            output = adic[key]
-            return output
-
-
-def trans_data(value):
-    data10 = []
-    digital_patten = re.compile(r'^[+-]?[0-9]+(.)?[0-9]*$|^0[xX][0-9a-fA-F]+$')
-    for i in range(len(value)):
-        if not digital_patten.match(value[i]):
-            break
-        if is_substring("0x", value[i]) or is_substring("0X", value[i]):
-            data10.append(int(value[i], 16))
-        else:
-            data10.append(value[i])
-    return list(map(int, data10))
+import utilities as uti
 
 
 def plot_fmt_G(*data, style='unknown'):
@@ -159,8 +88,8 @@ def plot_0(dict_G, dict_D, cmd):
     data10 = []
     data10_G = []
 
-    sValue = read_data(dict_D, cmd)
-    sValue_G = read_data(dict_G, cmd)
+    sValue = uti.read_data(dict_D, cmd)
+    sValue_G = uti.read_data(dict_G, cmd)
 
     if sValue_G is None:
         print("cmd %s is not found in golden DB file." % cmd)
@@ -170,8 +99,8 @@ def plot_0(dict_G, dict_D, cmd):
         print("cmd %s is not found in new DB file." % cmd)
         return
 
-    data10 = trans_data(sValue)
-    data10_G = trans_data(sValue_G)
+    data10 = uti.trans_data(sValue)
+    data10_G = uti.trans_data(sValue_G)
     plot_fmt_G(data10_G, style='p')  # Golden Data (Bottom)
     plot_fmt(data10, style='p')  # Current Data (Top)
 
@@ -185,8 +114,8 @@ def plot_1(dict_G, dict_D, cmd):
     y1 = []
     y1_G = []
 
-    values = read_data(dict_D, cmd)
-    values_G = read_data(dict_G, cmd)
+    values = uti.read_data(dict_D, cmd)
+    values_G = uti.read_data(dict_G, cmd)
 
     if values_G is None:
         print("cmd %s is not found in golden DB file." %cmd)
@@ -196,8 +125,8 @@ def plot_1(dict_G, dict_D, cmd):
         print("cmd %s is not found in new DB file." %cmd)
         return
 
-    data10 = trans_data(values)
-    data10_G = trans_data(values_G)
+    data10 = uti.trans_data(values)
+    data10_G = uti.trans_data(values_G)
 
     for j in range(len(data10)):
         if j % 2 != 0:
@@ -211,7 +140,7 @@ def plot_1(dict_G, dict_D, cmd):
         else:
            y1_G.append(data10_G[j])
 
-    if is_substring("freq", cmd) or (is_substring("Att", cmd)):
+    if uti.is_substring("freq", cmd) or (uti.is_substring("Att", cmd)):
         plot_fmt_G(y1_G, x_G)  # Golden Data (Bottom)
         plot_fmt(y1, x)  # Current Data (Top)
     else:
@@ -222,8 +151,8 @@ def plot_1(dict_G, dict_D, cmd):
 
 
 def plot_2(dict_G, dict_D, cmd_x):
-    values_x = read_data(dict_D, cmd_x)
-    values_x_G = read_data(dict_G, cmd_x)
+    values_x = uti.read_data(dict_D, cmd_x)
+    values_x_G = uti.read_data(dict_G, cmd_x)
 
     if values_x_G is None:
         print("cmd %s is not found in golden DB file." % cmd_x)
@@ -233,12 +162,12 @@ def plot_2(dict_G, dict_D, cmd_x):
         print("cmd %s is not found in new DB file." % cmd_x)
         return
 
-    data10_x = trans_data(values_x)
-    data10_x_G = trans_data(values_x_G)
+    data10_x = uti.trans_data(values_x)
+    data10_x_G = uti.trans_data(values_x_G)
 
     cmd_y = cmd_x.replace("_x", "_y")
-    values_y = read_data(dict_D, cmd_y)
-    values_y_G = read_data(dict_G, cmd_y)
+    values_y = uti.read_data(dict_D, cmd_y)
+    values_y_G = uti.read_data(dict_G, cmd_y)
 
     if values_y_G is None:
         print("cmd %s is not found in golden DB file." % cmd_y)
@@ -248,10 +177,10 @@ def plot_2(dict_G, dict_D, cmd_x):
         print("cmd %s is not found in new DB file." % cmd_y)
         return
 
-    data10_y = trans_data(values_y)
-    data10_y_G = trans_data(values_y_G)
+    data10_y = uti.trans_data(values_y)
+    data10_y_G = uti.trans_data(values_y_G)
 
-    if is_substring("VGLinTable_", cmd_x):
+    if uti.is_substring("VGLinTable_", cmd_x):
         plot_fmt_G(data10_y_G, data10_x_G)
         plot_fmt(data10_y, data10_x)
 
@@ -267,8 +196,8 @@ def plot_3(dict_G, dict_D, cmd_im):
     values_G = []
 
     cmd_fr = cmd_im.replace("im", "freq")
-    values_fr = read_data(dict_D, cmd_fr)
-    values_fr_G = read_data(dict_G, cmd_fr)
+    values_fr = uti.read_data(dict_D, cmd_fr)
+    values_fr_G = uti.read_data(dict_G, cmd_fr)
     if values_fr_G is None:
         print("cmd %s is not found in golden DB file." % cmd)
         return
@@ -277,12 +206,12 @@ def plot_3(dict_G, dict_D, cmd_im):
         print("cmd %s is not found in new DB file." % cmd)
         return
 
-    data10_fr = trans_data(values_fr)
-    data10_fr_G = trans_data(values_fr_G)
+    data10_fr = uti.trans_data(values_fr)
+    data10_fr_G = uti.trans_data(values_fr_G)
 
     cmd_re = cmd_im.replace("im", "re")
-    values_re = read_data(dict_D, cmd_re)
-    values_re_G = read_data(dict_G, cmd_re)
+    values_re = uti.read_data(dict_D, cmd_re)
+    values_re_G = uti.read_data(dict_G, cmd_re)
     if values_re_G is None:
         print("cmd %s is not found in golden DB file." % cmd)
         return
@@ -291,11 +220,11 @@ def plot_3(dict_G, dict_D, cmd_im):
         print("cmd %s is not found in new DB file." % cmd)
         return
 
-    data10_re = trans_data(values_re)
-    data10_re_G = trans_data(values_re_G)
+    data10_re = uti.trans_data(values_re)
+    data10_re_G = uti.trans_data(values_re_G)
 
-    values_im = read_data(dict_D, cmd_im)
-    values_im_G = read_data(dict_G, cmd_im)
+    values_im = uti.read_data(dict_D, cmd_im)
+    values_im_G = uti.read_data(dict_G, cmd_im)
     if values_im_G is None:
         print("cmd %s is not found in golden DB file." % cmd)
         return
@@ -304,8 +233,8 @@ def plot_3(dict_G, dict_D, cmd_im):
         print("cmd %s is not found in new DB file." % cmd)
         return
 
-    data10_im = trans_data(values_im)
-    data10_im_G = trans_data(values_im_G)
+    data10_im = uti.trans_data(values_im)
+    data10_im_G = uti.trans_data(values_im_G)
 
     for i in range(len(data10_im)):
         values.append(complex(int(data10_re[i]), int(data10_im[i])))
@@ -336,8 +265,8 @@ def plot_4(dict_G, dict_D, cmd_re):
 
     str = re.compile('[a|b|c]/re')
     cmd_fr = str.sub('abcCal/freq', cmd_re)
-    values_fr = read_data(dict_D, cmd_fr)
-    values_fr_G = read_data(dict_G, cmd_fr)
+    values_fr = uti.read_data(dict_D, cmd_fr)
+    values_fr_G = uti.read_data(dict_G, cmd_fr)
     if values_fr_G is None:
         print("cmd %s is not found in golden DB file." % cmd)
         return
@@ -346,11 +275,11 @@ def plot_4(dict_G, dict_D, cmd_re):
         print("cmd %s is not found in new DB file." % cmd)
         return
 
-    data10_fr = trans_data(values_fr)
-    data10_fr_G = trans_data(values_fr_G)
+    data10_fr = uti.trans_data(values_fr)
+    data10_fr_G = uti.trans_data(values_fr_G)
 
-    values_re = read_data(dict_D, cmd_re)
-    values_re_G = read_data(dict_G, cmd_re)
+    values_re = uti.read_data(dict_D, cmd_re)
+    values_re_G = uti.read_data(dict_G, cmd_re)
     if values_re_G is None:
         print("cmd %s is not found in golden DB file." % cmd)
         return
@@ -359,12 +288,12 @@ def plot_4(dict_G, dict_D, cmd_re):
         print("cmd %s is not found in new DB file." % cmd)
         return
 
-    data10_re = trans_data(values_re)
-    data10_re_G = trans_data(values_re_G)
+    data10_re = uti.trans_data(values_re)
+    data10_re_G = uti.trans_data(values_re_G)
 
     cmd_im = cmd_re.replace("re", "im")
-    values_im = read_data(dict_D, cmd_im)
-    values_im_G = read_data(dict_G, cmd_im)
+    values_im = uti.read_data(dict_D, cmd_im)
+    values_im_G = uti.read_data(dict_G, cmd_im)
     if values_im_G is None:
         print("cmd %s is not found in golden DB file." % cmd)
         return
@@ -373,8 +302,8 @@ def plot_4(dict_G, dict_D, cmd_re):
         print("cmd %s is not found in new DB file." % cmd)
         return
 
-    data10_im = trans_data(values_im)
-    data10_im_G = trans_data(values_im_G)
+    data10_im = uti.trans_data(values_im)
+    data10_im_G = uti.trans_data(values_im_G)
 
     if len(data10_re) != len(data10_im):
         print("The length of re and im should be same.")

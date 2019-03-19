@@ -15,8 +15,7 @@ import mail
 #import MyPicture as mp
 
 import report
-
-
+import utilities as uti
 
 #from PIL import Image, ImageTk
 
@@ -77,8 +76,8 @@ def main_test():
     (product_number, tester, req_filename, path_Golden, path_DUT) = mg.mainGUI()
     print('path_Golden_: ' + path_Golden)
     print('path_DUT_: ' + path_DUT)
-    dict_G = dp.read_dict(path_Golden)
-    dict_D = dp.read_dict(path_DUT)
+    dict_G = uti.read_dict(path_Golden)
+    dict_D = uti.read_dict(path_DUT)
 
     '''
     req_filename = os.path.abspath('database_requirement.txt')
@@ -114,17 +113,17 @@ def main_test():
         elif tag == 1:
             dp.plot_1(dict_G, dict_D, cmd)
         elif tag == 2:
-            if dp.is_substring("_x", cmd):
+            if uti.is_substring("_x", cmd):
                 dp.plot_2(dict_G, dict_D, cmd)
             else:
                 continue
         elif tag == 3:
-            if dp.is_substring("S21/im", cmd):
+            if uti.is_substring("S21/im", cmd):
                 dp.plot_3(dict_G, dict_D, cmd)
             else:
                 continue
         elif tag == 4:
-            if dp.is_substring("DVSWR", cmd) and dp.is_substring("/re", cmd):
+            if uti.is_substring("DVSWR", cmd) and uti.is_substring("/re", cmd):
                 dp.plot_4(dict_G, dict_D, cmd)
             else:
                 continue
