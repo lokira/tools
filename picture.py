@@ -2,77 +2,82 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import time
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Button
+from tkinter import simpledialog
+from tkinter import messagebox
+import report
 
 label_text = ''
 #root = tk.Tk()
 #root.withdraw()
 new_flag = 0
-comments = ''
-test_result = 1
 
 
-def on_click_correct():
-    global root
-    global comments
-    comments = "Correct"
-    print("Comments：%s" % comments)
-    root.quit()
-    return
+def plot_fmt_G(*data, style='unknown'):
+    if style == 'p':
+        m_marker = '*'
+        m_style = ''
+    elif style == 'l':
+        m_marker = ''
+        m_style = ':'
+    else:
+        m_marker = '*'
+        m_style = ':'
+
+    plt.plot(*data, color='#FB7D07', marker=m_marker,
+             markersize=6, linestyle=m_style, alpha=0.7, linewidth=1)
 
 
-def on_click_wrong():
-
-    global label_text
-    #global root
-    global comments
-    global test_result
-    comments = label_text.get().lstrip()
-    if len(comments) == 0:
-        messagebox.showwarning(title='Warning', message='Please input comments first!')
-        return False
-
-    print("Comments：%s" % comments)
-    test_result = 0
-
-    root.quit()
-    return
+def plot_fmt(*data, style='unknown'):
+    if style == 'p':
+        m_marker = '.'
+        m_style = ''
+    elif style == 'l':
+        m_marker = ''
+        m_style = '-'
+    else:
+        m_marker = '.'
+        m_style = '-'
+    plt.plot(*data, color='#0652FF', marker=m_marker,
+             markersize=4, linestyle=m_style, linewidth=1)
 
 
-def show_picture(png_file):
-    global root
-    global new_flag
+def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwargs):
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.grid()
+    plt.legend(legend)
+    plt.title(title)
+    plt.subplots_adjust(bottom=0.15)
+    b_ok = Button(plt.axes([0.7, 0.01, 0.1, 0.05]), 'Correct')
+    b_nok = Button(plt.axes([0.82, 0.01, 0.1, 0.05]), 'Wrong')
+    b_ok.on_clicked(on_click_func("Correct", title))
+    b_nok.on_clicked(on_click_func("Wrong", title))
 
-    #if new_flag != 0:
-    root = tk.Tk()
-    root.withdraw()
+    plt.show()
+
+    # clear previous figure
+    plt.clf()
+    plt.cla()
 
 
-    new_flag = 1
+def on_click_func(btn, cmd):
+    if btn == "Correct":
+        def func(event):
+            comments = "Correct"
+            report.save_output(cmd, comments)
+    else:
+        def func(event):
+            m_comment = simpledialog.askstring("Comment Requied", "Please input your comment:")
+            if m_comment and m_comment.strip():
+                comments = m_comment
+                report.save_output(cmd, comments)
+                print(m_comment)
+            else:
+                messagebox.showwarning(title='Warning', message='Please input comments first!')
 
-    top = tk.Toplevel()
-
-    top.title('Figure')
-    top.resizable(True, True)
-
-    img_open = Image.open(png_file)
-    img_png = ImageTk.PhotoImage(img_open)
-    label_img = tk.Label(top, image=img_png)
-    label_img.pack(side=tk.TOP)
-
-    tk.Label(top, text="If the figure is wong, please input your comments first:", height=2, width=40).pack()
-
-    global label_text
-    label_text = tk.StringVar()
-    tk.Entry(top, textvariable=label_text, width=60).pack()
-
-    row = tk.Frame(top)
-    tk.Button(row, text='correct', command=on_click_correct, width=10).pack(side=tk.LEFT)
-    tk.Button(row, text='wrong', command=on_click_wrong, width=10).pack(side=tk.RIGHT)
-    row.pack()
-
-    top.mainloop()
-    top.destroy()
-    return
+    return func
 
 
 if __name__ == '__main__':

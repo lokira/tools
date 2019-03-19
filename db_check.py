@@ -97,22 +97,22 @@ def main_test():
 
         tag = int(value)
         if tag == 0:
-            dp.plot_0(dict_G, dict_D, cmd)
+            dp.req_0(dict_G, dict_D, cmd)
         elif tag == 1:
-            dp.plot_1(dict_G, dict_D, cmd)
+            dp.req_1(dict_G, dict_D, cmd)
         elif tag == 2:
             if uti.is_substring("_x", cmd):
-                dp.plot_2(dict_G, dict_D, cmd)
+                dp.req_2(dict_G, dict_D, cmd)
             else:
                 continue
         elif tag == 3:
             if uti.is_substring("S21/im", cmd):
-                dp.plot_3(dict_G, dict_D, cmd)
+                dp.req_3(dict_G, dict_D, cmd)
             else:
                 continue
         elif tag == 4:
             if uti.is_substring("DVSWR", cmd) and uti.is_substring("/re", cmd):
-                dp.plot_4(dict_G, dict_D, cmd)
+                dp.req_4(dict_G, dict_D, cmd)
             else:
                 continue
         else:

@@ -2,7 +2,6 @@ import time
 from docx import Document
 import os
 import matplotlib.pyplot as plt
-import picture
 from docx.shared import RGBColor
 
 result_path = "output"
@@ -14,6 +13,7 @@ g_pictures = []
 g_comments = []
 g_commands = []
 
+test_result = "PASSED"
 
 def create_report(product_number, tester, req_file, golden_file, dut_file):
     global result_path
@@ -44,7 +44,7 @@ def create_report(product_number, tester, req_file, golden_file, dut_file):
     return True
 
 
-def save_output(cmdline):
+def save_output(cmdline, comments):
     global result_path
     global index
     global document
@@ -63,8 +63,12 @@ def save_output(cmdline):
     global g_comments
     global g_commands
     g_pictures.append(filename)
-    g_comments.append(picture.comments)
+    g_comments.append(comments)
     g_commands.append(cmdline)
+
+    if comments != "Correct":
+        global test_result
+        test_result = "FAILED"
     #document.add_picture(filename)
     #document.add_paragraph('Comments: ' + picture.comments)
     #document.save(os.path.abspath(result_path + '\\DbCheckReport.docx'))
@@ -81,11 +85,11 @@ def add_conclusion():
 
     document.add_heading('\nConclusion', level=0)
     p = document.add_paragraph('Test Result:    ')
-    if picture.test_result == 1:
-        p.add_run('PASSED').font.color.rgb = RGBColor(0x22, 0x8B, 0x22)
+    if test_result == 'PASSED':
+        p.add_run(test_result).font.color.rgb = RGBColor(0x22, 0x8B, 0x22)
         document.add_paragraph('Conclusion:     This test sw is ok to release.')
     else:
-        p.add_run('FAILED').font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
+        p.add_run(test_result).font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
         document.add_paragraph('Conclusion:     This test sw is NOK to release.')
     document.save(os.path.abspath(result_path + '\\DbCheckReport.docx'))
 
