@@ -16,8 +16,7 @@ def send_mail():
         mail = outlook.CreateItem(0)
         mail.Subject = 'DB check result'
         mail.Body = "Hi,\nThe DB check result is attached."
-        #mail.Attachments.Add(os.path.abspath('output\\DbCheckReport.docx'))
-        mail.Attachments.Add(os.path.abspath(report.report_file))
+        mail.Attachments.Add(report.report_file)
         mail.display()
         print("DB check result has been attached to the mail.")
     else:

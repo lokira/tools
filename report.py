@@ -19,6 +19,7 @@ test_result = "PASSED"
 result_path = ''
 
 document = Document()
+report_file = ''
 
 
 def store_parameter(product_number, tester, req_file, golden_file, dut_file, output_dir):
@@ -152,6 +153,7 @@ def add_pictures():
 
 def save_report():
     global result_path
+    global report_file
     dir_existed = os.path.isdir(result_path)
     if not dir_existed:
         os.mkdir(result_path)
