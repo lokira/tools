@@ -1,4 +1,5 @@
 import re
+import sys
 
 
 def is_substring(s1, s2):
@@ -80,6 +81,7 @@ def open_file(filename):
     except IOError:
         print("Open %s failed - No such file or directory." %filename)
         sys.exit(1)
+
     else:
         print("Open %s successfully." %filename)
     return opened_file

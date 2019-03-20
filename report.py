@@ -9,29 +9,39 @@ g_tester = ''
 g_req_file = ''
 g_golden_file = ''
 g_dut_file = ''
+g_output_dir = ''
 g_pictures = []
 g_comments = []
 g_commands = []
 
 test_result = "PASSED"
 
-result_path = "output"
-report_file = os.path.join(result_path, "DbCheckReport.docx")
+result_path = ''
+
 document = Document()
 
 
-def store_parameter(product_number, tester, req_file, golden_file, dut_file):
+def store_parameter(product_number, tester, req_file, golden_file, dut_file, output_dir):
     global g_product_number
     global g_tester
     global g_req_file
     global g_golden_file
     global g_dut_file
+    global g_output_dir
+    global result_path
 
     g_product_number = product_number
     g_tester = tester
     g_req_file = req_file
     g_golden_file = golden_file
     g_dut_file = dut_file
+    g_output_dir = output_dir
+
+    if not g_output_dir:
+        g_output_dir = os.getcwd()
+    result_path_suffix = time.strftime("_%Y%m%d_%H%M%S")
+    result_path = os.path.join(g_output_dir, "result" + result_path_suffix)
+    os.mkdir(result_path)
 
 
 def save_figure(cmdline, comments):
@@ -146,6 +156,7 @@ def save_report():
     if not dir_existed:
         os.mkdir(result_path)
 
+    report_file = os.path.join(result_path, "DbCheckReport.docx")
     try:
         document.save(report_file)
     except PermissionError:
