@@ -1,3 +1,6 @@
+"""
+This module includes functions about plotting and figure display.
+"""
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 from tkinter import simpledialog
@@ -6,6 +9,12 @@ import report
 
 
 def plot_fmt_G(*data, style='unknown'):
+    """
+    Draw golden data with its style.
+    Arguments:
+        data - Datasets to be plot. Accept 1 or 2 arrays as y or x, y.
+        style - Set the marker and line style.
+    """
     if style == 'p':
         m_marker = '*'
         m_style = ''
@@ -21,6 +30,12 @@ def plot_fmt_G(*data, style='unknown'):
 
 
 def plot_fmt(*data, style='unknown'):
+    """
+    Draw dut data with its style.
+    Arguments:
+        data - Datasets to be plot. Accept 1 or 2 arrays as y or x, y.
+        style - Set the marker and line style.
+    """
     if style == 'p':
         m_marker = '.'
         m_style = ''
@@ -35,6 +50,14 @@ def plot_fmt(*data, style='unknown'):
 
 
 def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwargs):
+    """
+    Open a interactive window to display the figure.
+    Arguments:
+        title - Text to display as the title.
+        legend - Legends for different datasets.
+        xlabel - Text to display as xlabel.
+        ylabel - Text to display as ylabel.
+    """
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.grid()
@@ -54,6 +77,9 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
 
 
 def on_click_func(btn, cmd):
+    """
+    Generate callback functions for OK/NOK buttons on the figure.
+    """
     if btn == "Correct":
         def func(event):
             comments = "Correct"

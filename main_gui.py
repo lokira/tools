@@ -1,3 +1,6 @@
+"""
+This module includes methods for displaying main GUI.
+"""
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
@@ -26,6 +29,9 @@ output_dir = ''
 
 
 def req_callback():
+    """
+    Open requirements file select window.
+    """
     global req_entry
     global req_filename
 
@@ -37,6 +43,9 @@ def req_callback():
 
 
 def golden_callback():
+    """
+    Open golden file select window.
+    """
     global golden_entry
     global path_Golden
     path_Golden = filedialog.askopenfilename(title='select the old golden DB file',
@@ -47,6 +56,9 @@ def golden_callback():
 
 
 def dut_callback():
+    """
+    Open dut data file select window.
+    """
     global dut_entry
     global path_DUT
 
@@ -58,6 +70,9 @@ def dut_callback():
 
 
 def output_callback():
+    """
+    Open output path selection window.
+    """
     global output_entry
     global output_dir
 
@@ -68,6 +83,9 @@ def output_callback():
 
 
 def confirm_callback():
+    """
+    Check and save parameters. Confirm to continue working.
+    """
     global root
     global product_number
     global tester
@@ -124,14 +142,20 @@ def confirm_callback():
 
 
 def cancel_callback():
+    """
+    Exit the program.
+    """
     global root
     print('cancel')
     root.quit()
-
+    exit(0)
     return
 
 
 def mainGUI():
+    """
+    Method to show the main GUI.
+    """
     global root
     global product_number
     global tester
