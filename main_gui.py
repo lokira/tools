@@ -152,6 +152,14 @@ def cancel_callback():
     return
 
 
+def on_closing():
+    """
+    Called when the quit button on the top of the window is pushed.
+    """
+    root.destroy()
+    exit(0)
+
+
 def mainGUI():
     """
     Method to show the main GUI.
@@ -255,9 +263,10 @@ def mainGUI():
     cancel_button = tk.Button(root, text="Cancel", command=cancel_callback, width=10)
     cancel_button.grid(sticky=tk.W + tk.N, row=6, column=2, padx=20, pady=10)
 
+    root.protocol("WM_DELETE_WINDOW", on_closing)
+
     root.mainloop()
     root.destroy()
-
     return req_filename, path_Golden, path_DUT
 
 
