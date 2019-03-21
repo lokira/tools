@@ -1,3 +1,6 @@
+"""
+This module includes methods for report generating.
+"""
 import time
 from docx import Document
 import os
@@ -23,6 +26,16 @@ report_file = ''
 
 
 def store_parameter(product_number, tester, req_file, golden_file, dut_file, output_dir):
+    """
+    Store the parameters to module report.
+    Arguments:
+        product_number - product number of DUT
+        tester - tester of DB check
+        req_file - requirement file
+        golden_file - golden file
+        dut_file - dut file
+        output_dir - output directory
+    """
     global g_product_number
     global g_tester
     global g_req_file
@@ -46,6 +59,13 @@ def store_parameter(product_number, tester, req_file, golden_file, dut_file, out
 
 
 def save_figure(cmdline, comments):
+    """
+    Save the figure to a .png file.
+    Save the filename and comments for each command.
+    Arguments:
+        cmdline - command line
+        comments - comments for the command
+    """
     global result_path
     global document
 
@@ -73,6 +93,9 @@ def save_figure(cmdline, comments):
 
 
 def add_parameter():
+    """
+    Add DB check parameters to the report document.
+    """
     global report_name
     global document
 
@@ -97,6 +120,9 @@ def add_parameter():
 
 
 def add_conclusion():
+    """
+    Add DB check conclusion to the report document.
+    """
     global document
 
     document.add_heading('\nConclusion', level=0)
@@ -110,6 +136,9 @@ def add_conclusion():
 
 
 def add_table():
+    """
+    Add a table of all commands with comments to the report document.
+    """
     global g_commands
     global g_comments
 
@@ -131,6 +160,9 @@ def add_table():
 
 
 def add_pictures():
+    """
+    Add all figures with commands and comments to the report document.
+    """
     global g_pictures
     global g_comments
     global result_path
@@ -152,6 +184,9 @@ def add_pictures():
 
 
 def save_report():
+    """
+    Save the report document.
+    """
     global result_path
     global report_file
     dir_existed = os.path.isdir(result_path)
@@ -169,6 +204,9 @@ def save_report():
 
 
 def generate_test_report():
+    """
+    Generate the DB check report document.
+    """
     add_parameter()
     add_conclusion()
     add_table()

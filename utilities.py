@@ -1,12 +1,31 @@
+"""
+This module includes methods that commonly used.
+"""
 import re
 import sys
 
 
 def is_substring(s1, s2):
+    """
+    Judge if s1 is the substring of s2.
+    Arguments:
+        s1 - The first string.
+        s2 - The second string.
+        return - True if s1 is the substring of s2.
+                 False if s1 is not the substring of s2.
+    """
     return s1 in s2
 
 
 def read_dict(file_path):
+    """
+    Read commands and data from a file and save them to a dictionary.
+    Commands are the keys of the dictionary while data are the values
+    of the dictionary.
+    Arguments:
+        file_path - The file contains all commands and data.
+        return - The dictionary of all commands and data.
+    """
 
     f = open(file_path, "r")
     y1 = []
@@ -54,6 +73,13 @@ def read_dict(file_path):
 
 
 def read_data(adic, cmdName):
+    """
+    Read the data of the command in the dictionary.
+    Arguments:
+        adic - The dictionary contains commands and data.
+        cmdName - The command to search.
+        return - The data of the command.
+    """
     for key in adic.keys():
         #print (key)
         if cmdName == key:
@@ -62,6 +88,12 @@ def read_data(adic, cmdName):
 
 
 def trans_data(value):
+    """
+    Convert the data to hexadecimal.
+    Arguments:
+        value - The data to be converted.
+        return - The hexadecimal number.
+    """
     data10 = []
     digital_patten = re.compile(r'^[+-]?[0-9]+(.)?[0-9]*$|^0[xX][0-9a-fA-F]+$')
     for i in range(len(value)):
@@ -75,6 +107,12 @@ def trans_data(value):
 
 
 def open_file(filename):
+    """
+    Open a file.
+    Arguments:
+        filename - The file to be opened.
+        return - the handler of the opened file.
+    """
 
     try:
         opened_file = open(filename, "r")
