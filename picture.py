@@ -2,10 +2,27 @@
 This module includes functions about plotting and figure display.
 """
 import matplotlib.pyplot as plt
-from matplotlib.widgets import Button
 from tkinter import simpledialog
 from tkinter import messagebox
 import report
+
+import tkinter
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg, NavigationToolbar2Tk)
+
+root = None
+
+
+def on_fig_closed():
+    """
+    Called when quit button clicked.
+    """
+    var_box = messagebox.askyesno(title='Info', message='Are you sure to quit?')
+    if var_box:
+        print("Execution abort due to user operation!")
+        exit(0)
+    else:
+        return False
 
 
 def plot_fmt_G(*data, style='unknown'):
@@ -63,14 +80,26 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
     plt.grid()
     plt.legend(legend)
     plt.title(title)
-    plt.subplots_adjust(bottom=0.15)
-    b_ok = Button(plt.axes([0.7, 0.01, 0.1, 0.05]), 'Correct')
-    b_nok = Button(plt.axes([0.82, 0.01, 0.1, 0.05]), 'Wrong')
-    b_ok.on_clicked(on_click_func("Correct", title))
-    b_nok.on_clicked(on_click_func("Wrong", title))
+    # Show the figure in a tk window
+    global root
+    fig = plt.gcf()
+    root = tkinter.Tk()
+    canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-    plt.show()
+    toolbar = NavigationToolbar2Tk(canvas, root)
+    toolbar.update()
+    canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
+    button = tkinter.Button(master=root, text="Wrong", command=on_click_func("Wrong", title))
+    button.pack(side=tkinter.RIGHT)
+    button = tkinter.Button(master=root, text="Correct", command=on_click_func("Correct", title))
+    button.pack(side=tkinter.RIGHT)
+
+    root.protocol("WM_DELETE_WINDOW", on_fig_closed)
+
+    tkinter.mainloop()
     # clear previous figure
     plt.clf()
     plt.cla()
@@ -81,11 +110,14 @@ def on_click_func(btn, cmd):
     Generate callback functions for OK/NOK buttons on the figure.
     """
     if btn == "Correct":
-        def func(event):
+        def func():
             comments = "Correct"
             report.save_figure(cmd, comments)
+            global root
+            root.quit()
+            root.destroy()
     else:
-        def func(event):
+        def func():
             m_comment = simpledialog.askstring("Comment Requied", "Please input your comment:")
             if m_comment and m_comment.strip():
                 comments = m_comment
