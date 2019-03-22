@@ -160,9 +160,11 @@ def on_closing():
     exit(0)
 
 
-def mainGUI():
+def mainGUI(version):
     """
     Method to show the main GUI.
+    Arguments:
+        version - version of db_check.exe
     """
 
     global root
@@ -176,7 +178,7 @@ def mainGUI():
     global s_dut_file
     global s_output_dir
 
-    root.title("DBCheck")
+    root.title("DBCheck - version " + version)
     try:
         last_product_number, last_tester, req_filename, path_Golden, path_DUT, output_dir = \
             ini.read_last_parameters('lastDBCheckPara.txt')

@@ -7,11 +7,12 @@ from logger import *
 
 
 def main_test():
+    version = '1.0'
     try:
         init_logger()
         logger().info("DB Check start.")
 
-        (req_filename, path_Golden, path_DUT) = mg.mainGUI()
+        (req_filename, path_Golden, path_DUT) = mg.mainGUI(version)
         print('path_Golden_: ' + path_Golden)
         print('path_DUT_: ' + path_DUT)
         dict_G = uti.read_dict(path_Golden)
