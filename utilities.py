@@ -4,6 +4,7 @@ This module includes methods that commonly used.
 import re
 import sys
 import os
+from logger import *
 
 
 def is_substring(s1, s2):
@@ -40,7 +41,7 @@ def read_dict(file_path):
         if data.startswith('$') or data.startswith('#'):
             continue
         elif wrong_patten.search(data):
-            print("This line has wrong patten: %s" % data)
+            logger().warning("This line has wrong patten: %s" % data)
             continue
 
         data = data.split('\n')
@@ -85,7 +86,7 @@ def read_data(dictionary, cmd):
         if cmd == key:
             output = dictionary[key]
             return output
-    print("Failed to find this command: %s" % cmd)
+    logger().error("Failed to find this command: %s" % cmd)
     return
 
 
@@ -119,12 +120,12 @@ def open_file(filename):
     try:
         opened_file = open(filename, "r")
     except IOError:
-        print("Open %s failed - No such file or directory." % filename)
+        logger().exception("Open %s failed - No such file or directory." % filename)
         sys.exit(1)
     except:
-        print("Unexpected error:", sys.exc_info()[0])
+        logger().exception("Unexpected error:", sys.exc_info()[0])
     else:
-        print("Open %s successfully." % filename)
+        logger().info("Open %s successfully." % filename)
     return opened_file
 
 
@@ -135,17 +136,15 @@ def create_dir(directory):
         dir - The directory to be created.
     """
     try:
-        print("try to mkdir %s." % directory)
+        logger().debug("try to mkdir %s." % directory)
         os.mkdir(directory)
     except:
-        print("Unexpected error:", sys.exc_info()[0])
-        print("Create directory %s failed for the 1st time." % directory)
+        logger().exception("Create directory %s failed for the 1st time." % directory)
         try:
             os.makedirs(directory)
         except:
-            print("Unexpected error:", sys.exc_info()[0])
-            print("Create directory %s failed for the 2nd time." % directory)
+            logger().exception("Create directory %s failed for the 2nd time." % directory)
         else:
-            print("Create directory %s successfully for the 2nd time." % directory)
+            logger().info("Create directory %s successfully for the 2nd time." % directory)
     else:
-        print("Create directory %s successfully for the 1st time." % directory)
+        logger().info("Create directory %s successfully for the 1st time." % directory)

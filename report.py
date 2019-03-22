@@ -7,7 +7,7 @@ import os
 import matplotlib.pyplot as plt
 from docx.shared import RGBColor
 import utilities as uti
-from tkinter import messagebox
+from logger import *
 
 g_product_number = ''
 g_tester = ''
@@ -57,7 +57,7 @@ def store_parameter(product_number, tester, req_file, golden_file, dut_file, out
         g_output_dir = os.getcwd()
     result_path_suffix = time.strftime("_%Y%m%d_%H%M%S")
     result_path = os.path.join(g_output_dir, "result" + result_path_suffix)
-    #print("result_path= %s" % result_path)
+    logger().info("result_path= %s" % result_path)
     uti.create_dir(result_path)
 
 
@@ -84,7 +84,7 @@ def save_figure(cmdline, comments):
     plt.gcf().savefig(filename)
     plt.close()
 
-    print(filename)
+    logger().debug("Figure of command(%s) is saved as:%s" % (cmdline, filename))
 
     g_pictures.append(filename)
     g_comments.append(comments)
@@ -141,7 +141,7 @@ def add_table():
     global g_comments
 
     if len(g_commands) != len(g_comments):
-        print('There is error when adding table in report.')
+        logger().critical('There is error when adding table in report.')
         return False
 
     document.add_page_break()
@@ -169,7 +169,7 @@ def add_pictures():
     document.add_heading('Pictures', level=0)
 
     if len(g_pictures) != len(g_comments):
-        print('There is error when drawing picture.')
+        logger().critical('There is error when drawing picture.')
         return False
 
     for i in range(0, len(g_pictures)):
@@ -194,10 +194,10 @@ def save_report():
     try:
         document.save(report_file)
     except PermissionError:
-        print('Report file has been opened by another program.')
+        logger().exception('Report file has been opened by another program.')
         os.sys.exit(1)
     else:
-        print("%s is saved successfully." % os.path.abspath(report_file))
+        logger().info("%s is saved successfully." % os.path.abspath(report_file))
 
 
 def generate_test_report():
