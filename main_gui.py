@@ -7,6 +7,7 @@ from tkinter import messagebox
 import init_parameter as ini
 import report
 import os
+from logger import *
 
 root = tk.Tk()
 
@@ -37,7 +38,7 @@ def req_callback():
 
     req_filename = filedialog.askopenfilename(title='select the DB requirement file',
                                               filetypes=[('text file', '*.txt'), ('All Files', '*')])
-    print(req_filename)
+    logger().debug("Requirement file selected: %s", req_filename)
     req_entry.delete(0, tk.END)
     req_entry.insert(0, req_filename)
 
@@ -50,7 +51,7 @@ def golden_callback():
     global path_Golden
     path_Golden = filedialog.askopenfilename(title='select the old golden DB file',
                                              filetypes=[('text file', '*.txt'), ('All Files', '*')])
-    print(path_Golden)
+    logger().debug("Golden file selected: %s", path_Golden)
     golden_entry.delete(0, tk.END)
     golden_entry.insert(0, path_Golden)
 
@@ -64,7 +65,7 @@ def dut_callback():
 
     path_DUT = filedialog.askopenfilename(title='select the new DUT DB file',
                                           filetypes=[('text file', '*.txt'), ('All Files', '*')])
-    print(path_DUT)
+    logger().debug("DUT data file selected: %s", path_DUT)
     dut_entry.delete(0, tk.END)
     dut_entry.insert(0, path_DUT)
 
@@ -77,7 +78,7 @@ def output_callback():
     global output_dir
 
     output_dir = filedialog.askdirectory(title='select the output directory')
-    print(output_dir)
+    logger().debug("Output path selected: %s", output_dir)
     output_entry.delete(0, tk.END)
     output_entry.insert(0, output_dir)
 
@@ -138,6 +139,7 @@ def confirm_callback():
     ini.save_last_parameters('lastDBCheckPara.txt', g_product_number, g_tester, req_filename, path_Golden, path_DUT, output_dir)
     report.store_parameter(g_product_number, g_tester, req_filename, path_Golden, path_DUT, output_dir)
     root.quit()
+
     return
 
 
@@ -146,10 +148,8 @@ def cancel_callback():
     Exit the program.
     """
     global root
-    print('cancel')
     root.quit()
     exit(0)
-    return
 
 
 def on_closing():
@@ -164,6 +164,7 @@ def mainGUI():
     """
     Method to show the main GUI.
     """
+
     global root
     global product_number
     global tester
@@ -176,8 +177,12 @@ def mainGUI():
     global s_output_dir
 
     root.title("DBCheck")
-    last_product_number, last_tester, req_filename, path_Golden, path_DUT, output_dir = \
-        ini.read_last_parameters('lastDBCheckPara.txt')
+    try:
+        last_product_number, last_tester, req_filename, path_Golden, path_DUT, output_dir = \
+            ini.read_last_parameters('lastDBCheckPara.txt')
+    except ValueError as e:
+        logger().warning("Failed to read last parameters.")
+        last_product_number, last_tester, req_filename, path_Golden, path_DUT, output_dir = [""]*6
 
     product_number_label = tk.Label(root, text="Product Number:")
     product_number_label.grid(sticky=tk.E, row=0, column=0, columnspan=1, padx=20, pady=10)

@@ -3,6 +3,8 @@ This module includes read & write methods
 for parameters used by the program.
 """
 
+from logger import *
+
 
 def read_last_parameters(filename):
     """
@@ -12,33 +14,22 @@ def read_last_parameters(filename):
     Return Values:
         last_product_number, last_tester, req_filename, path_Golden, path_DUT, output_dir
     """
-    parameters =[]
+    parameters = []
+
     try:
-        para_file = open(filename, 'r')
+        with open(filename, 'r',  encoding="utf-8") as para_file:
+            for m_line in para_file:
+                line = m_line.strip()
+                if not line:
+                    continue
+
+                para = line.split(': ')
+                if len(para) != 2:
+                    continue
+                logger().debug(para)
+                parameters.append(para[1])
     except IOError:
-        print("Open %s failed - No such file or directory. Create a new one." % filename)
-        para_file = open(filename, 'x+')
-        para_file.write('product number:\n')
-        para_file.write('tester:\n')
-        para_file.write('Requirement File:\n')
-        para_file.write('Golden File:\n')
-        para_file.write('DUT File:\n')
-        para_file.write('Output directory:\n')
-    else:
-        print("Open %s successfully." % filename)
-
-    for m_line in para_file:
-        line = m_line.strip()
-        if not line:
-            continue
-
-        para = line.split(': ')
-        if len(para) != 2:
-            parameters.append("")
-            continue
-        print(para)
-        parameters.append(para[1])
-    para_file.close()
+        logger().warning("Open %s failed - File does not exist." % filename)
 
     return parameters
 
@@ -55,14 +46,16 @@ def save_last_parameters(filename, m_product_number, m_tester, m_req_file, m_gol
         m_dut_file - File path of dut data file.
         m_output_dir - File path to save the output pictures and reports.
     """
-    para_file = open(filename, 'w+')
-    para_file.write('product number: %s\n' % m_product_number)
-    para_file.write('tester: %s\n' % m_tester)
-    para_file.write('Requirement File: %s\n' % m_req_file)
-    para_file.write('Golden File: %s\n' % m_golden_file)
-    para_file.write('DUT File: %s\n' % m_dut_file)
-    para_file.write('Output directory: %s\n' % m_output_dir)
-    para_file.close()
+    try:
+        with open(filename, 'w+',  encoding="utf-8") as para_file:
+            para_file.write('product number: %s\n' % m_product_number)
+            para_file.write('tester: %s\n' % m_tester)
+            para_file.write('Requirement File: %s\n' % m_req_file)
+            para_file.write('Golden File: %s\n' % m_golden_file)
+            para_file.write('DUT File: %s\n' % m_dut_file)
+            para_file.write('Output directory: %s\n' % m_output_dir)
+    except Exception as e:
+        logger().exception("Unexpected error happened!")
 
 
 if __name__ == '__main__':

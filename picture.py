@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from tkinter import simpledialog
 from tkinter import messagebox
 import report
+from logger import *
 
 import tkinter
 from matplotlib.backends.backend_tkagg import (
@@ -19,10 +20,8 @@ def on_fig_closed():
     """
     var_box = messagebox.askyesno(title='Info', message='Are you sure to quit?')
     if var_box:
-        print("Execution abort due to user operation!")
+        logger().warning("Execution abort due to user operation!")
         exit(0)
-    else:
-        return False
 
 
 def plot_fmt_G(*data, style='unknown'):
@@ -109,11 +108,11 @@ def on_click_func(btn, cmd):
     """
     Generate callback functions for OK/NOK buttons on the figure.
     """
+    global root
     if btn == "Correct":
         def func():
             comments = "Correct"
             report.save_figure(cmd, comments)
-            global root
             root.quit()
             root.destroy()
     else:
@@ -122,7 +121,9 @@ def on_click_func(btn, cmd):
             if m_comment and m_comment.strip():
                 comments = m_comment
                 report.save_figure(cmd, comments)
-                print(m_comment)
+                root.quit()
+                root.destroy()
+                logger().debug("NOK graph comment: %s", m_comment)
             else:
                 messagebox.showwarning(title='Warning', message='Please input comments first!')
 
