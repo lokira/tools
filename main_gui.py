@@ -193,7 +193,7 @@ def mainGUI(version):
     product_number_entry = tk.Entry(root, textvariable=product_number, width=30)
     product_number_entry.grid(sticky=tk.W, row=0, column=1, columnspan=2, padx=20, pady=10)
 
-    print(last_product_number)
+    logger().debug("last product number: %s", last_product_number)
     product_number_entry.delete(0, tk.END)
     product_number_entry.insert(0, last_product_number)
 
@@ -204,7 +204,7 @@ def mainGUI(version):
     tester_entry = tk.Entry(root, textvariable=tester, width=30)
     tester_entry.grid(sticky=tk.W, row=1, column=1, columnspan=2, padx=20, pady=10)
 
-    print(last_tester)
+    logger().debug("last tester: %s", last_tester)
     tester_entry.delete(0, tk.END)
     tester_entry.insert(0, last_tester)
 
@@ -218,7 +218,7 @@ def mainGUI(version):
     req_button = tk.Button(root, text="select", command=req_callback, width=10)
     req_button.grid(sticky=tk.E + tk.N, row=2, column=3, padx=20, pady=10)
 
-    print(req_filename)
+    logger().debug("last requirement : %s", req_filename)
     req_entry.delete(0, tk.END)
     req_entry.insert(0, req_filename)
 
@@ -232,7 +232,7 @@ def mainGUI(version):
     golden_button = tk.Button(root, text="select", command=golden_callback, width=10)
     golden_button.grid(sticky=tk.E + tk.N, row=3, column=3, padx=20, pady=10)
 
-    print(path_Golden)
+    logger().debug("last golden file : %s", path_Golden)
     golden_entry.delete(0, tk.END)
     golden_entry.insert(0, path_Golden)
 
@@ -246,7 +246,7 @@ def mainGUI(version):
     dut_button = tk.Button(root, text="select", command=dut_callback, width=10)
     dut_button.grid(sticky=tk.E + tk.N, row=4, column=3, padx=20, pady=10)
 
-    print(path_DUT)
+    logger().debug("last DUT file : %s", path_DUT)
     dut_entry.delete(0, tk.END)
     dut_entry.insert(0, path_DUT)
 
@@ -260,7 +260,7 @@ def mainGUI(version):
     output_button = tk.Button(root, text="select", command=output_callback, width=10)
     output_button.grid(sticky=tk.E + tk.N, row=5, column=3, padx=20, pady=10)
 
-    print(output_dir)
+    logger().debug("last output directoryff : %s", output_dir)
     output_entry.delete(0, tk.END)
     output_entry.insert(0, output_dir)
 

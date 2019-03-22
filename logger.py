@@ -1,19 +1,29 @@
+"""
+Initialize and provide logger for db_check.
+"""
 import logging
+import os
 
 db_logger = None
 
 
 def init_logger():
+    """
+    Create and configure the logger.
+    """
     global db_logger
     # create logger
     logger_name = "db_check_logger"
     db_logger = logging.getLogger(logger_name)
-
     db_logger.setLevel(logging.DEBUG)
 
     # create file handler
-    log_path = "./db_check.log"
-    fh = logging.FileHandler(log_path)
+    log_path = "./logs/"
+    log_name = "db_check.log"
+
+    os.makedirs(log_path, exist_ok=True)
+
+    fh = logging.FileHandler(log_path+log_name)
     fh.setLevel(logging.WARNING)
 
     # create stream handler

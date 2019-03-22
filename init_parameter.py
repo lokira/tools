@@ -26,7 +26,6 @@ def read_last_parameters(filename):
                 para = line.split(': ')
                 if len(para) != 2:
                     continue
-                logger().debug(para)
                 parameters.append(para[1])
     except IOError:
         logger().warning("Open %s failed - File does not exist." % filename)
