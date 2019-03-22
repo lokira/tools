@@ -12,11 +12,11 @@ def req_0(dict_G, dict_D, cmd):
     sValue_G = uti.read_data(dict_G, cmd)
 
     if sValue_G is None:
-        print("cmd %s is not found in golden DB file." % cmd)
+        print("Command %s is not found in golden DB file." % cmd)
         return
 
     if sValue is None:
-        print("cmd %s is not found in new DB file." % cmd)
+        print("Command %s is not found in new DB file." % cmd)
         return
 
     data10 = uti.trans_data(sValue)
