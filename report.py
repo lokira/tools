@@ -6,6 +6,8 @@ from docx import Document
 import os
 import matplotlib.pyplot as plt
 from docx.shared import RGBColor
+import utilities as uti
+from tkinter import messagebox
 
 g_product_number = ''
 g_tester = ''
@@ -55,7 +57,8 @@ def store_parameter(product_number, tester, req_file, golden_file, dut_file, out
         g_output_dir = os.getcwd()
     result_path_suffix = time.strftime("_%Y%m%d_%H%M%S")
     result_path = os.path.join(g_output_dir, "result" + result_path_suffix)
-    os.mkdir(result_path)
+    #print("result_path= %s" % result_path)
+    uti.create_dir(result_path)
 
 
 def save_figure(cmdline, comments):
@@ -68,10 +71,13 @@ def save_figure(cmdline, comments):
     """
     global result_path
     global document
+    global g_pictures
+    global g_comments
+    global g_commands
 
     dir_existed = os.path.isdir(result_path)
     if not dir_existed:
-        os.mkdir(result_path)
+        uti.create_dir(result_path)
     figure_suffix = time.strftime("%Y%m%d_%H%M%S")
     filename = os.path.abspath(result_path+'\\{}_{}.png'.format(cmdline.replace('/', '_'), figure_suffix))
 
@@ -80,9 +86,6 @@ def save_figure(cmdline, comments):
 
     print(filename)
 
-    global g_pictures
-    global g_comments
-    global g_commands
     g_pictures.append(filename)
     g_comments.append(comments)
     g_commands.append(cmdline)
@@ -96,9 +99,7 @@ def add_parameter():
     """
     Add DB check parameters to the report document.
     """
-    global report_name
     global document
-
     global g_product_number
     global g_tester
     global g_req_file
@@ -106,7 +107,6 @@ def add_parameter():
     global g_dut_file
 
     document.add_heading('DB CHECK REPORT', level=0)
-
     document.add_paragraph('Product number: ' + g_product_number)
     document.add_paragraph('Tester:         ' + g_tester)
 
@@ -115,8 +115,6 @@ def add_parameter():
     document.add_paragraph('Requirement File:\n' + g_req_file)
     document.add_paragraph('Golden File:\n' + g_golden_file)
     document.add_paragraph('DUT File:\n' + g_dut_file)
-
-    return True
 
 
 def add_conclusion():
@@ -165,7 +163,6 @@ def add_pictures():
     """
     global g_pictures
     global g_comments
-    global result_path
     global g_commands
 
     document.add_page_break()
@@ -191,7 +188,7 @@ def save_report():
     global report_file
     dir_existed = os.path.isdir(result_path)
     if not dir_existed:
-        os.mkdir(result_path)
+        uti.create_dir(result_path)
 
     report_file = os.path.join(result_path, "DbCheckReport.docx")
     try:

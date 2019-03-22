@@ -3,6 +3,7 @@ This module includes methods that commonly used.
 """
 import re
 import sys
+import os
 
 
 def is_substring(s1, s2):
@@ -27,10 +28,10 @@ def read_dict(file_path):
         return - The dictionary of all commands and data.
     """
 
-    f = open(file_path, "r")
+    f = open_file(file_path)
     y1 = []
-    indexList = []
-    adic = {}
+    index_list = []
+    dictionary = {}
 
     wrong_patten = re.compile(r'<|>|Fatal|error|ERROR')
 
@@ -52,39 +53,40 @@ def read_dict(file_path):
                 data2 = data[i].strip().split(",")
 
                 for j in range(len(data2)):
-                    tempData = data2[j].strip()
-                    if tempData != '':
-                        y1.append(tempData)
+                    temp_data = data2[j].strip()
+                    if temp_data != '':
+                        y1.append(temp_data)
 
     for k in range(len(y1)):
         if is_substring("/", y1[k]):
-            indexList.append(k)
+            index_list.append(k)
 
-    for m in range(len(indexList)):
-        key = y1[indexList[m]]
-        currentIndex = indexList[m] + 1
-        if m + 1 == len(indexList):
-            nextIndex = len(y1)
+    for m in range(len(index_list)):
+        key = y1[index_list[m]]
+        current_index = index_list[m] + 1
+        if m + 1 == len(index_list):
+            next_index = len(y1)
         else:
-            nextIndex = indexList[m + 1]
+            next_index = index_list[m + 1]
 
-        adic[key] = y1[currentIndex:nextIndex]
-    return adic
+        dictionary[key] = y1[current_index:next_index]
+    return dictionary
 
 
-def read_data(adic, cmdName):
+def read_data(dictionary, cmd):
     """
     Read the data of the command in the dictionary.
     Arguments:
-        adic - The dictionary contains commands and data.
-        cmdName - The command to search.
+        dictionary - The dictionary contains commands and data.
+        cmd - The command to search.
         return - The data of the command.
     """
-    for key in adic.keys():
-        #print (key)
-        if cmdName == key:
-            output = adic[key]
+    for key in dictionary.keys():
+        if cmd == key:
+            output = dictionary[key]
             return output
+    print("Failed to find this command: %s" % cmd)
+    return
 
 
 def trans_data(value):
@@ -102,8 +104,8 @@ def trans_data(value):
         if is_substring("0x", value[i]) or is_substring("0X", value[i]):
             data10.append(int(value[i], 16))
         else:
-            data10.append(value[i])
-    return list(map(int, data10))
+            data10.append(int(value[i]))
+    return data10
 
 
 def open_file(filename):
@@ -117,9 +119,33 @@ def open_file(filename):
     try:
         opened_file = open(filename, "r")
     except IOError:
-        print("Open %s failed - No such file or directory." %filename)
+        print("Open %s failed - No such file or directory." % filename)
         sys.exit(1)
-
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
     else:
-        print("Open %s successfully." %filename)
+        print("Open %s successfully." % filename)
     return opened_file
+
+
+def create_dir(directory):
+    """
+    Create a directory.
+    Arguments:
+        dir - The directory to be created.
+    """
+    try:
+        print("try to mkdir %s." % directory)
+        os.mkdir(directory)
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        print("Create directory %s failed for the 1st time." % directory)
+        try:
+            os.makedirs(directory)
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
+            print("Create directory %s failed for the 2nd time." % directory)
+        else:
+            print("Create directory %s successfully for the 2nd time." % directory)
+    else:
+        print("Create directory %s successfully for the 1st time." % directory)
