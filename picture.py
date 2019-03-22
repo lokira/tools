@@ -83,6 +83,7 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
     global root
     fig = plt.gcf()
     root = tkinter.Tk()
+    root.wm_title(title)
     canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
     canvas.draw()
     canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
@@ -117,7 +118,7 @@ def on_click_func(btn, cmd):
             root.destroy()
     else:
         def func():
-            m_comment = simpledialog.askstring("Comment Requied", "Please input your comment:")
+            m_comment = simpledialog.askstring("Comment Required", "Please input your comment:")
             if m_comment and m_comment.strip():
                 comments = m_comment
                 report.save_figure(cmd, comments)

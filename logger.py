@@ -5,6 +5,8 @@ import logging
 import os
 
 db_logger = None
+log_path = None
+log_name = None
 
 
 def init_logger():
@@ -12,6 +14,8 @@ def init_logger():
     Create and configure the logger.
     """
     global db_logger
+    global log_path
+    global log_name
     # create logger
     logger_name = "db_check_logger"
     db_logger = logging.getLogger(logger_name)
@@ -24,7 +28,7 @@ def init_logger():
     os.makedirs(log_path, exist_ok=True)
 
     fh = logging.FileHandler(log_path+log_name)
-    fh.setLevel(logging.WARNING)
+    fh.setLevel(logging.DEBUG)
 
     # create stream handler
     sh = logging.StreamHandler()
@@ -43,4 +47,21 @@ def init_logger():
 
 
 def logger():
+    """
+    Getter for logger instance.
+    """
     return db_logger
+
+
+def log_path():
+    """
+    Getter for log path.
+    """
+    return log_path
+
+
+def log_name():
+    """
+    Getter for log path.
+    """
+    return log_name

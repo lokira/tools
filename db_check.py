@@ -4,13 +4,14 @@ import data_processing as dp
 import report
 import mail
 from logger import *
+from tkinter import messagebox
 
 
 def main_test():
     version = '1.0'
     try:
         init_logger()
-        logger().info("DB Check start.")
+        logger().info("DB Check started. Version %s.", version)
 
         (req_filename, path_Golden, path_DUT) = mg.mainGUI(version)
         print('path_Golden_: ' + path_Golden)
@@ -64,6 +65,9 @@ def main_test():
         mail.send_mail()
     except Exception as e:
         logger().exception("Unexpected error happened!")
+        var_box = messagebox.askyesno(title='Warning', message='Unexpected error happened!\nWould you like to send us the log to help us improve?')
+        if var_box:
+            mail.send_bug_report()
 
 
 if __name__ == '__main__':
