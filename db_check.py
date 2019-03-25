@@ -40,7 +40,7 @@ def main_test():
                 logger().info("%s: %s should be a digit." % (line, value))
                 break
             cmd = line[0].strip()
-            print(cmd)
+            logger().debug("command : %s", cmd)
 
             tag = int(value)
             if tag == 0:
