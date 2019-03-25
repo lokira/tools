@@ -5,8 +5,11 @@ import report
 import os
 from logger import *
 
-
 def send_mail():
+    """
+    This function open outlook.exe.
+    send DB check result
+    """
     root = tk.Tk()
     root.withdraw()
 
@@ -19,13 +22,15 @@ def send_mail():
         mail.Body = "Hi,\nThe DB check result is attached."
         mail.Attachments.Add(report.report_file)
         mail.display()
-        print("DB check result has been attached to the mail.")
+        logger().info("DB check result has been attached to the mail.")
     else:
-        print("Won't send the result by mail.")
+        logger().info("Won't send the result by mail.")
     root.destroy()
 
-
 def send_bug_report():
+    """
+    send DB check bug report
+    """
     outlook = win32.Dispatch('outlook.application')
     mail = outlook.CreateItem(0)
     mail.Subject = 'DB check bug report'
@@ -35,7 +40,7 @@ def send_bug_report():
     if os.path.isfile(l_path):
         mail.Attachments.Add(l_path)
     mail.display()
-
+    logger().info("DB check bug report to the mail.")
 
 if __name__ == '__main__':
     send_mail()

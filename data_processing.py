@@ -2,9 +2,16 @@ import re
 import numpy
 import utilities as uti
 import picture
-
+from logger import *
 
 def req_0(dict_G, dict_D, cmd):
+    """
+    get dut and golden data,draw data picture.
+        Arguments:
+            dict_G - The dictionary contains commands and data.
+            dict_D - The dictionary contains commands and data.
+            cmd -  The command to search.
+    """
     data10 = []
     data10_G = []
 
@@ -12,11 +19,11 @@ def req_0(dict_G, dict_D, cmd):
     sValue_G = uti.read_data(dict_G, cmd)
 
     if sValue_G is None:
-        print("Command %s is not found in golden DB file." % cmd)
+        logger().exception("Command %s is not found in golden DB file." % cmd)
         return
 
     if sValue is None:
-        print("Command %s is not found in new DB file." % cmd)
+        logger().exception("Command %s is not found in new DB file." % cmd)
         return
 
     data10 = uti.trans_data(sValue)
@@ -29,6 +36,13 @@ def req_0(dict_G, dict_D, cmd):
 
 
 def req_1(dict_G, dict_D, cmd):
+    """
+    get dut and golden data,draw data picture.
+        Arguments:
+            dict_G - The dictionary contains commands and data.
+            dict_D - The dictionary contains commands and data.
+            cmd -  The command to search.
+    """
     x = []
     x_G = []
     y1 = []
@@ -38,11 +52,11 @@ def req_1(dict_G, dict_D, cmd):
     values_G = uti.read_data(dict_G, cmd)
 
     if values_G is None:
-        print("cmd %s is not found in golden DB file." %cmd)
+        logger().exception("Command %s is not found in golden DB file." % cmd)
         return
 
     if values is None:
-        print("cmd %s is not found in new DB file." %cmd)
+        logger().exception("Command %s is not found in new DB file." % cmd)
         return
 
     data10 = uti.trans_data(values)
@@ -71,15 +85,22 @@ def req_1(dict_G, dict_D, cmd):
 
 
 def req_2(dict_G, dict_D, cmd_x):
+    """
+    get dut and golden data,draw data picture.
+        Arguments:
+            dict_G - The dictionary contains commands and data.
+            dict_D - The dictionary contains commands and data.
+            cmd -  The command to search.
+    """
     values_x = uti.read_data(dict_D, cmd_x)
     values_x_G = uti.read_data(dict_G, cmd_x)
 
     if values_x_G is None:
-        print("cmd %s is not found in golden DB file." % cmd_x)
+        logger().exception("Command %s is not found in golden DB file." % cmd_x)
         return
 
     if values_x is None:
-        print("cmd %s is not found in new DB file." % cmd_x)
+        logger().exception("Command %s is not found in new DB file." % cmd_x)
         return
 
     data10_x = uti.trans_data(values_x)
@@ -90,11 +111,11 @@ def req_2(dict_G, dict_D, cmd_x):
     values_y_G = uti.read_data(dict_G, cmd_y)
 
     if values_y_G is None:
-        print("cmd %s is not found in golden DB file." % cmd_y)
+        logger().exception("Command %s is not found in golden DB file." % cmd_y)
         return
 
     if values_y is None:
-        print("cmd %s is not found in new DB file." % cmd_y)
+        logger().exception("Command %s is not found in new DB file." % cmd_y)
         return
 
     data10_y = uti.trans_data(values_y)
@@ -112,6 +133,13 @@ def req_2(dict_G, dict_D, cmd_x):
 
 
 def req_3(dict_G, dict_D, cmd_im):
+    """
+    get dut and golden data,draw data picture.
+        Arguments:
+            dict_G - The dictionary contains commands and data.
+            dict_D - The dictionary contains commands and data.
+            cmd -  The command to search.
+    """
     values = []
     values_G = []
 
@@ -119,11 +147,11 @@ def req_3(dict_G, dict_D, cmd_im):
     values_fr = uti.read_data(dict_D, cmd_fr)
     values_fr_G = uti.read_data(dict_G, cmd_fr)
     if values_fr_G is None:
-        print("cmd %s is not found in golden DB file." % cmd)
+        logger().exception("Command %s is not found in golden DB file." % cmd_im)
         return
 
     if values_fr is None:
-        print("cmd %s is not found in new DB file." % cmd)
+        logger().exception("Command %s is not found in new DB file." % cmd_im)
         return
 
     data10_fr = uti.trans_data(values_fr)
@@ -133,11 +161,11 @@ def req_3(dict_G, dict_D, cmd_im):
     values_re = uti.read_data(dict_D, cmd_re)
     values_re_G = uti.read_data(dict_G, cmd_re)
     if values_re_G is None:
-        print("cmd %s is not found in golden DB file." % cmd)
+        logger().exception("Command %s is not found in golden DB file." % cmd_re)
         return
 
     if values_re is None:
-        print("cmd %s is not found in new DB file." % cmd)
+        logger().exception("Command %s is not found in new DB file." % cmd_re)
         return
 
     data10_re = uti.trans_data(values_re)
@@ -146,11 +174,11 @@ def req_3(dict_G, dict_D, cmd_im):
     values_im = uti.read_data(dict_D, cmd_im)
     values_im_G = uti.read_data(dict_G, cmd_im)
     if values_im_G is None:
-        print("cmd %s is not found in golden DB file." % cmd)
+        logger().exception("Command %s is not found in golden DB file." % cmd_im)
         return
 
     if values_im is None:
-        print("cmd %s is not found in new DB file." % cmd)
+        logger().exception("Command %s is not found in new DB file." % cmd_im)
         return
 
     data10_im = uti.trans_data(values_im)
@@ -180,6 +208,13 @@ def req_3(dict_G, dict_D, cmd_im):
 
 
 def req_4(dict_G, dict_D, cmd_re):
+    """
+    get dut and golden data,draw data picture.
+        Arguments:
+            dict_G - The dictionary contains commands and data.
+            dict_D - The dictionary contains commands and data.
+            cmd -  The command to search.
+    """
     values = []
     values_G = []
 
@@ -188,11 +223,11 @@ def req_4(dict_G, dict_D, cmd_re):
     values_fr = uti.read_data(dict_D, cmd_fr)
     values_fr_G = uti.read_data(dict_G, cmd_fr)
     if values_fr_G is None:
-        print("cmd %s is not found in golden DB file." % cmd)
+        logger().exception("Command %s is not found in golden DB file." % cmd_fr)
         return
 
     if values_fr is None:
-        print("cmd %s is not found in new DB file." % cmd)
+        logger().exception("Command %s is not found in new DB file." % cmd_fr)
         return
 
     data10_fr = uti.trans_data(values_fr)
@@ -201,11 +236,11 @@ def req_4(dict_G, dict_D, cmd_re):
     values_re = uti.read_data(dict_D, cmd_re)
     values_re_G = uti.read_data(dict_G, cmd_re)
     if values_re_G is None:
-        print("cmd %s is not found in golden DB file." % cmd)
+        logger().exception("Command %s is not found in golden DB file." % cmd_re)
         return
 
     if values_re is None:
-        print("cmd %s is not found in new DB file." % cmd)
+        logger().exception("Command %s is not found in new DB file." % cmd_re)
         return
 
     data10_re = uti.trans_data(values_re)
@@ -215,18 +250,18 @@ def req_4(dict_G, dict_D, cmd_re):
     values_im = uti.read_data(dict_D, cmd_im)
     values_im_G = uti.read_data(dict_G, cmd_im)
     if values_im_G is None:
-        print("cmd %s is not found in golden DB file." % cmd)
+        logger().exception("Command %s is not found in golden DB file." % cmd_im)
         return
 
     if values_im is None:
-        print("cmd %s is not found in new DB file." % cmd)
+        logger().exception("Command %s is not found in new DB file." % cmd_im)
         return
 
     data10_im = uti.trans_data(values_im)
     data10_im_G = uti.trans_data(values_im_G)
 
     if len(data10_re) != len(data10_im):
-        print("The length of re and im should be same.")
+        logger().info("The length of re and im should be same.")
         return
 
     for i in range(len(data10_im)):
@@ -236,7 +271,7 @@ def req_4(dict_G, dict_D, cmd_re):
     phase = numpy.angle(values)
 
     if len(data10_re_G) != len(data10_im_G):
-        print("The length of re and im in golden file should be same.")
+        logger().info("The length of re and im in golden file should be same.")
         return
 
     for i in range(len(values_im_G)):

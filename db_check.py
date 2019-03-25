@@ -8,14 +8,20 @@ from tkinter import messagebox
 
 
 def main_test():
+    """
+    Generate main_test functions
+    Open mainGUI select the appropriate file
+    draw golden and dut data
+    send mail
+    """
     version = '1.0'
     try:
         init_logger()
         logger().info("DB Check started. Version %s.", version)
 
         (req_filename, path_Golden, path_DUT) = mg.mainGUI(version)
-        print('path_Golden_: ' + path_Golden)
-        print('path_DUT_: ' + path_DUT)
+        logger().info('path_Golden_: ' + path_Golden)
+        logger().info('path_DUT_: ' + path_DUT)
         dict_G = uti.read_dict(path_Golden)
         dict_D = uti.read_dict(path_DUT)
 
@@ -31,7 +37,7 @@ def main_test():
             value = line[1].strip()
             is_digit = value.isdigit()
             if not is_digit:
-                print("%s: %s should be a digit." % (line, value))
+                logger().info("%s: %s should be a digit." % (line, value))
                 break
             cmd = line[0].strip()
             print(cmd)
@@ -57,7 +63,7 @@ def main_test():
                 else:
                     continue
             else:
-                print('This DB format is not supported.')
+                logger().info("This DB format is not supported.")
 
         db_req_file.close()
 
