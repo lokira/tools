@@ -3,6 +3,7 @@ Initialize and provide logger for db_check.
 """
 import logging
 import os
+import logging.handlers
 
 db_logger = None
 log_path = None
@@ -26,8 +27,10 @@ def init_logger():
     log_name = "db_check.log"
 
     os.makedirs(log_path, exist_ok=True)
-
-    fh = logging.FileHandler(log_path+log_name)
+    fh = logging.handlers.TimedRotatingFileHandler(
+        filename=log_path+log_name, when='midnight',
+        backupCount=10)
+    #fh = logging.FileHandler(log_path+log_name)
     fh.setLevel(logging.DEBUG)
 
     # create stream handler
