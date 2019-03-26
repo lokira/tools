@@ -14,7 +14,7 @@ def main_test():
     draw golden and dut data
     send mail
     """
-    version = '1.0'
+    version = '1.0.1'
     try:
         init_logger()
         logger().info("DB Check started. Version %s.", version)

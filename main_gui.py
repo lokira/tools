@@ -6,6 +6,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 import init_parameter as ini
 import report
+from sys import exit
 import os
 from logger import *
 

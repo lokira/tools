@@ -6,7 +6,7 @@ from tkinter import simpledialog
 from tkinter import messagebox
 import report
 from logger import *
-
+from sys import exit
 import tkinter
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
