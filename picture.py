@@ -12,6 +12,7 @@ from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 root = None
+winfo_x, winfo_y = 10, 10
 
 
 def on_fig_closed():
@@ -65,6 +66,11 @@ def plot_fmt(*data, style='unknown'):
              markersize=4, linestyle=m_style, linewidth=1)
 
 
+def save_size(event):
+    global winfo_x, winfo_y
+    winfo_x, winfo_y = root.winfo_x(), root.winfo_y()
+
+
 def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwargs):
     """
     Open a interactive window to display the figure.
@@ -84,6 +90,8 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
     fig = plt.gcf()
     root = tkinter.Tk()
     root.wm_title(title)
+    root.geometry("+%d+%d" % (winfo_x, winfo_y))
+    root.bind("<Configure>", save_size)
     canvas = FigureCanvasTkAgg(fig, master=root)  # A tk.DrawingArea.
     canvas.draw()
     canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
