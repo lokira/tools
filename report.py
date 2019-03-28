@@ -79,7 +79,7 @@ def save_figure(cmdline, comments):
     if not dir_existed:
         uti.create_dir(result_path)
     figure_suffix = time.strftime("%Y%m%d_%H%M%S")
-    filename = os.path.abspath(result_path+'\\{}_{}.png'.format(cmdline.replace('/', '_'), figure_suffix))
+    filename = os.path.abspath(result_path+'\\{}_{}.png'.format(cmdline.replace('/', '_').replace(':', '-'), figure_suffix))
 
     plt.gcf().savefig(filename)
     plt.close()

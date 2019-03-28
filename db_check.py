@@ -30,7 +30,7 @@ def main_test():
         for line in db_req_file:
             if line.startswith('#'):
                 continue
-
+            line = line.strip()
             line = line.split(' ')
             if len(line) != 2:
                 continue

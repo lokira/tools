@@ -198,7 +198,7 @@ def mainGUI(version):
     product_number_entry.delete(0, tk.END)
     product_number_entry.insert(0, last_product_number)
 
-    tester_label = tk.Label(root, text="Tester:")
+    tester_label = tk.Label(root, text="Tester(E-ID):")
     tester_label.grid(sticky=tk.E, row=1, column=0, columnspan=1, padx=20, pady=10)
 
     tester = tk.StringVar()
@@ -216,7 +216,7 @@ def mainGUI(version):
     global req_entry
     req_entry = tk.Entry(root, textvariable=s_req_file, width=80)
     req_entry.grid(row=2, column=1, columnspan=2, padx=20, pady=10)
-    req_button = tk.Button(root, text="select", command=req_callback, width=10)
+    req_button = tk.Button(root, text="Select", command=req_callback, width=10)
     req_button.grid(sticky=tk.E + tk.N, row=2, column=3, padx=20, pady=10)
 
     logger().debug("last requirement : %s", req_filename)
@@ -230,7 +230,7 @@ def mainGUI(version):
     global golden_entry
     golden_entry = tk.Entry(root, textvariable=s_golden_file, width=80)
     golden_entry.grid(row=3, column=1, columnspan=2, padx=20, pady=10)
-    golden_button = tk.Button(root, text="select", command=golden_callback, width=10)
+    golden_button = tk.Button(root, text="Select", command=golden_callback, width=10)
     golden_button.grid(sticky=tk.E + tk.N, row=3, column=3, padx=20, pady=10)
 
     logger().debug("last golden file : %s", path_Golden)
@@ -244,7 +244,7 @@ def mainGUI(version):
     global dut_entry
     dut_entry = tk.Entry(root, textvariable=s_dut_file, width=80)
     dut_entry.grid(row=4, column=1, columnspan=2, padx=20, pady=10)
-    dut_button = tk.Button(root, text="select", command=dut_callback, width=10)
+    dut_button = tk.Button(root, text="Select", command=dut_callback, width=10)
     dut_button.grid(sticky=tk.E + tk.N, row=4, column=3, padx=20, pady=10)
 
     logger().debug("last DUT file : %s", path_DUT)
@@ -258,14 +258,14 @@ def mainGUI(version):
     global output_entry
     output_entry = tk.Entry(root, textvariable=s_output_dir, width=80)
     output_entry.grid(row=5, column=1, columnspan=2, padx=20, pady=10)
-    output_button = tk.Button(root, text="select", command=output_callback, width=10)
+    output_button = tk.Button(root, text="Select", command=output_callback, width=10)
     output_button.grid(sticky=tk.E + tk.N, row=5, column=3, padx=20, pady=10)
 
-    logger().debug("last output directoryff : %s", output_dir)
+    logger().debug("last output directory : %s", output_dir)
     output_entry.delete(0, tk.END)
     output_entry.insert(0, output_dir)
 
-    confirm_button = tk.Button(root, text="Ok", command=confirm_callback, width=10)
+    confirm_button = tk.Button(root, text="OK", command=confirm_callback, width=10)
     confirm_button.grid(sticky=tk.E + tk.N, row=6, column=1, padx=20, pady=10)
 
     cancel_button = tk.Button(root, text="Cancel", command=cancel_callback, width=10)
