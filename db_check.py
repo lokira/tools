@@ -1,3 +1,4 @@
+import updater
 import main_gui as mg
 import utilities as uti
 import data_processing as dp
@@ -5,6 +6,7 @@ import report
 import mail
 from logger import *
 from tkinter import messagebox
+from multiprocessing import Process
 
 
 def main_test():
@@ -18,6 +20,9 @@ def main_test():
     try:
         init_logger()
         logger().info("DB Check started. Version %s.", version)
+
+        p = Process(target=updater.run_update, args=(version,))
+        p.start()
 
         (req_filename, path_Golden, path_DUT) = mg.mainGUI(version)
         logger().info('path_Golden_: ' + path_Golden)

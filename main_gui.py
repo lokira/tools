@@ -10,12 +10,12 @@ from sys import exit
 import os
 from logger import *
 
-root = tk.Tk()
+root = None
 
-req_entry = tk.Entry(root, width=40)
-golden_entry = tk.Entry(root, width=40)
-dut_entry = tk.Entry(root, width=40)
-output_entry = tk.Entry(root, width=40)
+req_entry = None
+golden_entry = None
+dut_entry = None
+output_entry = None
 
 product_number = ''
 tester = ''
@@ -183,6 +183,17 @@ def mainGUI(version):
     global s_golden_file
     global s_dut_file
     global s_output_dir
+    global req_entry
+    global golden_entry
+    global dut_entry
+    global output_entry
+
+    root = tk.Tk()
+
+    req_entry = tk.Entry(root, width=40)
+    golden_entry = tk.Entry(root, width=40)
+    dut_entry = tk.Entry(root, width=40)
+    output_entry = tk.Entry(root, width=40)
 
     root.title("DBCheck - version " + version)
     try:
@@ -218,7 +229,7 @@ def mainGUI(version):
     req_label.grid(sticky=tk.E, row=2, column=0, columnspan=1, padx=20, pady=10)
 
     s_req_file = tk.StringVar()
-    global req_entry
+
     req_entry = tk.Entry(root, textvariable=s_req_file, width=80)
     req_entry.grid(row=2, column=1, columnspan=2, padx=20, pady=10)
     req_button = tk.Button(root, text="Select", command=req_callback, width=10)
@@ -232,7 +243,7 @@ def mainGUI(version):
     golden_label.grid(sticky=tk.E, row=3, column=0, columnspan=1, padx=20, pady=10)
 
     s_golden_file = tk.StringVar()
-    global golden_entry
+
     golden_entry = tk.Entry(root, textvariable=s_golden_file, width=80)
     golden_entry.grid(row=3, column=1, columnspan=2, padx=20, pady=10)
     golden_button = tk.Button(root, text="Select", command=golden_callback, width=10)
@@ -246,7 +257,7 @@ def mainGUI(version):
     dut_label.grid(sticky=tk.E, row=4, column=0, columnspan=1, padx=20, pady=10)
 
     s_dut_file = tk.StringVar()
-    global dut_entry
+
     dut_entry = tk.Entry(root, textvariable=s_dut_file, width=80)
     dut_entry.grid(row=4, column=1, columnspan=2, padx=20, pady=10)
     dut_button = tk.Button(root, text="Select", command=dut_callback, width=10)
@@ -260,7 +271,7 @@ def mainGUI(version):
     output_label.grid(sticky=tk.E, row=5, column=0, columnspan=1, padx=20, pady=10)
 
     s_output_dir = tk.StringVar()
-    global output_entry
+
     output_entry = tk.Entry(root, textvariable=s_output_dir, width=80)
     output_entry.grid(row=5, column=1, columnspan=2, padx=20, pady=10)
     output_button = tk.Button(root, text="Select", command=output_callback, width=10)
