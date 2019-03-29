@@ -5,7 +5,7 @@ import re
 import sys
 import os
 from logger import *
-
+from tkinter import messagebox
 
 def is_substring(s1, s2):
     """
@@ -42,8 +42,11 @@ def read_dict(file_path):
             continue
         elif wrong_patten.search(data):
             logger().warning("This line has wrong patten: %s" % data)
-            continue
-
+            data = data.split('<')[0]
+            if data == '':
+                logger().warning("No data. Skipped.")
+                continue
+            logger().warning("After correction: %s" % data)
         data = data.split('\n')
 
         for i in range(len(data)):
@@ -119,11 +122,14 @@ def open_file(filename):
 
     try:
         opened_file = open(filename, "r")
+    except FileNotFoundError:
+        logger().exception("Open %s failed - No such file or directory." % filename)
+        messagebox.showerror(title='Error',
+                             message='File not exist!\n%s' % filename)
+        sys.exit(1)
     except IOError:
         logger().exception("Open %s failed - No such file or directory." % filename)
         sys.exit(1)
-    except:
-        logger().exception("Unexpected error:", sys.exc_info()[0])
     else:
         logger().info("Open %s successfully." % filename)
     return opened_file

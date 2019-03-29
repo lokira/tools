@@ -137,6 +137,11 @@ def confirm_callback():
     else:
         output_dir = g_output_dir
 
+    for path in [req_filename, path_Golden, path_DUT]:
+        if not os.path.exists(path):
+            messagebox.showerror(title='Info', message='File not exists!\n%s' % path)
+            return
+
     ini.save_last_parameters('lastDBCheckPara.txt', g_product_number, g_tester, req_filename, path_Golden, path_DUT, output_dir)
     report.store_parameter(g_product_number, g_tester, req_filename, path_Golden, path_DUT, output_dir)
     root.quit()
