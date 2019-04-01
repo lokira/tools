@@ -7,6 +7,10 @@ import mail
 from logger import *
 from tkinter import messagebox
 from multiprocessing import Process
+from multiprocessing import freeze_support
+
+
+freeze_support()
 
 
 def main_test():
@@ -16,7 +20,7 @@ def main_test():
     draw golden and dut data
     send mail
     """
-    version = '1.0.1'
+    version = '1.1'
     try:
         init_logger()
         logger().info("DB Check started. Version %s.", version)

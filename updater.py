@@ -1,3 +1,6 @@
+"""
+This module provide functions for updating softeware.
+"""
 import sys
 import os
 import tkinter as tk
@@ -11,6 +14,9 @@ path = '//Eapac.ERICSSON.SE/ECNNJDFS01/groups/Group_EN/PTD/23_Team_C/ewngshn'
 
 
 def check_version():
+    """
+    Get the newest version on the server.
+    """
     try:
         a = os.listdir(path)
         version = ''
@@ -26,7 +32,12 @@ def check_version():
 
 
 def fetch_update(ver):
-    output_dir = filedialog.askdirectory(title='select the output directory')
+    """
+    Download new version of the file to local disk.
+    Arguments:
+        ver - the version of the file to download.
+    """
+    output_dir = filedialog.askdirectory(title='Select Output Directory')
     if output_dir == '':
         logger().info("Update canceled!")
         return
@@ -41,6 +52,11 @@ def fetch_update(ver):
 
 
 def run_update(ver):
+    """
+    Initialize updating process.
+    Arguments:
+        ver - current version of the tool.
+    """
     try:
         global root
         root = tk.Tk()
@@ -50,13 +66,15 @@ def run_update(ver):
         new_ver = check_version()
         if ver == new_ver:
             logger().info("already newest version!")
-        else:
+        elif new_ver > ver:
             logger().info("New version %s available." % new_ver)
-            var_box = messagebox.askyesno(title='Info', message='New version available, download now?')
+            var_box = messagebox.askyesno(title='DB Check Updater', message='New version available, download now?')
             if var_box:
                 fetch_update(new_ver)
             else:
                 logger().info("Update canceled!")
+        else:
+            logger().warning("Version on server is older! This is not normal.")
         return
     except Exception:
         logger().exception("Unexpected error happened in updater!")
@@ -68,5 +86,5 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.argv.append("v1.0")
+    sys.argv.append("1.0")
     main()
