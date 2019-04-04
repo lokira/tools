@@ -13,7 +13,7 @@ from matplotlib.backends.backend_tkagg import (
 
 root = None
 winfo_x, winfo_y = 10, 10
-
+comment_flag = False
 
 def on_fig_closed():
     """
@@ -41,7 +41,6 @@ def plot_fmt_G(*data, style='unknown'):
     else:
         m_marker = '*'
         m_style = ':'
-
     plt.plot(*data, color='#FB7D07', marker=m_marker,
              markersize=6, linestyle=m_style, alpha=0.7, linewidth=1)
 
@@ -102,11 +101,13 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
 
     button = tkinter.Button(master=root, text="Wrong", command=on_click_func("Wrong", title))
     button.pack(side=tkinter.RIGHT)
+    root.bind('x', on_click_func("Wrong", title))
     button = tkinter.Button(master=root, text="Correct", command=on_click_func("Correct", title))
     button.pack(side=tkinter.RIGHT)
+    root.bind('c', on_click_func("Correct", title))
 
     root.protocol("WM_DELETE_WINDOW", on_fig_closed)
-
+    root.focus_force()
     tkinter.mainloop()
     # clear previous figure
     plt.clf()
@@ -119,13 +120,17 @@ def on_click_func(btn, cmd):
     """
     global root
     if btn == "Correct":
-        def func():
+        def func(e=None):
             comments = "Correct"
             report.save_figure(cmd, comments)
             root.quit()
             root.destroy()
     else:
-        def func():
+        def func(e=None):
+            global comment_flag
+            if comment_flag:
+                return
+            comment_flag = True
             m_comment = simpledialog.askstring("Comment Required", "Please input your comment:")
             if m_comment and m_comment.strip():
                 comments = m_comment
@@ -135,6 +140,7 @@ def on_click_func(btn, cmd):
                 logger().debug("NOK graph comment: %s", m_comment)
             else:
                 messagebox.showwarning(title='Warning', message='Please input comments first!')
+            comment_flag = False
 
     return func
 
