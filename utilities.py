@@ -35,18 +35,32 @@ def read_dict(file_path):
     dictionary = {}
 
     wrong_patten = re.compile(r'<|>|Fatal|error|ERROR')
-
+    wrong_flag = 0
+    prev_line = ""
+    line_no = 0
     for line in f:
+        line_no += 1
         data = line.strip()
-        if data.startswith('$') or data.startswith('#'):
-            continue
-        elif wrong_patten.search(data):
-            logger().warning("This line has wrong patten: %s" % data)
-            data = data.split('<')[0]
+        # Deal with deviant lines
+        if wrong_flag == 1:
+            data = prev_line+data
+            logger().warning("Processing line %s with previous line : %s", line_no, data)
+            data = re.sub(u"<.*>", "", data)  # This will remove the <> and content in it
             if data == '':
                 logger().warning("No data. Skipped.")
                 continue
             logger().warning("After correction: %s" % data)
+            wrong_flag = 0
+            prev_line = ""
+
+        if data.startswith('$') or data.startswith('#'):
+            continue
+        elif wrong_patten.search(data):
+            logger().warning("Line %s has wrong patten: %s, process together with next line.", line_no, data)
+            wrong_flag = 1
+            prev_line = data
+            continue
+
         data = data.split('\n')
 
         for i in range(len(data)):

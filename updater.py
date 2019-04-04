@@ -8,9 +8,10 @@ from tkinter import messagebox
 from tkinter import filedialog
 from shutil import copyfile
 from logger import *
+from sys import exit
 
 root = None
-path = '//Eapac.ERICSSON.SE/ECNNJDFS01/groups/Group_EN/PTD/23_Team_C/ewngshn'
+path = os.fspath('//Eapac.ERICSSON.SE/ECNNJDFS01/groups/Group_EN/PTD/23_Team_C/ewngshn')
 
 
 def check_version():

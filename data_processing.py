@@ -4,6 +4,7 @@ import utilities as uti
 import picture
 from logger import *
 
+
 def req_0(dict_G, dict_D, cmd):
     """
     get dut and golden data,draw data picture.
@@ -32,7 +33,6 @@ def req_0(dict_G, dict_D, cmd):
     picture.plot_fmt(data10, style='p')  # Current Data (Top)
 
     picture.plot_show(cmd)
-
 
 
 def req_1(dict_G, dict_D, cmd):
