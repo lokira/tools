@@ -29,8 +29,8 @@ def req_0(dict_G, dict_D, cmd):
 
     data10 = uti.trans_data(sValue)
     data10_G = uti.trans_data(sValue_G)
-    picture.plot_fmt_G(data10_G, style='p')  # Golden Data (Bottom)
-    picture.plot_fmt(data10, style='p')  # Current Data (Top)
+    picture.plot_fmt_G(data10_G, cmd=cmd, style='p')  # Golden Data (Bottom)
+    picture.plot_fmt(data10, cmd=cmd, style='p')  # Current Data (Top)
 
     picture.plot_show(cmd)
 
@@ -75,11 +75,11 @@ def req_1(dict_G, dict_D, cmd):
            y1_G.append(data10_G[j])
 
     if uti.is_substring("freq", cmd) or (uti.is_substring("Att", cmd)):
-        picture.plot_fmt_G(y1_G, x_G)  # Golden Data (Bottom)
-        picture.plot_fmt(y1, x)  # Current Data (Top)
+        picture.plot_fmt_G(y1_G, x_G, cmd=cmd)  # Golden Data (Bottom)
+        picture.plot_fmt(y1, x, cmd=cmd)  # Current Data (Top)
     else:
-        picture.plot_fmt_G(x_G, y1_G)  # Golden Data (Bottom)
-        picture.plot_fmt(x, y1)  # Current Data (Top)
+        picture.plot_fmt_G(x_G, y1_G, cmd=cmd)  # Golden Data (Bottom)
+        picture.plot_fmt(x, y1, cmd=cmd)  # Current Data (Top)
 
     picture.plot_show(cmd)
 
@@ -122,12 +122,12 @@ def req_2(dict_G, dict_D, cmd_x):
     data10_y_G = uti.trans_data(values_y_G)
 
     if uti.is_substring("VGLinTable_", cmd_x):
-        picture.plot_fmt_G(data10_y_G, data10_x_G)
-        picture.plot_fmt(data10_y, data10_x)
+        picture.plot_fmt_G(data10_y_G, data10_x_G, cmd=cmd_x)
+        picture.plot_fmt(data10_y, data10_x, cmd=cmd_x)
 
     else:
-        picture.plot_fmt_G(data10_x_G, data10_y_G)
-        picture.plot_fmt(data10_x, data10_y)
+        picture.plot_fmt_G(data10_x_G, data10_y_G, cmd=cmd_x)
+        picture.plot_fmt(data10_x, data10_y, cmd=cmd_x)
 
     picture.plot_show(cmd_x)
 
@@ -196,14 +196,14 @@ def req_3(dict_G, dict_D, cmd_im):
     mag_G = 20 * numpy.log10(numpy.absolute(values_G) / 10e3)
     phase_G = numpy.angle(values_G)
 
-    picture.plot_fmt_G(data10_fr_G, mag_G)
-    picture.plot_fmt(data10_fr, mag)
     title = cmd_im.replace('im', 'mag')
+    picture.plot_fmt_G(data10_fr_G, mag_G, cmd=title)
+    picture.plot_fmt(data10_fr, mag, cmd=title)
     picture.plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag")
 
-    picture.plot_fmt_G(data10_fr_G, phase_G)
-    picture.plot_fmt(data10_fr, phase)
     title = cmd_im.replace('im', 'phase')
+    picture.plot_fmt_G(data10_fr_G, phase_G, cmd=title)
+    picture.plot_fmt(data10_fr, phase, cmd=title)
     picture.plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase")
 
 
@@ -280,14 +280,14 @@ def req_4(dict_G, dict_D, cmd_re):
     mag_G = 20 * numpy.log10(numpy.absolute(values_G) / 10e3)
     phase_G = numpy.angle(values_G)
 
-    picture.plot_fmt_G(data10_fr_G, mag_G, style='l')
-    picture.plot_fmt(data10_fr, mag, style='l')
     title = cmd_im.replace('im', 'mag')
+    picture.plot_fmt_G(data10_fr_G, mag_G, cmd=title, style='l')
+    picture.plot_fmt(data10_fr, mag, cmd=title, style='l')
     picture.plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag")
 
-    picture.plot_fmt_G(data10_fr_G, phase_G, style='l')
-    picture.plot_fmt(data10_fr, phase, style='l')
     title = cmd_im.replace('im', 'phase')
+    picture.plot_fmt_G(data10_fr_G, phase_G, cmd=title, style='l')
+    picture.plot_fmt(data10_fr, phase, cmd=title, style='l')
     picture.plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase")
 
 

@@ -25,7 +25,7 @@ def on_fig_closed():
         exit(0)
 
 
-def plot_fmt_G(*data, style='unknown'):
+def plot_fmt_G(*data, style='unknown', cmd):
     """
     Draw golden data with its style.
     Arguments:
@@ -41,12 +41,16 @@ def plot_fmt_G(*data, style='unknown'):
     else:
         m_marker = '*'
         m_style = ':'
+    try:
+        plt.plot(*data, color='#FB7D07', marker=m_marker,
+                 markersize=6, linestyle=m_style, alpha=0.7, linewidth=1)
+    except ValueError:
+        logger().exception("Failed to plot %s golden. There might be a format error in the golden file.", cmd)
+        messagebox.showwarning(title="DB Check",
+                               message="Failed to plot %s golden!\nThere might be a format error in your golden file!"%cmd)
 
-    plt.plot(*data, color='#FB7D07', marker=m_marker,
-             markersize=6, linestyle=m_style, alpha=0.7, linewidth=1)
 
-
-def plot_fmt(*data, style='unknown'):
+def plot_fmt(*data, style='unknown', cmd='unknown'):
     """
     Draw dut data with its style.
     Arguments:
@@ -62,8 +66,13 @@ def plot_fmt(*data, style='unknown'):
     else:
         m_marker = '.'
         m_style = '-'
-    plt.plot(*data, color='#0652FF', marker=m_marker,
-             markersize=4, linestyle=m_style, linewidth=1)
+    try:
+        plt.plot(*data, color='#0652FF', marker=m_marker,
+                 markersize=4, linestyle=m_style, linewidth=1)
+    except ValueError:
+        logger().exception("Failed to plot %s. There might be a format error in the dut db file.", cmd)
+        messagebox.showwarning(title="DB Check",
+                               message="Failed to plot %s dut!\nThere might be a format error in your dut data file!"%cmd)
 
 
 def save_size(event):
