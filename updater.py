@@ -11,7 +11,7 @@ from logger import *
 from sys import exit
 
 root = None
-path = os.fspath('//Eapac.ERICSSON.SE/ECNNJDFS01/groups/Group_EN/PTD/23_Team_C/ewngshn')
+path = os.fspath('//Eapac.ERICSSON.SE/ECNNJDFS01/groups/Group_EN/PTD/23_Team_C/DB_Check')
 
 
 def check_version():

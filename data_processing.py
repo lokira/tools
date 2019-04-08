@@ -3,7 +3,7 @@ import numpy
 import utilities as uti
 import picture
 from logger import *
-
+from tkinter import messagebox
 
 def req_0(dict_G, dict_D, cmd):
     """
@@ -19,12 +19,7 @@ def req_0(dict_G, dict_D, cmd):
     sValue = uti.read_data(dict_D, cmd)
     sValue_G = uti.read_data(dict_G, cmd)
 
-    if sValue_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd)
-        return
-
-    if sValue is None:
-        logger().exception("Command %s is not found in new DB file." % cmd)
+    if uti.is_data_empty(sValue_G, sValue, cmd):
         return
 
     data10 = uti.trans_data(sValue)
@@ -51,12 +46,7 @@ def req_1(dict_G, dict_D, cmd):
     values = uti.read_data(dict_D, cmd)
     values_G = uti.read_data(dict_G, cmd)
 
-    if values_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd)
-        return
-
-    if values is None:
-        logger().exception("Command %s is not found in new DB file." % cmd)
+    if uti.is_data_empty(values_G, values, cmd):
         return
 
     data10 = uti.trans_data(values)
@@ -95,12 +85,7 @@ def req_2(dict_G, dict_D, cmd_x):
     values_x = uti.read_data(dict_D, cmd_x)
     values_x_G = uti.read_data(dict_G, cmd_x)
 
-    if values_x_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd_x)
-        return
-
-    if values_x is None:
-        logger().exception("Command %s is not found in new DB file." % cmd_x)
+    if uti.is_data_empty(values_x_G, values_x, cmd_x):
         return
 
     data10_x = uti.trans_data(values_x)
@@ -110,12 +95,7 @@ def req_2(dict_G, dict_D, cmd_x):
     values_y = uti.read_data(dict_D, cmd_y)
     values_y_G = uti.read_data(dict_G, cmd_y)
 
-    if values_y_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd_y)
-        return
-
-    if values_y is None:
-        logger().exception("Command %s is not found in new DB file." % cmd_y)
+    if uti.is_data_empty(values_y_G, values_y, cmd_y):
         return
 
     data10_y = uti.trans_data(values_y)
@@ -146,12 +126,8 @@ def req_3(dict_G, dict_D, cmd_im):
     cmd_fr = cmd_im.replace("im", "freq")
     values_fr = uti.read_data(dict_D, cmd_fr)
     values_fr_G = uti.read_data(dict_G, cmd_fr)
-    if values_fr_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd_im)
-        return
 
-    if values_fr is None:
-        logger().exception("Command %s is not found in new DB file." % cmd_im)
+    if uti.is_data_empty(values_fr_G, values_fr, cmd_fr):
         return
 
     data10_fr = uti.trans_data(values_fr)
@@ -160,12 +136,8 @@ def req_3(dict_G, dict_D, cmd_im):
     cmd_re = cmd_im.replace("im", "re")
     values_re = uti.read_data(dict_D, cmd_re)
     values_re_G = uti.read_data(dict_G, cmd_re)
-    if values_re_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd_re)
-        return
 
-    if values_re is None:
-        logger().exception("Command %s is not found in new DB file." % cmd_re)
+    if uti.is_data_empty(values_re_G, values_re, cmd_re):
         return
 
     data10_re = uti.trans_data(values_re)
@@ -173,12 +145,8 @@ def req_3(dict_G, dict_D, cmd_im):
 
     values_im = uti.read_data(dict_D, cmd_im)
     values_im_G = uti.read_data(dict_G, cmd_im)
-    if values_im_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd_im)
-        return
 
-    if values_im is None:
-        logger().exception("Command %s is not found in new DB file." % cmd_im)
+    if uti.is_data_empty(values_im_G, values_im, cmd_im):
         return
 
     data10_im = uti.trans_data(values_im)
@@ -222,12 +190,8 @@ def req_4(dict_G, dict_D, cmd_re):
     cmd_fr = str.sub('abcCal/freq', cmd_re)
     values_fr = uti.read_data(dict_D, cmd_fr)
     values_fr_G = uti.read_data(dict_G, cmd_fr)
-    if values_fr_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd_fr)
-        return
 
-    if values_fr is None:
-        logger().exception("Command %s is not found in new DB file." % cmd_fr)
+    if uti.is_data_empty(values_fr_G, values_fr, cmd_fr):
         return
 
     data10_fr = uti.trans_data(values_fr)
@@ -235,12 +199,8 @@ def req_4(dict_G, dict_D, cmd_re):
 
     values_re = uti.read_data(dict_D, cmd_re)
     values_re_G = uti.read_data(dict_G, cmd_re)
-    if values_re_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd_re)
-        return
 
-    if values_re is None:
-        logger().exception("Command %s is not found in new DB file." % cmd_re)
+    if uti.is_data_empty(values_re_G, values_re, cmd_re):
         return
 
     data10_re = uti.trans_data(values_re)
@@ -249,12 +209,8 @@ def req_4(dict_G, dict_D, cmd_re):
     cmd_im = cmd_re.replace("re", "im")
     values_im = uti.read_data(dict_D, cmd_im)
     values_im_G = uti.read_data(dict_G, cmd_im)
-    if values_im_G is None:
-        logger().exception("Command %s is not found in golden DB file." % cmd_im)
-        return
 
-    if values_im is None:
-        logger().exception("Command %s is not found in new DB file." % cmd_im)
+    if uti.is_data_empty(values_im_G, values_im, cmd_im):
         return
 
     data10_im = uti.trans_data(values_im)

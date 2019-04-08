@@ -168,3 +168,17 @@ def create_dir(directory):
             logger().info("Create directory %s successfully for the 2nd time." % directory)
     else:
         logger().info("Create directory %s successfully for the 1st time." % directory)
+
+
+def is_data_empty(data_G, data, cmd):
+    if data_G is None:
+        logger().error("Command %s is not found in golden DB file." % cmd)
+        messagebox.showwarning("DB Check", "Command %s is not found in golden DB file." % cmd)
+        return True
+
+    if data is None:
+        logger().error("Command %s is not found in DUT DB file." % cmd)
+        messagebox.showwarning("DB Check", "Command %s is not found in DUT DB file." % cmd)
+        return True
+
+    return False
