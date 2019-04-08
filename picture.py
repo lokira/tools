@@ -121,6 +121,9 @@ def on_click_func(btn, cmd):
     global root
     if btn == "Correct":
         def func(e=None):
+            global comment_flag
+            if comment_flag:
+                return
             comments = "Correct"
             report.save_figure(cmd, comments)
             root.quit()
@@ -131,7 +134,7 @@ def on_click_func(btn, cmd):
             if comment_flag:
                 return
             comment_flag = True
-            m_comment = simpledialog.askstring("Comment Required", "Please input your comment:")
+            m_comment = simpledialog.askstring("Comment Required", "Please input your comment:", parent=root)
             if m_comment and m_comment.strip():
                 comments = m_comment
                 report.save_figure(cmd, comments)
@@ -141,6 +144,7 @@ def on_click_func(btn, cmd):
             else:
                 messagebox.showwarning(title='Warning', message='Please input comments first!')
             comment_flag = False
+            root.focus_force()
 
     return func
 
