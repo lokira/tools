@@ -38,10 +38,12 @@ def req_callback():
     global req_filename
 
     req_filename = filedialog.askopenfilename(title='select the DB requirement file',
-                                              filetypes=[('text file', '*.txt'), ('All Files', '*')])
+                                              filetypes=[('text file', '*.txt'), ('All Files', '*')],
+                                              initialdir=os.path.dirname(req_entry.get()))
     logger().debug("Requirement file selected: %s", req_filename)
-    req_entry.delete(0, tk.END)
-    req_entry.insert(0, req_filename)
+    if req_filename != "":
+        req_entry.delete(0, tk.END)
+        req_entry.insert(0, req_filename)
 
 
 def golden_callback():
@@ -51,10 +53,12 @@ def golden_callback():
     global golden_entry
     global path_Golden
     path_Golden = filedialog.askopenfilename(title='select the old golden DB file',
-                                             filetypes=[('text file', '*.txt'), ('All Files', '*')])
+                                             filetypes=[('text file', '*.txt'), ('All Files', '*')],
+                                             initialdir=os.path.dirname(golden_entry.get()))
     logger().debug("Golden file selected: %s", path_Golden)
-    golden_entry.delete(0, tk.END)
-    golden_entry.insert(0, path_Golden)
+    if path_Golden != "":
+        golden_entry.delete(0, tk.END)
+        golden_entry.insert(0, path_Golden)
 
 
 def dut_callback():
@@ -65,10 +69,12 @@ def dut_callback():
     global path_DUT
 
     path_DUT = filedialog.askopenfilename(title='select the new DUT DB file',
-                                          filetypes=[('text file', '*.txt'), ('All Files', '*')])
+                                          filetypes=[('text file', '*.txt'), ('All Files', '*')],
+                                          initialdir=os.path.dirname(dut_entry.get()))
     logger().debug("DUT data file selected: %s", path_DUT)
-    dut_entry.delete(0, tk.END)
-    dut_entry.insert(0, path_DUT)
+    if path_DUT != "":
+        dut_entry.delete(0, tk.END)
+        dut_entry.insert(0, path_DUT)
 
 
 def output_callback():
@@ -78,10 +84,12 @@ def output_callback():
     global output_entry
     global output_dir
 
-    output_dir = filedialog.askdirectory(title='select the output directory')
+    output_dir = filedialog.askdirectory(title='select the output directory',
+                                         initialdir=output_entry.get())
     logger().debug("Output path selected: %s", output_dir)
-    output_entry.delete(0, tk.END)
-    output_entry.insert(0, output_dir)
+    if output_dir != "":
+        output_entry.delete(0, tk.END)
+        output_entry.insert(0, output_dir)
 
 
 def confirm_callback():

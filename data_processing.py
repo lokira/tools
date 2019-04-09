@@ -53,24 +53,27 @@ def req_1(dict_G, dict_D, cmd):
     data10_G = uti.trans_data(values_G)
 
     for j in range(len(data10)):
-        if j % 2 != 0:
+        if j % 2 == 0:
            x.append(data10[j])
         else:
            y1.append(data10[j])
 
     for j in range(len(data10_G)):
-        if j % 2 != 0:
+        if j % 2 == 0:
            x_G.append(data10_G[j])
         else:
            y1_G.append(data10_G[j])
 
+    picture.plot_fmt_G(x_G, y1_G, cmd=cmd)  # Golden Data (Bottom)
+    picture.plot_fmt(x, y1, cmd=cmd)  # Current Data (Top)
+    """
     if uti.is_substring("freq", cmd) or (uti.is_substring("Att", cmd)):
         picture.plot_fmt_G(y1_G, x_G, cmd=cmd)  # Golden Data (Bottom)
         picture.plot_fmt(y1, x, cmd=cmd)  # Current Data (Top)
     else:
         picture.plot_fmt_G(x_G, y1_G, cmd=cmd)  # Golden Data (Bottom)
         picture.plot_fmt(x, y1, cmd=cmd)  # Current Data (Top)
-
+    """
     picture.plot_show(cmd)
 
 
