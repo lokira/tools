@@ -7,6 +7,7 @@ from tkinter import messagebox
 import report
 from logger import *
 from sys import exit
+import utilities as uti
 import tkinter
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -44,10 +45,15 @@ def plot_fmt_G(*data, style='unknown', cmd):
     try:
         plt.plot(*data, color='#FB7D07', marker=m_marker,
                  markersize=6, linestyle=m_style, alpha=0.7, linewidth=1)
-    except ValueError:
-        logger().exception("Failed to plot %s golden. There might be a format error in the golden file.", cmd)
-        messagebox.showwarning(title="DB Check",
-                               message="Failed to plot %s golden!\nThere might be a format error in your golden file!"%cmd)
+    except ValueError as e:
+        if uti.is_substring("x and y must have same first dimension", e.args[0]):
+            logger().exception("The number of x and y values are not match! cmd: %s", cmd)
+            messagebox.showwarning(title="DB Check",
+                                   message="Failed to plot %s golden!\nThe number of x and y values are not match!" % cmd)
+        else:
+            logger().exception("Failed to plot %s golden. There might be a format error in the golden file.", cmd)
+            messagebox.showwarning(title="DB Check",
+                                   message="Failed to plot %s golden!\nThere might be a format error in your golden file!"%cmd)
 
 
 def plot_fmt(*data, style='unknown', cmd='unknown'):
@@ -69,10 +75,15 @@ def plot_fmt(*data, style='unknown', cmd='unknown'):
     try:
         plt.plot(*data, color='#0652FF', marker=m_marker,
                  markersize=4, linestyle=m_style, linewidth=1)
-    except ValueError:
-        logger().exception("Failed to plot %s. There might be a format error in the dut db file.", cmd)
-        messagebox.showwarning(title="DB Check",
-                               message="Failed to plot %s dut!\nThere might be a format error in your dut data file!"%cmd)
+    except ValueError as e :
+        if uti.is_substring("x and y must have same first dimension", e.args[0]):
+            logger().exception("The number of x and y values are not match! cmd: %s", cmd)
+            messagebox.showwarning(title="DB Check",
+                                   message="Failed to plot %s dut!\nThe number of x and y values are not match!" % cmd)
+        else:
+            logger().exception("Failed to plot %s. There might be a format error in the dut db file.", cmd)
+            messagebox.showwarning(title="DB Check",
+                                   message="Failed to plot %s dut!\nThere might be a format error in your dut data file!"%cmd)
 
 
 def save_size(event):
@@ -118,6 +129,9 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
 
     root.protocol("WM_DELETE_WINDOW", on_fig_closed)
     root.focus_force()
+    if kwargs["gd_no_match"]:
+        messagebox.showwarning("DB Check", "The number of values is different between Golden and DUT data!")
+
     tkinter.mainloop()
     # clear previous figure
     plt.clf()
@@ -153,9 +167,8 @@ def on_click_func(btn, cmd):
                 logger().debug("NOK graph comment: %s", m_comment)
             else:
                 messagebox.showwarning(title='Warning', message='Please input comments first!')
+                root.focus_force()
             comment_flag = False
-            root.focus_force()
-
     return func
 
 

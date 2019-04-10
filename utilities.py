@@ -6,6 +6,8 @@ import sys
 import os
 from logger import *
 from tkinter import messagebox
+import numpy
+
 
 def is_substring(s1, s2):
     """
@@ -109,10 +111,10 @@ def read_data(dictionary, cmd):
 
 def trans_data(value):
     """
-    Convert the data to hexadecimal.
+    Convert the data to decimal.
     Arguments:
         value - The data to be converted.
-        return - The hexadecimal number.
+        return - The decimal number.
     """
     data10 = []
     digital_patten = re.compile(r'^[+-]?[0-9]+(.)?[0-9]*$|^0[xX][0-9a-fA-F]+$')
@@ -171,6 +173,9 @@ def create_dir(directory):
 
 
 def is_data_empty(data_G, data, cmd):
+    """
+    Give prompt if value is empty.
+    """
     if data_G is None:
         logger().error("Command %s is not found in golden DB file." % cmd)
         messagebox.showwarning("DB Check", "Command %s is not found in golden DB file." % cmd)
@@ -182,3 +187,12 @@ def is_data_empty(data_G, data, cmd):
         return True
 
     return False
+
+
+def get_mag_angle(comp_val):
+    """
+    Calculate magnitude and phase angle from the complex data array.
+    """
+    mag = 20 * numpy.log10(numpy.absolute(comp_val) / 10e3)
+    phase = numpy.angle(comp_val)
+    return mag,phase

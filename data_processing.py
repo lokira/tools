@@ -5,6 +5,7 @@ import picture
 from logger import *
 from tkinter import messagebox
 
+
 def req_0(dict_G, dict_D, cmd):
     """
     get dut and golden data,draw data picture.
@@ -27,7 +28,7 @@ def req_0(dict_G, dict_D, cmd):
     picture.plot_fmt_G(data10_G, cmd=cmd, style='p')  # Golden Data (Bottom)
     picture.plot_fmt(data10, cmd=cmd, style='p')  # Current Data (Top)
 
-    picture.plot_show(cmd)
+    picture.plot_show(cmd, gd_no_match=(len(data10_G) != len(data10)))
 
 
 def req_1(dict_G, dict_D, cmd):
@@ -74,7 +75,7 @@ def req_1(dict_G, dict_D, cmd):
         picture.plot_fmt_G(x_G, y1_G, cmd=cmd)  # Golden Data (Bottom)
         picture.plot_fmt(x, y1, cmd=cmd)  # Current Data (Top)
     """
-    picture.plot_show(cmd)
+    picture.plot_show(cmd, gd_no_match=(len(x) != len(x_G)))
 
 
 def req_2(dict_G, dict_D, cmd_x):
@@ -112,7 +113,7 @@ def req_2(dict_G, dict_D, cmd_x):
         picture.plot_fmt_G(data10_x_G, data10_y_G, cmd=cmd_x)
         picture.plot_fmt(data10_x, data10_y, cmd=cmd_x)
 
-    picture.plot_show(cmd_x)
+    picture.plot_show(cmd_x, gd_no_match=(len(data10_x) != len(data10_x_G)))
 
 
 def req_3(dict_G, dict_D, cmd_im):
@@ -170,12 +171,14 @@ def req_3(dict_G, dict_D, cmd_im):
     title = cmd_im.replace('im', 'mag')
     picture.plot_fmt_G(data10_fr_G, mag_G, cmd=title)
     picture.plot_fmt(data10_fr, mag, cmd=title)
-    picture.plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag")
+    picture.plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag",
+                      gd_no_match=(len(data10_fr)!=len(data10_fr_G)))
 
     title = cmd_im.replace('im', 'phase')
     picture.plot_fmt_G(data10_fr_G, phase_G, cmd=title)
     picture.plot_fmt(data10_fr, phase, cmd=title)
-    picture.plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase")
+    picture.plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase",
+                      gd_no_match=(len(data10_fr) != len(data10_fr_G)))
 
 
 def req_4(dict_G, dict_D, cmd_re):
@@ -220,34 +223,40 @@ def req_4(dict_G, dict_D, cmd_re):
     data10_im_G = uti.trans_data(values_im_G)
 
     if len(data10_re) != len(data10_im):
-        logger().info("The length of re and im should be same.")
+        logger().error("The length of re and im should be same.")
         return
 
     for i in range(len(data10_im)):
         values.append(complex(int(data10_re[i]), int(data10_im[i])))
-
+    """
     mag = 20 * numpy.log10(numpy.absolute(values) / 10e3)
     phase = numpy.angle(values)
+    """
+    mag, phase = uti.get_mag_angle(values)
 
     if len(data10_re_G) != len(data10_im_G):
-        logger().info("The length of re and im in golden file should be same.")
+        logger().error("The length of re and im in golden file should be same.")
         return
 
     for i in range(len(values_im_G)):
         values_G.append(complex(int(data10_re_G[i]), int(data10_im_G[i])))
-
+    """
     mag_G = 20 * numpy.log10(numpy.absolute(values_G) / 10e3)
     phase_G = numpy.angle(values_G)
+    """
+    mag_G, phase_G = uti.get_mag_angle(values_G)
 
     title = cmd_im.replace('im', 'mag')
     picture.plot_fmt_G(data10_fr_G, mag_G, cmd=title, style='l')
     picture.plot_fmt(data10_fr, mag, cmd=title, style='l')
-    picture.plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag")
+    picture.plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag",
+                      gd_no_match=(len(data10_fr) != len(data10_fr_G)))
 
     title = cmd_im.replace('im', 'phase')
     picture.plot_fmt_G(data10_fr_G, phase_G, cmd=title, style='l')
     picture.plot_fmt(data10_fr, phase, cmd=title, style='l')
-    picture.plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase")
+    picture.plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase",
+                      gd_no_match=(len(data10_fr) != len(data10_fr_G)))
 
 
 
