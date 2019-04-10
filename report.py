@@ -26,7 +26,6 @@ result_path = ''
 document = Document()
 report_file = ''
 
-
 def store_parameter(product_number, tester, req_file, golden_file, dut_file, output_dir):
     """
     Store the parameters to module report.
@@ -155,6 +154,9 @@ def add_table():
     for row in range(1, row_num + 1):
         table.cell(row, 0).text = g_commands[row - 1]
         table.cell(row, 1).text = g_comments[row - 1]
+        if g_comments[row - 1] != "Correct":
+            table.cell(row, 1).paragraphs[0].runs[0].font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
+            table.cell(row, 0).paragraphs[0].runs[0].font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
 
 
 def add_pictures():
