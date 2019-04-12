@@ -16,6 +16,33 @@ root = None
 winfo_x, winfo_y = 10, 10
 comment_flag = False
 
+
+class SimpleTable(tkinter.Frame):
+    def __init__(self, parent, rows=2, columns=2, data=None):
+        # use black background so it "peeks through" to
+        # form grid lines
+        tkinter.Frame.__init__(self, parent, background="grey")
+        self._widgets = []
+
+        if data is None:
+            data = [[""]*columns for i in range(rows)]
+
+        for row in range(rows):
+            current_row = []
+            for column in range(columns):
+                label = tkinter.Label(self, text=data[row][column], borderwidth=0, width=20)
+                label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                current_row.append(label)
+            self._widgets.append(current_row)
+
+        for column in range(columns):
+            self.grid_columnconfigure(column, weight=1)
+
+    def set(self, row, column, value):
+        widget = self._widgets[row][column]
+        widget.configure(text=value)
+
+
 def on_fig_closed():
     """
     Called when quit button clicked.
@@ -138,7 +165,7 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
     plt.cla()
 
 
-def on_click_func(btn, cmd):
+def on_click_func(btn, cmd, t_data=None):
     """
     Generate callback functions for OK/NOK buttons on the figure.
     """
@@ -149,7 +176,10 @@ def on_click_func(btn, cmd):
             if comment_flag:
                 return
             comments = "Correct"
-            report.save_figure(cmd, comments)
+            if t_data is not None:
+                report.save_tdata(cmd, comments, t_data)
+            else:
+                report.save_figure(cmd, comments)
             root.quit()
             root.destroy()
     else:
@@ -161,7 +191,10 @@ def on_click_func(btn, cmd):
             m_comment = simpledialog.askstring("Comment Required", "Please input your comment:", parent=root)
             if m_comment and m_comment.strip():
                 comments = m_comment
-                report.save_figure(cmd, comments)
+                if t_data is not None:
+                    report.save_tdata(cmd, comments, t_data)
+                else:
+                    report.save_figure(cmd, comments)
                 root.quit()
                 root.destroy()
                 logger().debug("NOK graph comment: %s", m_comment)
@@ -170,6 +203,28 @@ def on_click_func(btn, cmd):
                 root.focus_force()
             comment_flag = False
     return func
+
+
+def table_show(title, data):
+    global root
+    root = tkinter.Tk()
+    root.wm_title(title)
+    root.geometry("+%d+%d" % (winfo_x, winfo_y))
+    root.bind("<Configure>", save_size)
+
+    t = SimpleTable(root, rows=len(data), columns=3, data=data)
+    t.pack(side="top", fill="x")
+
+    button = tkinter.Button(master=root, text="Wrong", command=on_click_func("Wrong", title, t_data=data))
+    button.pack(side=tkinter.RIGHT)
+    root.bind('x', on_click_func("Wrong", title, t_data=data))
+    button = tkinter.Button(master=root, text="Correct", command=on_click_func("Correct", title, t_data=data))
+    button.pack(side=tkinter.RIGHT)
+    root.bind('c', on_click_func("Correct", title, t_data=data))
+
+    root.protocol("WM_DELETE_WINDOW", on_fig_closed)
+    root.focus_force()
+    tkinter.mainloop()
 
 
 if __name__ == '__main__':

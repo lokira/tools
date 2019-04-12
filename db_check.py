@@ -71,6 +71,11 @@ def main_test():
                     dp.req_4(dict_G, dict_D, cmd)
                 else:
                     continue
+            elif tag == 5:
+                if uti.is_substring("componentConfigId", cmd):
+                    dp.req_5(dict_G, dict_D, cmd)
+                else:
+                    continue
             else:
                 logger().info("This DB format is not supported.")
 

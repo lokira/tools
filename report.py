@@ -60,6 +60,29 @@ def store_parameter(product_number, tester, req_file, golden_file, dut_file, out
     uti.create_dir(result_path)
 
 
+def save_tdata(cmdline, comments, t_data):
+    """
+    Save the table data array into the result array.
+    Arguments:
+        cmdline - command line
+        comments - comments for the command
+        t_data - table data array
+    """
+    global result_path
+    global document
+    global g_pictures
+    global g_comments
+    global g_commands
+
+    g_pictures.append(t_data)
+    g_comments.append(comments)
+    g_commands.append(cmdline)
+    logger().debug("Data of command(%s) is saved." % cmdline)
+    if comments != "Correct":
+        global test_result
+        test_result = "FAILED"
+
+
 def save_figure(cmdline, comments):
     """
     Save the figure to a .png file.
@@ -177,7 +200,16 @@ def add_pictures():
     for i in range(0, len(g_pictures)):
         document.add_paragraph('Command: ' + g_commands[i])
         document.add_paragraph('Comments: ' + g_comments[i])
-        document.add_picture(g_pictures[i])
+        if type(g_pictures[i]) == list:
+            t_data = g_pictures[i]
+            table = document.add_table(rows=len(t_data), cols=3, style="Table Grid")
+            for idx in range(len(t_data)):
+                for j in range(3):
+                    table.cell(idx, j).text = t_data[idx][j]
+                if t_data[idx][2] == "NOK":
+                        table.cell(idx, 2).paragraphs[0].runs[0].font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
+        else:
+            document.add_picture(g_pictures[i])
         document.add_page_break()
     return True
 
