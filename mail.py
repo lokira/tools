@@ -36,9 +36,14 @@ def send_bug_report():
     mail.Subject = 'DB check bug report'
     mail.Body = "Please describe how you run into this error: "
     mail.To = "shanshan.a.wang@ericsson.com"
-    l_path = os.getcwd()+log_path()+log_name()
-    if os.path.isfile(l_path):
-        mail.Attachments.Add(l_path)
+    attach = list()
+    attach.append(os.getcwd()+log_path()+log_name())
+    attach.append(report.g_dut_file)
+    attach.append(report.g_golden_file)
+    attach.append(report.g_req_file)
+    for path in attach:
+        if os.path.isfile(path):
+            mail.Attachments.Add(path)
     mail.display()
     logger().info("DB check bug report to the mail.")
 
