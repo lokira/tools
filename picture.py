@@ -145,13 +145,13 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
 
     toolbar = NavigationToolbar2Tk(canvas, root)
     toolbar.update()
-    canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+    # canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
     button = tkinter.Button(master=root, text="Wrong", command=on_click_func("Wrong", title))
-    button.pack(side=tkinter.RIGHT)
+    button.pack(side=tkinter.RIGHT, padx=5)
     root.bind('x', on_click_func("Wrong", title))
     button = tkinter.Button(master=root, text="Correct", command=on_click_func("Correct", title))
-    button.pack(side=tkinter.RIGHT)
+    button.pack(side=tkinter.RIGHT, padx=5)
     root.bind('c', on_click_func("Correct", title))
 
     root.protocol("WM_DELETE_WINDOW", on_fig_closed)
@@ -216,10 +216,10 @@ def table_show(title, data):
     t.pack(side="top", fill="x")
 
     button = tkinter.Button(master=root, text="Wrong", command=on_click_func("Wrong", title, t_data=data))
-    button.pack(side=tkinter.RIGHT)
+    button.pack(side=tkinter.RIGHT, padx=5)
     root.bind('x', on_click_func("Wrong", title, t_data=data))
     button = tkinter.Button(master=root, text="Correct", command=on_click_func("Correct", title, t_data=data))
-    button.pack(side=tkinter.RIGHT)
+    button.pack(side=tkinter.RIGHT, padx=5)
     root.bind('c', on_click_func("Correct", title, t_data=data))
 
     root.protocol("WM_DELETE_WINDOW", on_fig_closed)
