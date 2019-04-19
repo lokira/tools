@@ -1,9 +1,7 @@
 import re
-import numpy
 import utilities as uti
 import picture
 from logger import *
-from tkinter import messagebox
 
 DUT_S = "DUT"
 GOLDEN_S = "Golden"

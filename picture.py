@@ -11,6 +11,7 @@ import utilities as uti
 import tkinter
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
+from customized_ui import *
 
 root = None
 winfo_x, winfo_y = 10, 10
@@ -50,7 +51,8 @@ def on_fig_closed():
     """
     Called when quit button clicked.
     """
-    var_box = messagebox.askyesno(title='Info', message='Are you sure to quit?')
+    # var_box = messagebox.askyesno(title='Info', message='Are you sure to quit?')
+    var_box = Confirm(parent=root, title='Info', message='Are you sure to quit?').go()
     if var_box:
         logger().warning("Execution abort due to user operation!")
         exit(0)
@@ -160,18 +162,16 @@ def plot_show(title, legend=[], xlabel=None, ylabel=None, **kwargs):
         msg = ""
         for item in kwargs.get("absence_list"):
             msg += "%s in %s\n" % (item[0], item[1])
-        messagebox.showwarning(title='DB Check', message="Command not found:\n%s" % msg)
+        Alert(parent=root, title='DB Check', message="Command not found:\n%s" % msg).go()
     elif len(legend) != 2:
         if GOLDEN_S not in legend:
-            messagebox.showwarning(title='DB Check',
-                                   message="Failed to plot %s Golden. "
-                                           "Probably because the number of x and y values are not match" % title)
+            Alert(parent=root, title='DB Check', message="Failed to plot %s Golden. "
+                                                         "Probably because the number of x and y values are not match" % title).go()
         if DUT_S not in legend:
-            messagebox.showwarning(title='DB Check',
-                                   message="Failed to plot %s DUT. "
-                                           "Probably because the number of x and y values are not match" % title)
+            Alert(parent=root, title='DB Check', message="Failed to plot %s DUT. "
+                                                         "Probably because the number of x and y values are not match" % title).go()
     elif kwargs.get("gd_no_match"):
-        messagebox.showwarning("DB Check", "The number of values is different between Golden and DUT data!")
+        Alert(parent=root, title="DB Check", message="The number of values is different between Golden and DUT data!").go()
 
     root.mainloop()
     # clear previous figure
@@ -202,7 +202,7 @@ def on_click_func(btn, cmd, t_data=None):
             if comment_flag:
                 return
             comment_flag = True
-            m_comment = simpledialog.askstring("Comment Required", "Please input your comment:", parent=root)
+            m_comment = AskString(parent=root, title="Comment Required", message="Please input your comment:").go()
             if m_comment and m_comment.strip():
                 comments = m_comment
                 if t_data is not None:
@@ -213,7 +213,7 @@ def on_click_func(btn, cmd, t_data=None):
                 root.destroy()
                 logger().debug("NOK graph comment: %s", m_comment)
             else:
-                messagebox.showwarning(title='Warning', message='Please input comments first!')
+                Alert(parent=root, title='Warning', message='Please input comments first!').go()
                 root.focus_force()
             comment_flag = False
     return func
@@ -243,6 +243,6 @@ def table_show(title, data, absence_list=[]):
         msg = ""
         for item in absence_list:
             msg += "%s in %s\n" % (item[0], item[1])
-        messagebox.showwarning(title='DB Check', message="Command not found:\n%s" % msg)
+        Alert(title='DB Check', message="Command not found:\n%s" % msg, parent=root)
 
     root.mainloop()
