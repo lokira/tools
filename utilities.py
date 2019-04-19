@@ -183,28 +183,13 @@ def create_dir(directory):
         logger().info("Create directory %s successfully for the 1st time." % directory)
 
 
-def is_data_empty(data_G, data, cmd):
+def get_mag_angle(real, image):
     """
-    Give prompt if value is empty.
+    Calculate magnitude and phase angle from the real value and image value data array.
     """
-    if data_G is None:
-        logger().error("Command %s is not found in golden DB file." % cmd)
-        messagebox.showwarning("DB Check", "Command %s is not found in golden DB file." % cmd)
-        return True
-
-    if data is None:
-        logger().error("Command %s is not found in DUT DB file." % cmd)
-        messagebox.showwarning("DB Check", "Command %s is not found in DUT DB file." % cmd)
-        return True
-
-    return False
-
-
-def get_mag_angle(comp_val):
-    """
-    Calculate magnitude and phase angle from the complex data array.
-    """
+    comp_val = list()
+    for i in range(len(real)):
+        comp_val.append(complex(int(real[i]), int(image[i])))
     mag = 20 * numpy.log10(numpy.absolute(comp_val) / 10e3)
     phase = numpy.angle(comp_val)
     return mag, phase
-	

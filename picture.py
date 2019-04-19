@@ -16,6 +16,9 @@ root = None
 winfo_x, winfo_y = 10, 10
 comment_flag = False
 
+DUT_S = "DUT"
+GOLDEN_S = "Golden"
+
 
 class SimpleTable(tkinter.Frame):
     def __init__(self, parent, rows=2, columns=2, data=None):
@@ -72,15 +75,13 @@ def plot_fmt_G(*data, style='unknown', cmd):
     try:
         plt.plot(*data, color='#FB7D07', marker=m_marker,
                  markersize=6, linestyle=m_style, alpha=0.7, linewidth=1)
+        return True
     except ValueError as e:
         if uti.is_substring("x and y must have same first dimension", e.args[0]):
             logger().exception("The number of x and y values are not match! cmd: %s", cmd)
-            messagebox.showwarning(title="DB Check",
-                                   message="Failed to plot %s golden!\nThe number of x and y values are not match!" % cmd)
         else:
             logger().exception("Failed to plot %s golden. There might be a format error in the golden file.", cmd)
-            messagebox.showwarning(title="DB Check",
-                                   message="Failed to plot %s golden!\nThere might be a format error in your golden file!"%cmd)
+        return False
 
 
 def plot_fmt(*data, style='unknown', cmd='unknown'):
@@ -102,15 +103,13 @@ def plot_fmt(*data, style='unknown', cmd='unknown'):
     try:
         plt.plot(*data, color='#0652FF', marker=m_marker,
                  markersize=4, linestyle=m_style, linewidth=1)
+        return True
     except ValueError as e :
         if uti.is_substring("x and y must have same first dimension", e.args[0]):
             logger().exception("The number of x and y values are not match! cmd: %s", cmd)
-            messagebox.showwarning(title="DB Check",
-                                   message="Failed to plot %s dut!\nThe number of x and y values are not match!" % cmd)
         else:
             logger().exception("Failed to plot %s. There might be a format error in the dut db file.", cmd)
-            messagebox.showwarning(title="DB Check",
-                                   message="Failed to plot %s dut!\nThere might be a format error in your dut data file!"%cmd)
+        return False
 
 
 def save_size(event):
@@ -118,7 +117,7 @@ def save_size(event):
     winfo_x, winfo_y = root.winfo_x(), root.winfo_y()
 
 
-def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwargs):
+def plot_show(title, legend=[], xlabel=None, ylabel=None, **kwargs):
     """
     Open a interactive window to display the figure.
     Arguments:
@@ -156,10 +155,25 @@ def plot_show(title, legend=['golden', 'dut'], xlabel=None, ylabel=None, **kwarg
 
     root.protocol("WM_DELETE_WINDOW", on_fig_closed)
     root.focus_force()
-    if kwargs["gd_no_match"]:
+
+    if kwargs.get("absence_list") is not None and len(kwargs.get("absence_list")) > 0:
+        msg = ""
+        for item in kwargs.get("absence_list"):
+            msg += "%s in %s\n" % (item[0], item[1])
+        messagebox.showwarning(title='DB Check', message="Command not found:\n%s" % msg)
+    elif len(legend) != 2:
+        if GOLDEN_S not in legend:
+            messagebox.showwarning(title='DB Check',
+                                   message="Failed to plot %s Golden. "
+                                           "Probably because the number of x and y values are not match" % title)
+        if DUT_S not in legend:
+            messagebox.showwarning(title='DB Check',
+                                   message="Failed to plot %s DUT. "
+                                           "Probably because the number of x and y values are not match" % title)
+    elif kwargs.get("gd_no_match"):
         messagebox.showwarning("DB Check", "The number of values is different between Golden and DUT data!")
 
-    tkinter.mainloop()
+    root.mainloop()
     # clear previous figure
     plt.clf()
     plt.cla()
@@ -205,7 +219,7 @@ def on_click_func(btn, cmd, t_data=None):
     return func
 
 
-def table_show(title, data):
+def table_show(title, data, absence_list=[]):
     global root
     root = tkinter.Tk()
     root.wm_title(title)
@@ -224,8 +238,11 @@ def table_show(title, data):
 
     root.protocol("WM_DELETE_WINDOW", on_fig_closed)
     root.focus_force()
-    tkinter.mainloop()
 
+    if len(absence_list) > 0:
+        msg = ""
+        for item in absence_list:
+            msg += "%s in %s\n" % (item[0], item[1])
+        messagebox.showwarning(title='DB Check', message="Command not found:\n%s" % msg)
 
-if __name__ == '__main__':
-    show_picture('picture.png')
+    root.mainloop()

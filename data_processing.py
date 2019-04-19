@@ -5,6 +5,9 @@ import picture
 from logger import *
 from tkinter import messagebox
 
+DUT_S = "DUT"
+GOLDEN_S = "Golden"
+
 
 def req_0(dict_G, dict_D, cmd):
     """
@@ -14,16 +17,39 @@ def req_0(dict_G, dict_D, cmd):
             dict_D - The dictionary contains commands and data.
             cmd -  The command to search.
     """
+    absence_list = list()
+    gd_no_match = False
+    legend = list()
     data10 = uti.read_data(dict_D, cmd)
     data10_G = uti.read_data(dict_G, cmd)
+    ret_D = True
+    ret_G = True
 
-    if uti.is_data_empty(data10_G, data10, cmd):
-        return
+    """
+    Plot Golden
+    """
+    if data10_G is None:
+        absence_list.append([cmd, GOLDEN_S])
+    else:
+        ret_D = picture.plot_fmt_G(data10_G, cmd=cmd, style='p')  # Golden Data (Bottom)
+        if ret_D:
+            legend.append(GOLDEN_S)
+    """
+    Plot DUT
+    """
+    if data10 is None:
+        absence_list.append([cmd, DUT_S])
+    else:
+        ret_G = picture.plot_fmt(data10, cmd=cmd, style='p')  # Current Data (Top)
+        if ret_G:
+            legend.append(DUT_S)
 
-    picture.plot_fmt_G(data10_G, cmd=cmd, style='p')  # Golden Data (Bottom)
-    picture.plot_fmt(data10, cmd=cmd, style='p')  # Current Data (Top)
-
-    picture.plot_show(cmd, gd_no_match=(len(data10_G) != len(data10)))
+    if len(absence_list) == 0 and ret_D and ret_G:
+        gd_no_match = (len(data10_G) != len(data10))
+    """
+    Show
+    """
+    picture.plot_show(cmd, legend=legend, absence_list=absence_list, gd_no_match=gd_no_match)
 
 
 def req_1(dict_G, dict_D, cmd):
@@ -38,29 +64,49 @@ def req_1(dict_G, dict_D, cmd):
     x_G = []
     y1 = []
     y1_G = []
+    legend = list()
+    absence_list = list()
+    gd_no_match = False
+    ret_G = True
+    ret_D = True
 
     data10 = uti.read_data(dict_D, cmd)
     data10_G = uti.read_data(dict_G, cmd)
+    """
+    Plot Golden
+    """
+    if data10_G is None:
+        absence_list.append([cmd, GOLDEN_S])
+    else:
+        for j in range(len(data10_G)):
+            if j % 2 == 0:
+                x_G.append(data10_G[j])
+            else:
+                y1_G.append(data10_G[j])
+        ret_G = picture.plot_fmt_G(x_G, y1_G, cmd=cmd)  # Golden Data (Bottom)
+        if ret_G:
+            legend.append(GOLDEN_S)
+    """
+    Plot DUT
+    """
+    if data10 is None:
+        absence_list.append([cmd, DUT_S])
+    else:
+        for j in range(len(data10)):
+            if j % 2 == 0:
+               x.append(data10[j])
+            else:
+               y1.append(data10[j])
+        ret_D = picture.plot_fmt(x, y1, cmd=cmd)  # Current Data (Top)
+        if ret_D:
+            legend.append(DUT_S)
 
-    if uti.is_data_empty(data10_G, data10, cmd):
-        return
-
-    for j in range(len(data10)):
-        if j % 2 == 0:
-           x.append(data10[j])
-        else:
-           y1.append(data10[j])
-
-    for j in range(len(data10_G)):
-        if j % 2 == 0:
-           x_G.append(data10_G[j])
-        else:
-           y1_G.append(data10_G[j])
-
-    picture.plot_fmt_G(x_G, y1_G, cmd=cmd)  # Golden Data (Bottom)
-    picture.plot_fmt(x, y1, cmd=cmd)  # Current Data (Top)
-
-    picture.plot_show(cmd, gd_no_match=(len(x) != len(x_G)))
+    if len(absence_list) == 0 and ret_D and ret_G:
+        gd_no_match = (len(data10_G) != len(data10))
+    """
+    Show
+    """
+    picture.plot_show(cmd, legend=legend, absence_list=absence_list, gd_no_match=gd_no_match)
 
 
 def req_2(dict_G, dict_D, cmd_x):
@@ -71,28 +117,139 @@ def req_2(dict_G, dict_D, cmd_x):
             dict_D - The dictionary contains commands and data.
             cmd -  The command to search.
     """
+    legend = list()
+    absence_list = list()
+    gd_no_match = False
+    ret_G = True
+    ret_D = True
+    """
+    Read Data
+    """
     data10_x = uti.read_data(dict_D, cmd_x)
     data10_x_G = uti.read_data(dict_G, cmd_x)
-
-    if uti.is_data_empty(data10_x_G, data10_x, cmd_x):
-        return
-
     cmd_y = cmd_x.replace("_x", "_y")
     data10_y = uti.read_data(dict_D, cmd_y)
     data10_y_G = uti.read_data(dict_G, cmd_y)
+    """
+    Plot Golden
+    """
+    if data10_x_G is None:
+        absence_list.append([cmd_x, GOLDEN_S])
+    if data10_y_G is None:
+        absence_list.append([cmd_y, GOLDEN_S])
+    if data10_x_G is not None and data10_y_G is not None:
+        ret_G = picture.plot_fmt_G(data10_x_G, data10_y_G, cmd=cmd_x)
+        if ret_G:
+            legend.append(GOLDEN_S)
+    """
+    Plot DUT
+    """
+    if data10_x is None:
+        absence_list.append([cmd_x, DUT_S])
+    if data10_y is None:
+        absence_list.append([cmd_y, DUT_S])
+    if data10_x is not None and data10_y is not None:
+        ret_D = picture.plot_fmt(data10_x, data10_y, cmd=cmd_x)
+        if ret_D:
+            legend.append(DUT_S)
 
-    if uti.is_data_empty(data10_y_G, data10_y, cmd_y):
-        return
+    # if uti.is_substring("VGLinTable_", cmd_x):
+    #     picture.plot_fmt_G(data10_y_G, data10_x_G, cmd=cmd_x)
+    #     picture.plot_fmt(data10_y, data10_x, cmd=cmd_x)
+    #
+    # else:
+    #     picture.plot_fmt_G(data10_x_G, data10_y_G, cmd=cmd_x)
+    #     picture.plot_fmt(data10_x, data10_y, cmd=cmd_x)
+    if len(absence_list) == 0 and ret_D and ret_G:
+        gd_no_match = (len(data10_x_G) != len(data10_x))
 
-    if uti.is_substring("VGLinTable_", cmd_x):
-        picture.plot_fmt_G(data10_y_G, data10_x_G, cmd=cmd_x)
-        picture.plot_fmt(data10_y, data10_x, cmd=cmd_x)
+    picture.plot_show(cmd_x, legend=legend, absence_list=absence_list, gd_no_match=gd_no_match)
 
-    else:
-        picture.plot_fmt_G(data10_x_G, data10_y_G, cmd=cmd_x)
-        picture.plot_fmt(data10_x, data10_y, cmd=cmd_x)
 
-    picture.plot_show(cmd_x, gd_no_match=(len(data10_x) != len(data10_x_G)))
+def plot_mag_phase(dict_G, dict_D, cmd_fr, cmd_im, cmd_re, style=None):
+    absence_list = list()
+    gd_no_match = False
+    mag_G = None
+    phase_G = None
+    mag = None
+    phase = None
+    legend = list()
+    ret_G = True
+    ret_D = True
+    """
+    Read Data
+    """
+    data10_fr = uti.read_data(dict_D, cmd_fr)
+    data10_fr_G = uti.read_data(dict_G, cmd_fr)
+    data10_re = uti.read_data(dict_D, cmd_re)
+    data10_re_G = uti.read_data(dict_G, cmd_re)
+    data10_im = uti.read_data(dict_D, cmd_im)
+    data10_im_G = uti.read_data(dict_G, cmd_im)
+    """
+    Process Golden Data
+    """
+    if data10_fr_G is None:
+        absence_list.append([cmd_fr, GOLDEN_S])
+    if data10_im_G is None:
+        absence_list.append([cmd_im, GOLDEN_S])
+    if data10_re_G is None:
+        absence_list.append([cmd_re, GOLDEN_S])
+    if data10_fr_G and data10_im_G and data10_re_G:
+        mag_G, phase_G = uti.get_mag_angle(data10_re_G, data10_im_G)
+    """
+    Process DUT Data
+    """
+    if data10_fr is None:
+        absence_list.append([cmd_fr, DUT_S])
+    if data10_im is None:
+        absence_list.append([cmd_im, DUT_S])
+    if data10_re is None:
+        absence_list.append([cmd_re, DUT_S])
+    if data10_fr and data10_im and data10_re:
+        mag, phase = uti.get_mag_angle(data10_re, data10_im)
+    """
+    Plot Golden Mag Data
+    """
+    title = cmd_im.replace('im', 'mag')
+    if mag_G is not None:
+        ret_G = picture.plot_fmt_G(data10_fr_G, mag_G, cmd=title, style=style)
+        if ret_G:
+            legend.append('mag-freq_G')
+    """
+    Plot DUT Mag Data
+    """
+    if mag is not None:
+        ret_D = picture.plot_fmt(data10_fr, mag, cmd=title, style=style)
+        if ret_D:
+            legend.append('mag-freq')
+    """
+    Show
+    """
+    if len(absence_list) == 0 and ret_D and ret_G:
+        gd_no_match = (len(data10_fr) != len(data10_fr_G))
+    picture.plot_show(title, legend=legend, xlabel="freq", ylabel="mag",
+                      absence_list=absence_list, gd_no_match=gd_no_match)
+    """
+    Plot Golden Phase Data
+    """
+    title = cmd_im.replace('im', 'phase')
+    legend.clear()
+    if phase_G is not None:
+        ret_G = picture.plot_fmt_G(data10_fr_G, phase_G, cmd=title, style=style)
+        if ret_G:
+            legend.append('phase-freq_G')
+    """
+    Plot DUT Phase Data
+    """
+    if phase is not None:
+        ret_D = picture.plot_fmt(data10_fr, phase, cmd=title, style=style)
+        if ret_D:
+            legend.append('phase-freq')
+    """
+    Show
+    """
+    picture.plot_show(title, legend=legend, xlabel="freq", ylabel="phase",
+                      absence_list=absence_list, gd_no_match=gd_no_match)
 
 
 def req_3(dict_G, dict_D, cmd_im):
@@ -103,52 +260,9 @@ def req_3(dict_G, dict_D, cmd_im):
             dict_D - The dictionary contains commands and data.
             cmd -  The command to search.
     """
-    values = []
-    values_G = []
-
     cmd_fr = cmd_im.replace("im", "freq")
-    data10_fr = uti.read_data(dict_D, cmd_fr)
-    data10_fr_G = uti.read_data(dict_G, cmd_fr)
-
-    if uti.is_data_empty(data10_fr_G, data10_fr, cmd_fr):
-        return
-
     cmd_re = cmd_im.replace("im", "re")
-    data10_re = uti.read_data(dict_D, cmd_re)
-    data10_re_G = uti.read_data(dict_G, cmd_re)
-
-    if uti.is_data_empty(data10_re_G, data10_re, cmd_re):
-        return
-
-    data10_im = uti.read_data(dict_D, cmd_im)
-    data10_im_G = uti.read_data(dict_G, cmd_im)
-
-    if uti.is_data_empty(data10_im_G, data10_im, cmd_im):
-        return
-
-    for i in range(len(data10_im)):
-        values.append(complex(int(data10_re[i]), int(data10_im[i])))
-
-    mag = 20 * numpy.log10(numpy.absolute(values) / 10e3)
-    phase = numpy.angle(values)
-
-    for i in range(len(data10_im_G)):
-        values_G.append(complex(int(data10_re_G[i]), int(data10_im_G[i])))
-
-    mag_G = 20 * numpy.log10(numpy.absolute(values_G) / 10e3)
-    phase_G = numpy.angle(values_G)
-
-    title = cmd_im.replace('im', 'mag')
-    picture.plot_fmt_G(data10_fr_G, mag_G, cmd=title)
-    picture.plot_fmt(data10_fr, mag, cmd=title)
-    picture.plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag",
-                      gd_no_match=(len(data10_fr)!=len(data10_fr_G)))
-
-    title = cmd_im.replace('im', 'phase')
-    picture.plot_fmt_G(data10_fr_G, phase_G, cmd=title)
-    picture.plot_fmt(data10_fr, phase, cmd=title)
-    picture.plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase",
-                      gd_no_match=(len(data10_fr) != len(data10_fr_G)))
+    plot_mag_phase(dict_G, dict_D, cmd_fr, cmd_im, cmd_re)
 
 
 def req_4(dict_G, dict_D, cmd_re):
@@ -159,83 +273,42 @@ def req_4(dict_G, dict_D, cmd_re):
             dict_D - The dictionary contains commands and data.
             cmd -  The command to search.
     """
-    values = []
-    values_G = []
-
     str = re.compile('[a|b|c]/re')
     cmd_fr = str.sub('abcCal/freq', cmd_re)
-    data10_fr = uti.read_data(dict_D, cmd_fr)
-    data10_fr_G = uti.read_data(dict_G, cmd_fr)
-
-    if uti.is_data_empty(data10_fr_G, data10_fr, cmd_fr):
-        return
-
-    data10_re = uti.read_data(dict_D, cmd_re)
-    data10_re_G = uti.read_data(dict_G, cmd_re)
-
-    if uti.is_data_empty(data10_re_G, data10_re, cmd_re):
-        return
-
     cmd_im = cmd_re.replace("re", "im")
-    data10_im = uti.read_data(dict_D, cmd_im)
-    data10_im_G = uti.read_data(dict_G, cmd_im)
-
-    if uti.is_data_empty(data10_im_G, data10_im, cmd_im):
-        return
-
-    if len(data10_re) != len(data10_im):
-        logger().error("The length of re and im should be same.")
-        return
-
-    for i in range(len(data10_im)):
-        values.append(complex(int(data10_re[i]), int(data10_im[i])))
-
-    mag, phase = uti.get_mag_angle(values)
-
-    if len(data10_re_G) != len(data10_im_G):
-        logger().error("The length of re and im in golden file should be same.")
-        return
-
-    for i in range(len(data10_im_G)):
-        values_G.append(complex(int(data10_re_G[i]), int(data10_im_G[i])))
-
-    mag_G, phase_G = uti.get_mag_angle(values_G)
-
-    title = cmd_im.replace('im', 'mag')
-    picture.plot_fmt_G(data10_fr_G, mag_G, cmd=title, style='l')
-    picture.plot_fmt(data10_fr, mag, cmd=title, style='l')
-    picture.plot_show(title, legend=['mag-freq_G', 'mag-freq'], xlabel="freq", ylabel="mag",
-                      gd_no_match=(len(data10_fr) != len(data10_fr_G)))
-
-    title = cmd_im.replace('im', 'phase')
-    picture.plot_fmt_G(data10_fr_G, phase_G, cmd=title, style='l')
-    picture.plot_fmt(data10_fr, phase, cmd=title, style='l')
-    picture.plot_show(title, legend=['phase-freq_G', 'phase-freq'], xlabel="freq", ylabel="phase",
-                      gd_no_match=(len(data10_fr) != len(data10_fr_G)))
+    plot_mag_phase(dict_G, dict_D, cmd_fr, cmd_im, cmd_re, style='l')
 
 
 def req_5(dict_G, dict_D, cmd):
+    absence_list = list()
+    gd_no_match = False
 
     data = uti.read_data(dict_D, cmd)
     data_G = uti.read_data(dict_G, cmd)
 
-    if uti.is_data_empty(data_G, data, cmd):
-        return
+    if data is None:
+        absence_list.append([cmd, DUT_S])
+        str_D = list()
+    else:
+        str_D = re.split(r"\s+", data[0])
 
-    str = re.split(r"\s+", data[0])
-    str_G = re.split(r"\s+", data_G[0])
+    if data_G is None:
+        absence_list.append([cmd, GOLDEN_S])
+        str_G = list()
+    else:
+        str_G = re.split(r"\s+", data_G[0])
 
     comp_res = {}
     for s in str_G:
         comp_res[s.strip()] = 1
-    for s in str:
+    for s in str_D:
         if s.strip() in comp_res:
             comp_res[s.strip()] = 3
         else:
             comp_res[s.strip()] = 2
 
     t_data = list()
-    t_data.append(["DUT", "Golden", "Result"])
+    t_data.append([DUT_S, GOLDEN_S, "Result"])
     idx = 1
     for item in comp_res:
         t_data.append(["", "", ""])
@@ -248,7 +321,7 @@ def req_5(dict_G, dict_D, cmd):
         else:
             t_data[idx][2] = "NOK"
         idx += 1
-    print(t_data)
-    picture.table_show(cmd, t_data)
+    # print(t_data)
+    picture.table_show(cmd, t_data, absence_list=absence_list)
 
 
