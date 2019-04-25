@@ -97,7 +97,7 @@ class PopUp(tk.Toplevel):
 class Confirm(PopUp):
 
     def __init__(self, parent=None, title="", message=""):
-        super().__init__(parent=parent, title=title, message=message, btn=["ok", "cancel"], default='ok')
+        super().__init__(parent=parent, title=title, message=message, btn=["ok", "cancel"], default='cancel')
 
 
 class Alert(PopUp):

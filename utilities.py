@@ -93,7 +93,7 @@ def read_dict(file_path):
         if data.startswith("/"):
             data1 = re.split(r"\s+", data)
             cmd = data1[0]
-            entry = DBEntry(cmd, data1[2])
+            entry = DBEntry(cmd, data1[-1])
             dictionary[cmd] = entry
         else:
             data2 = data.split(",")
