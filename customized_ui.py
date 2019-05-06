@@ -123,19 +123,13 @@ if __name__ == '__main__':
 
     def exit_root():
         ans = Confirm(parent=root, title="Confirm", message="Leave?").go()
-        print("ans is %s"%ans)
         if ans:
             root.quit()
 
     def clicked():
         ans = AskString(parent=root, title="Hey", message="Please input your comment:Please input your comment:Please input your comment:Please input your comment").go()
-        print("ans is %s" % ans)
         if ans == "":
             Alert(parent=root, title="Alert", message="Message is empty!").go()
-        print("master focus %s, master next %s, master prev %s."%(
-            root.focus_get(),
-            root.tk_focusNext(),
-            root.tk_focusPrev()))
 
     btn = tk.Button(root, text="OK", command=clicked)
     btn.pack()

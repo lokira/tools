@@ -23,6 +23,10 @@ class DBEntry(object):
             def f(v):
                 return int(v)
             self.trans = f
+        elif "char" in type:
+            def f(v):
+                return v.strip('"').strip()
+            self.trans = f
         if data is None:
             self.data = []
 
@@ -91,7 +95,7 @@ def read_dict(file_path):
             continue
 
         if data.startswith("/"):
-            data1 = re.split(r"\s+", data)
+            data1 = re.split(r"\s+", data)  # TODO Pattern！！！！！
             cmd = data1[0]
             entry = DBEntry(cmd, data1[-1])
             dictionary[cmd] = entry
@@ -193,3 +197,17 @@ def get_mag_angle(real, image):
     mag = 20 * numpy.log10(numpy.absolute(comp_val) / 10e3)
     phase = numpy.angle(comp_val)
     return mag, phase
+
+
+def is_same_len(arr1, arr2):
+    """
+    To determine if two arrays have same size.
+    """
+    return len(arr1) == len(arr2)
+
+
+def is_not_same_len_not_empty(arr1, arr2):
+    """
+    To determine if two arrays which are not empty are different in size.
+    """
+    return len(arr1) and len(arr2) and not is_same_len(arr1, arr2)

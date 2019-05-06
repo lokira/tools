@@ -2,13 +2,12 @@ import updater
 import main_gui as mg
 import utilities as uti
 import data_processing as dp
-import report
 import mail
 from logger import *
 from tkinter import messagebox
 from multiprocessing import Process
 from multiprocessing import freeze_support
-
+from picture import open_check_win
 
 freeze_support()
 
@@ -35,6 +34,7 @@ def main_test():
         dict_D = uti.read_dict(path_DUT)
 
         db_req_file = uti.open_file(req_filename)
+        check_entry_list = list()
 
         for line in db_req_file:
             if line.startswith('#'):
@@ -53,36 +53,36 @@ def main_test():
 
             tag = int(value)
             if tag == 0:
-                dp.req_0(dict_G, dict_D, cmd)
+                dp.req_0(dict_G, dict_D, cmd, check_entry_list)
             elif tag == 1:
-                dp.req_1(dict_G, dict_D, cmd)
+                dp.req_1(dict_G, dict_D, cmd, check_entry_list)
             elif tag == 2:
                 if uti.is_substring("_x", cmd):
-                    dp.req_2(dict_G, dict_D, cmd)
+                    dp.req_2(dict_G, dict_D, cmd, check_entry_list)
                 else:
                     continue
             elif tag == 3:
                 if uti.is_substring("S21/im", cmd):
-                    dp.req_3(dict_G, dict_D, cmd)
+                    dp.req_3(dict_G, dict_D, cmd, check_entry_list)
                 else:
                     continue
             elif tag == 4:
                 if uti.is_substring("DVSWR", cmd) and uti.is_substring("/re", cmd):
-                    dp.req_4(dict_G, dict_D, cmd)
+                    dp.req_4(dict_G, dict_D, cmd, check_entry_list)
                 else:
                     continue
             elif tag == 5:
                 if uti.is_substring("componentConfigId", cmd):
-                    dp.req_5(dict_G, dict_D, cmd)
+                    dp.req_5(dict_G, dict_D, cmd, check_entry_list)
                 else:
                     continue
             else:
                 logger().info("This DB format is not supported.")
 
         db_req_file.close()
+        open_check_win(check_entry_list)
+        return
 
-        report.generate_test_report()
-        mail.send_mail()
     except Exception as e:
         logger().exception("Unexpected error happened!")
         var_box = messagebox.askyesno(title='Warning', message='Unexpected error happened!\nWould you like to send us the log to help us improve?')

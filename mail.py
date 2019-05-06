@@ -5,7 +5,7 @@ import report
 import os
 from logger import *
 
-def send_mail():
+def send_mail(entry_list, report_path):
     """
     This function open outlook.exe.
     send DB check result
@@ -14,13 +14,30 @@ def send_mail():
     root.withdraw()
 
     var_box = tk.messagebox.askyesno(title='Info', message='Send the result by mail?')
-
+    table_str = ""
     if var_box:
+        for entry in entry_list:
+            if entry.get_conclusion() == "Wrong":
+                table_str += "<tr><td padding=2x>"+entry.get_title()+"</td><td>"+entry.get_conclusion()+"</td></tr>"
+        if table_str != "":
+            table_str = "<table class=MsoTableGrid border=1>"\
+                        +table_str+\
+                        "</table>"
+        else:
+            table_str = "None"
         outlook = win32.Dispatch('outlook.application')
         mail = outlook.CreateItem(0)
         mail.Subject = 'DB check result'
-        mail.Body = "Hi,\nThe DB check result is attached."
-        mail.Attachments.Add(report.report_file)
+        mail.HTMLBody = "<HTML>" \
+                        "<BODY>" \
+                        "<p>Hi,</p>" \
+                        "<p>the DB Check Report is attached.</p>" \
+                        "<br/><br/><p>NG entries:</p>" \
+                        + table_str + \
+                        "</BODY>" \
+                        "</HTML>"
+        # mail.HTMLBody = "Hi,\nThe DB check result is attached."
+        mail.Attachments.Add(report_path)
         mail.display()
         logger().info("DB check result has been attached to the mail.")
     else:
