@@ -351,6 +351,7 @@ def plot_fmt(*data, style='unknown', cmd='unknown', xlabel="", ylabel=""):
 
 def open_check_win(check_entry_list):
     root = Tk()
+    root.title("DB Check")
     root.geometry("820x610+10+10")
     mainframe = CheckWindow(check_entry_list, master=root)
     mainframe.pack(side='top', fill='both', expand='yes')
