@@ -2,8 +2,7 @@
 This module includes functions about plotting and figure display.
 """
 import matplotlib.pyplot as plt
-from tkinter import simpledialog
-from tkinter import messagebox
+from check_entry import *
 import report
 from logger import *
 from sys import exit
@@ -81,7 +80,7 @@ class CheckWindow(ttk.Frame):
         self.toolbar.pack(side='top', fill='x')
         self.sbar.pack(side='bottom', fill='x')
         self.tree_frame.pack(side='left', fill='y')
-        self.center.pack(side='right', fill='both', expand=YES)
+        self.center.pack(side='right', fill='both', expand='yes')
         self.update_color()
         self.master.protocol("WM_DELETE_WINDOW", self._on_closed)
 
@@ -114,7 +113,7 @@ class CheckWindow(ttk.Frame):
         """
         self.center.destroy()
         self.center = center_widget
-        self.center.pack(side='left', fill='both')
+        self.center.pack(side='left', fill='both', expand='yes')
 
     def fn_run(self, event=None):
         """
@@ -157,7 +156,16 @@ class CheckWindow(ttk.Frame):
         self.sbar.set(entry.get_status_str())
 
     def fn_generate_report(self):
-        report.generate_test_report(self.entry_list, "PASSED")  # TODO Check data before generate.
+        # TODO Check data before generate.
+        result = "PASSED"
+        for entry in self.entry_list:
+            if entry.get_conclusion() is "":
+                Alert(parent=self.master, title='DB Check',
+                      message='Please check all the entries or set to ignored before generating report!').go()
+                return
+            if entry.is_wrong():
+                result = "NOT PASSED"
+        report.generate_test_report(self.entry_list, result)
 
     def load_tree(self, rows):
         self.tree.insert_rows(rows)
@@ -216,6 +224,20 @@ class CheckWindow(ttk.Frame):
 
     def show_plot(self, entry):
         fra = ttk.Frame(self)
+        """
+        # ===Draw buttons===
+        """
+        bfra = ttk.Frame(fra)
+        button = tkinter.Button(master=bfra, text="Wrong", command=self.wrong)
+        button.pack(side=tkinter.RIGHT, padx=5)
+        self.master.bind('x', self.wrong)
+        button = tkinter.Button(master=bfra, text="Correct", command=self.correct)
+        button.pack(side=tkinter.RIGHT, padx=5)
+        self.master.bind('c', self.correct)
+        bfra.pack(side='bottom', fill='both')
+        """
+        # ===Draw Plot/Table===
+        """
         if entry.etype == EntryType.table:
             t = SimpleTable(fra, rows=len(entry.get_t_data()), columns=3, data=entry.get_t_data())
             t.pack(side="top", fill="both")
@@ -223,12 +245,12 @@ class CheckWindow(ttk.Frame):
             plt.clf()
             plt.cla()
             if entry.etype == EntryType.xy:
-                plot_fmt_G(entry.get_data_G()[0], entry.get_data_G()[1], cmd=entry.title)
-                plot_fmt(entry.get_data()[0], entry.get_data()[1], cmd=entry.title)
+                plot_fmt_G(entry.get_data_G()[0], entry.get_data_G()[1], cmd=entry.title, xlabel=entry.xlabel, ylabel=entry.ylabel)
+                plot_fmt(entry.get_data()[0], entry.get_data()[1], cmd=entry.title, xlabel=entry.xlabel, ylabel=entry.ylabel)
                 plt.legend(["Golden", "DUT"])
             elif entry.etype == EntryType.y:
-                plot_fmt_G(entry.get_data_G(), cmd=entry.title)
-                plot_fmt(entry.get_data(), cmd=entry.title)
+                plot_fmt_G(entry.get_data_G(), cmd=entry.title, xlabel=entry.xlabel, ylabel=entry.ylabel)
+                plot_fmt(entry.get_data(), cmd=entry.title, xlabel=entry.xlabel, ylabel=entry.ylabel)
                 plt.legend(["Golden", "DUT"])
             plt.xticks(rotation=30)
             fig = plt.gcf()
@@ -236,17 +258,12 @@ class CheckWindow(ttk.Frame):
             canvas.draw()
             toolbar = NavigationToolbar2Tk(canvas, fra)
             toolbar.update()
-            canvas.get_tk_widget().pack(side='top', fill='both')
+            canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
 
         self.set_center(fra)
-        # ===Draw buttons===
-        button = tkinter.Button(master=fra, text="Wrong", command=self.wrong)
-        button.pack(side=tkinter.RIGHT, padx=5)
-        self.master.bind('x', self.wrong)
-        button = tkinter.Button(master=fra, text="Correct", command=self.correct)
-        button.pack(side=tkinter.RIGHT, padx=5)
-        self.master.bind('c', self.correct)
+        """
         # ===Show errors===
+        """
         if len(entry.err_msg):
             Alert(parent=self.master, title="DB Check", message=str.join('\n', entry.err_msg)).go()
             logger().error(str.join('\n', entry.err_msg))
@@ -264,7 +281,6 @@ class CheckWindow(ttk.Frame):
         """
         Called when quit button clicked.
         """
-        # var_box = messagebox.askyesno(title='Info', message='Are you sure to quit?')
         var_box = Confirm(parent=self.master, title='Info', message='Are you sure to quit?').go()
         if var_box:
             logger().warning("Execution abort due to user operation!")
@@ -335,7 +351,7 @@ def plot_fmt(*data, style='unknown', cmd='unknown', xlabel="", ylabel=""):
 
 def open_check_win(check_entry_list):
     root = Tk()
-    root.geometry("800x600+10+10")
+    root.geometry("820x610+10+10")
     mainframe = CheckWindow(check_entry_list, master=root)
     mainframe.pack(side='top', fill='both', expand='yes')
     root.mainloop()

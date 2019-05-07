@@ -2,9 +2,13 @@ from logger import *
 from enum import Enum
 
 EntryType = Enum('y', ('y', 'xy', 'table'))
+S_IGNORED = "Ignored"
+S_WRONG = "Wrong"
+S_CORRECT = "Correct"
 
 
 class CheckEntry(object):
+
     def __init__(self, title, etype):
         self.title = title
         self.etype = etype
@@ -25,7 +29,6 @@ class CheckEntry(object):
         self.legend = list()
 
     def load_data_G(self, data):
-        # TODO Deal with legend ？ Or decide while plotting？
         self.data_G = data
 
     def load_data(self, data):
@@ -35,13 +38,13 @@ class CheckEntry(object):
         self.t_data = data
 
     def set_wrong(self):
-        self.conclusion = "Wrong"
+        self.conclusion = S_WRONG
 
     def set_correct(self):
-        self.conclusion = "Correct"
+        self.conclusion = S_CORRECT
 
     def set_ignore(self):
-        self.conclusion = "Ignored"
+        self.conclusion = S_IGNORED
 
     def add_err_msg(self, msg):
         self.err_msg.append(msg)
@@ -56,7 +59,7 @@ class CheckEntry(object):
         return self.ref
 
     def set_comment(self, comment):
-        self.comment = comment
+        self.comment = comment.strip()
 
     def get_comment(self):
         return self.comment
@@ -73,11 +76,14 @@ class CheckEntry(object):
     def get_conclusion(self):
         return self.conclusion
 
-    def get_title(self):
-        return self.title
+    def is_wrong(self):
+        return self.conclusion == S_WRONG
 
     def is_ignored(self):
-        return self.conclusion == "Ignored"
+        return self.conclusion == S_IGNORED
+
+    def get_title(self):
+        return self.title
 
     def toggle_ignore(self):
         if self.is_ignored():

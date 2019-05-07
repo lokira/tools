@@ -1,11 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-import tkinter as tk
 
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import (
-    FigureCanvasTkAgg, NavigationToolbar2Tk)
-from check_entry import *
 
 class FancyTreeview(ttk.Treeview):
 
@@ -21,7 +16,7 @@ class FancyTreeview(ttk.Treeview):
         if widths is not None:
             self._set_columns_width(widths)
 
-        self._setup_contextmenu(fn_run, fn_ignore)
+        self._setup_context_menu(fn_run, fn_ignore)
 
         self.bind('<<TreeviewSelect>>', fn_select)
         self.bind('<Double-Button-1>', fn_run)
@@ -37,7 +32,7 @@ class FancyTreeview(ttk.Treeview):
                 self.heading(header, text=header)
                 self._columns.append(header)
 
-    def _setup_contextmenu(self, fn_run, fn_ignore):
+    def _setup_context_menu(self, fn_run, fn_ignore):
         self.contextMenu = Menu(self, tearoff=0)
         self.contextMenu.add_command(label="Run", command=fn_run)
         self.contextMenu.add_command(label="Ignore/Un-ignore", command=fn_ignore)
@@ -58,21 +53,11 @@ class FancyTreeview(ttk.Treeview):
             # no action required
             pass
 
-    def _run(self):
-        pass
-        curItem = self.focus()
-        print("run %s" % curItem)
-
-    def _select_item(self, event):
-        pass
-        curItem = self.focus()
-        print("on select %s"%curItem)
-
     def insert_rows(self, rows):
         for item in rows:
             iid = self.insert('', 'end', values=item)
             # initialize tags as a size 2 array
-            if int(iid.lstrip('I')) % 2:
+            if int(iid.lstrip('I'), 16) % 2:
                 self.set_tag(iid, tags=['odd', ''])
             else:
                 self.set_tag(iid, tags=['even', ''])
@@ -111,34 +96,9 @@ class FancyTreeview(ttk.Treeview):
             if status is not None:
                 tags[1] = status
             self.item(iid, tags=tags)
-        print(tags)
 
 
 if __name__ == '__main__':
     root = Tk()
     root.geometry("800x500")
-    # frame = ttk.Frame(root)
-    #
-    # vsb = ttk.Scrollbar(orient="vertical", command=tree.yview)
-    # tree.configure(yscrollcommand=vsb.set)
-    #
-    # bookList = [('aaa', 123), ('bbb', 123), ('xxx', 123), ('sss', 123), ('ddd', 123)]
-    # tree.insert_rows(bookList)
-    # tree.insert_rows(bookList)
-    # tree.insert_rows(bookList)
-    # tree.insert_rows(bookList)
-    # tree.insert_rows(bookList)
-    # tree.insert_rows(bookList)
-    # tree.insert_rows(bookList)
-    # tree.insert_rows(bookList)
-    # tree.pack(side=tk.LEFT, fill=tk.Y)
-    # vsb.pack(side='left', fill='y')
-    # canvas = tk.Canvas(master=frame)
-    # canvas.pack(side=tk.LEFT, fill=tk.BOTH)
-    # tree = FancyTreeview(master=frame, columns=['Hi', 'There'], show='headings', widths=[180, 40])
-
-    # frame.pack(fill='both', expand='false')
-
-
-
     root.mainloop()

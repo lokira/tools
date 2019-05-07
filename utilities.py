@@ -71,6 +71,13 @@ def read_dict(file_path):
     prev_line = ""
     line_no = 0
     cmd = None
+    """
+    This pattern matches lines in shape of : 
+        1. /cmdline P S32
+        2. /cmdline S32
+        3. /cmdlineS32
+    """
+    pattern = re.compile(r"(?P<cmd>/\S+)\s*[SPE]{0,2}\s*(?P<type>[S|U]8|[S|U]16|[S|U]32|[S|U]64|char)")
     for line in f:
         line_no += 1
         data = line.strip()
@@ -95,10 +102,14 @@ def read_dict(file_path):
             continue
 
         if data.startswith("/"):
-            data1 = re.split(r"\s+", data)  # TODO Pattern！！！！！
-            cmd = data1[0]
-            entry = DBEntry(cmd, data1[-1])
-            dictionary[cmd] = entry
+            # data1 = re.split(r"\s+", data)
+            m = pattern.match(data)
+            if m is not None:
+                cmd = m.group("cmd")
+                entry = DBEntry(cmd, m.group("type"))
+                dictionary[cmd] = entry
+            else:
+                logger().warning("String not match to regex pattern! %s" % data)
         else:
             data2 = data.split(",")
             for j in range(len(data2)):

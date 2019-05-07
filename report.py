@@ -132,6 +132,9 @@ def add_conclusion(conclusion):
     Add DB check conclusion to the report document.
     """
     global document
+    global test_result
+
+    test_result = conclusion
 
     document.add_heading('\nConclusion', level=0)
     p = document.add_paragraph('Test Result:    ')
@@ -158,7 +161,7 @@ def add_table(entry_list):
         entry = entry_list[i]
         table.cell(i+1, 0).text = entry.get_title()
         table.cell(i+1, 1).text = entry.get_conclusion()
-        if entry.get_conclusion() == "Wrong":
+        if entry.is_wrong():
             table.cell(i+1, 1).paragraphs[0].runs[0].font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
             table.cell(i+1, 0).paragraphs[0].runs[0].font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
         elif entry.is_ignored():
@@ -220,7 +223,7 @@ def generate_test_report(entry_list, conclusion):
     add_parameter()
     add_conclusion(conclusion)
     add_table(entry_list)
-    add_pictures(entry_list)
+    # add_pictures(entry_list)  # Comment this out to remove pictures in report
     save_report()
     mail.send_mail(entry_list, report_file)
 

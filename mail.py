@@ -27,13 +27,15 @@ def send_mail(entry_list, report_path):
             table_str = "None"
         outlook = win32.Dispatch('outlook.application')
         mail = outlook.CreateItem(0)
-        mail.Subject = 'DB check result'
+        mail.Subject = 'DB check result for %s' % report.g_product_number
         mail.HTMLBody = "<HTML>" \
                         "<BODY>" \
                         "<p>Hi,</p>" \
                         "<p>the DB Check Report is attached.</p>" \
-                        "<br/><br/><p>NG entries:</p>" \
+                        "<br/><br/><p>Conclusion: %s</p>" % report.test_result \
+                        + "<p>NG entries:</p>" \
                         + table_str + \
+                        "<br/><br/><br/><p>BR//Test Tech Automation Tool Software Team Copyright</p>" \
                         "</BODY>" \
                         "</HTML>"
         # mail.HTMLBody = "Hi,\nThe DB check result is attached."

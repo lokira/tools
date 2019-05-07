@@ -9,6 +9,7 @@ CMD_NOT_FOUND_S = "Command not found in %s : %s"
 GD_NOT_MATCH_S = "The number of values is different between Golden and DUT data!"
 XY_NOT_MATCH_S = "Failed to plot %s %s. \nProbably because the number of x and y values are not match."
 
+
 def req_0(dict_G, dict_D, cmd, check_entry_list):
     """
     get dut and golden data,draw data picture.
@@ -205,6 +206,12 @@ def plot_mag_phase(dict_G, dict_D, cmd_fr, cmd_im, cmd_re, check_entry_list, sty
     if uti.is_not_same_len_not_empty(entry_mag.get_data(), entry_mag.get_data_G()):
         entry_mag.add_err_msg(GD_NOT_MATCH_S)
         entry_phase.add_err_msg(GD_NOT_MATCH_S)
+
+    entry_mag.xlabel = 'freq'
+    entry_mag.ylabel = 'mag'
+
+    entry_phase.xlabel = 'freq'
+    entry_phase.ylabel = 'phase'
 
     check_entry_list.append(entry_mag)
     check_entry_list.append(entry_phase)
