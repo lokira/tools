@@ -181,6 +181,7 @@ def add_pictures(entry_list):
             continue
         document.add_paragraph('Command: ' + entry.get_title())
         document.add_paragraph('Comments: ' + entry.get_comment())
+        """
         if entry.etype == EntryType.table:
             t_data = entry.get_ref()
             table = document.add_table(rows=len(t_data), cols=3, style="Table Grid")
@@ -192,6 +193,8 @@ def add_pictures(entry_list):
         else:
             print(entry.get_ref())
             document.add_picture(entry.get_ref())
+        """
+        document.add_picture(entry.get_ref())  # We use plt to draw picture now.
         document.add_page_break()
     return True
 

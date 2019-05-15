@@ -20,7 +20,7 @@ comment_flag = False
 DUT_S = "DUT"
 GOLDEN_S = "Golden"
 
-
+"""  
 class SimpleTable(tkinter.Frame):
     def __init__(self, parent, rows=2, columns=2, data=None):
         # use black background so it "peeks through" to
@@ -45,7 +45,7 @@ class SimpleTable(tkinter.Frame):
     def set(self, row, column, value):
         widget = self._widgets[row][column]
         widget.configure(text=value)
-
+"""
 
 class StatusBar(Frame):
     def __init__(self, master):
@@ -181,11 +181,16 @@ class CheckWindow(ttk.Frame):
         cur_entry = self.get_entry(cur_item)
         cur_entry.set_correct()
         cur_entry.set_comment("Correct")
+        """
         if cur_entry.etype == EntryType.table:
             cur_entry.set_ref(cur_entry.get_t_data())
         else:
             path = report.save_figure(cur_entry.title)
             cur_entry.set_ref(path)
+        """
+        path = report.save_figure(cur_entry.title)
+        cur_entry.set_ref(path)
+
         self.set_conclusion(self.tree.get_cur_iid(), "OK")
         self.tree.set_tag(self.tree.get_cur_iid(), status='correct')
         self.update_color()
@@ -202,15 +207,19 @@ class CheckWindow(ttk.Frame):
         cur_entry.set_wrong()
         m_comment = AskString(parent=self.master, title="Comment Required", message="Please input your comment:").go()
         if m_comment and m_comment.strip():
+            """
             if cur_entry.etype == EntryType.table:
                 cur_entry.set_ref(cur_entry.get_t_data())
             else:
                 path = report.save_figure(cur_entry.title)
                 cur_entry.set_ref(path)
+            """
+            path = report.save_figure(cur_entry.title)
+            cur_entry.set_ref(path)
+
             logger().debug("NOK graph comment: %s", m_comment)
             cur_entry.set_comment(m_comment)
             self.set_conclusion(self.tree.get_cur_iid(), "NG")
-            # self.tree.set_tag(self.tree.get_cur_iid(), 'wrong')
             self.tree.set_tag(self.tree.get_cur_iid(), status='wrong')
             self.update_color()
             # Move on to next item
@@ -238,20 +247,35 @@ class CheckWindow(ttk.Frame):
         """
         # ===Draw Plot/Table===
         """
+        plt.clf()
+        plt.cla()
         if entry.etype == EntryType.table:
+            """
             t = SimpleTable(fra, rows=len(entry.get_t_data()), columns=3, data=entry.get_t_data())
             t.pack(side="top", fill="both")
+            """
+            fig, ax = plt.subplots()
+            fig.patch.set_visible(False)
+            ax.axis('off')
+            ax.axis('tight')
+            ax.table(cellText=entry.get_t_data(), loc='center')
+            # fig.tight_layout()
+            canvas = FigureCanvasTkAgg(fig, master=fra)  # A tk.DrawingArea.
+            canvas.draw()
+            canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
         else:
-            plt.clf()
-            plt.cla()
             if entry.etype == EntryType.xy:
-                plot_fmt_G(entry.get_data_G()[0], entry.get_data_G()[1], cmd=entry.title, xlabel=entry.xlabel, ylabel=entry.ylabel)
-                plot_fmt(entry.get_data()[0], entry.get_data()[1], cmd=entry.title, xlabel=entry.xlabel, ylabel=entry.ylabel)
+                plot_fmt_G(entry.get_data_G()[0], entry.get_data_G()[1])
+                plot_fmt(entry.get_data()[0], entry.get_data()[1])
                 plt.legend(["Golden", "DUT"])
             elif entry.etype == EntryType.y:
-                plot_fmt_G(entry.get_data_G(), cmd=entry.title, xlabel=entry.xlabel, ylabel=entry.ylabel)
-                plot_fmt(entry.get_data(), cmd=entry.title, xlabel=entry.xlabel, ylabel=entry.ylabel)
+                plot_fmt_G(entry.get_data_G())
+                plot_fmt(entry.get_data())
                 plt.legend(["Golden", "DUT"])
+            plt.xlabel(entry.xlabel)
+            plt.ylabel(entry.ylabel)
+            plt.title(entry.title)
+            plt.grid()
             plt.xticks(rotation=30)
             fig = plt.gcf()
             canvas = FigureCanvasTkAgg(fig, master=fra)  # A tk.DrawingArea.
@@ -287,7 +311,7 @@ class CheckWindow(ttk.Frame):
             exit(0)
 
 
-def plot_fmt_G(*data, style='unknown', cmd, xlabel="", ylabel=""):
+def plot_fmt_G(*data, style='unknown'):
     """
     Draw golden data with its style.
     Arguments:
@@ -306,9 +330,6 @@ def plot_fmt_G(*data, style='unknown', cmd, xlabel="", ylabel=""):
     try:
         plt.plot(*data, color='#FB7D07', marker=m_marker,
                  markersize=6, linestyle=m_style, alpha=0.7, linewidth=1)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.title(cmd)
         return True
     except ValueError as e:
         if uti.is_substring("x and y must have same first dimension", e.args[0]):
@@ -318,7 +339,7 @@ def plot_fmt_G(*data, style='unknown', cmd, xlabel="", ylabel=""):
         return False
 
 
-def plot_fmt(*data, style='unknown', cmd='unknown', xlabel="", ylabel=""):
+def plot_fmt(*data, style='unknown'):
     """
     Draw dut data with its style.
     Arguments:
@@ -337,9 +358,6 @@ def plot_fmt(*data, style='unknown', cmd='unknown', xlabel="", ylabel=""):
     try:
         plt.plot(*data, color='#0652FF', marker=m_marker,
                  markersize=4, linestyle=m_style, linewidth=1)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.title(cmd)
         return True
     except ValueError as e :
         if uti.is_substring("x and y must have same first dimension", e.args[0]):
