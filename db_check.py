@@ -8,6 +8,8 @@ from tkinter import messagebox
 from multiprocessing import Process
 from multiprocessing import freeze_support
 from picture import open_check_win
+import re
+
 
 freeze_support()
 
@@ -36,22 +38,17 @@ def main_test():
         db_req_file = uti.open_file(req_filename)
         check_entry_list = list()
 
-        for line in db_req_file:
-            if line.startswith('#'):
-                continue
-            line = line.strip()
-            line = line.split(' ')
-            if len(line) != 2:
-                continue
-            value = line[1].strip()
-            is_digit = value.isdigit()
-            if not is_digit:
-                logger().info("%s: %s should be a digit." % (line, value))
-                break
-            cmd = line[0].strip()
-            logger().debug("command : %s", cmd)
+        req_pattern = re.compile(r"(?P<cmd>[^#]\S+)\s+(?P<tag>[0-5])")  # Not start with '#', tag in 0-5
 
-            tag = int(value)
+        for line in db_req_file:
+            m = req_pattern.match(line)
+            if m is not None:
+                cmd = m.group("cmd")
+                tag = int(m.group("tag"))
+            else:
+                logger().warning("%s in requirement file is not in correct format." % line)
+                continue
+
             if tag == 0:
                 dp.req_0(dict_G, dict_D, cmd, check_entry_list)
             elif tag == 1:

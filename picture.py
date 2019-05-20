@@ -13,6 +13,7 @@ from matplotlib.backends.backend_tkagg import (
 from customized_ui import *
 from fancy_treeview import *
 
+
 root = None
 winfo_x, winfo_y = 10, 10
 comment_flag = False
@@ -120,9 +121,6 @@ class CheckWindow(ttk.Frame):
         Function for run action of tree view context menu.
         """
         entry = self.get_entry(self.tree.get_cur_item())
-        print(entry.get_data())
-        print(entry.get_data_G())
-        print(entry.err_msg)
         self.show_plot(entry)
 
     def fn_toggle_ignore(self, event=None):
@@ -333,9 +331,9 @@ def plot_fmt_G(*data, style='unknown'):
         return True
     except ValueError as e:
         if uti.is_substring("x and y must have same first dimension", e.args[0]):
-            logger().exception("The number of x and y values are not match! cmd: %s", cmd)
+            logger().exception("The number of x and y values are not match!")
         else:
-            logger().exception("Failed to plot %s golden. There might be a format error in the golden file.", cmd)
+            logger().exception("Failed to plot golden. There might be a format error in the golden file.")
         return False
 
 
@@ -361,9 +359,9 @@ def plot_fmt(*data, style='unknown'):
         return True
     except ValueError as e :
         if uti.is_substring("x and y must have same first dimension", e.args[0]):
-            logger().exception("The number of x and y values are not match! cmd: %s", cmd)
+            logger().exception("The number of x and y values are not match!")
         else:
-            logger().exception("Failed to plot %s. There might be a format error in the dut db file.", cmd)
+            logger().exception("Failed to plot DUT. There might be a format error in the dut db file.")
         return False
 
 
