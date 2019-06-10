@@ -159,8 +159,9 @@ def add_table(entry_list):
     for i in range(len(entry_list)):
         entry = entry_list[i]
         table.cell(i+1, 0).text = entry.get_title()
-        table.cell(i+1, 1).text = entry.get_conclusion()
+        table.cell(i + 1, 1).text = entry.get_conclusion()
         if entry.is_wrong():
+            table.cell(i + 1, 1).text = entry.get_comment()
             table.cell(i+1, 1).paragraphs[0].runs[0].font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
             table.cell(i+1, 0).paragraphs[0].runs[0].font.color.rgb = RGBColor(0xFF, 0x0, 0x0)
         elif entry.is_ignored():
