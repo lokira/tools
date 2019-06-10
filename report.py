@@ -7,7 +7,6 @@ import os
 import matplotlib.pyplot as plt
 from docx.shared import RGBColor
 import utilities as uti
-from check_entry import EntryType
 from logger import *
 import mail
 
@@ -182,7 +181,7 @@ def add_pictures(entry_list):
         document.add_paragraph('Command: ' + entry.get_title())
         document.add_paragraph('Comments: ' + entry.get_comment())
         """
-        if entry.etype == EntryType.table:
+        if entry.etype == CheckEntry.TABLE:
             t_data = entry.get_ref()
             table = document.add_table(rows=len(t_data), cols=3, style="Table Grid")
             for idx in range(len(t_data)):

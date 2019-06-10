@@ -21,7 +21,7 @@ def req_0(dict_G, dict_D, cmd, check_entry_list):
     data10 = uti.read_data(dict_D, cmd)
     data10_G = uti.read_data(dict_G, cmd)
 
-    entry = CheckEntry(cmd, EntryType.y)
+    entry = CheckEntry(cmd, CheckEntry.Y)
 
     if data10_G is None:
         entry.add_err_msg(CMD_NOT_FOUND_S % (GOLDEN_S, cmd))
@@ -55,7 +55,7 @@ def req_1(dict_G, dict_D, cmd, check_entry_list):
     data10 = uti.read_data(dict_D, cmd)
     data10_G = uti.read_data(dict_G, cmd)
 
-    entry = CheckEntry(cmd, EntryType.xy)
+    entry = CheckEntry(cmd, CheckEntry.XY)
     """
     Plot Golden
     """
@@ -110,7 +110,7 @@ def req_2(dict_G, dict_D, cmd_x, check_entry_list):
     data10_y = uti.read_data(dict_D, cmd_y)
     data10_y_G = uti.read_data(dict_G, cmd_y)
 
-    entry = CheckEntry(cmd_x, EntryType.xy)
+    entry = CheckEntry(cmd_x, CheckEntry.XY)
     """
     Plot Golden
     """
@@ -156,9 +156,9 @@ def plot_mag_phase(dict_G, dict_D, cmd_fr, cmd_im, cmd_re, check_entry_list, sty
     data10_im_G = uti.read_data(dict_G, cmd_im)
 
     title_mag = cmd_im.replace('im', 'mag')
-    entry_mag = CheckEntry(title_mag, EntryType.xy)
+    entry_mag = CheckEntry(title_mag, CheckEntry.XY)
     title_phase = cmd_im.replace('im', 'phase')
-    entry_phase = CheckEntry(title_phase, EntryType.xy)
+    entry_phase = CheckEntry(title_phase, CheckEntry.XY)
 
     """
     Process Golden Data
@@ -292,7 +292,7 @@ def req_5(dict_G, dict_D, cmd, check_entry_list):
 
     data = uti.read_data(dict_D, cmd)
     data_G = uti.read_data(dict_G, cmd)
-    entry = CheckEntry(cmd, EntryType.table)
+    entry = CheckEntry(cmd, CheckEntry.TABLE)
 
     if data is None:
         entry.add_err_msg(CMD_NOT_FOUND_S % (DUT_S, cmd))

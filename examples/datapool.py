@@ -110,7 +110,7 @@ class DataPool:
                             dictionary[cmd].append(temp_data)
 
     def create_entry_0(self, cmd):
-        entry = CheckEntry(cmd, EntryType.y)
+        entry = CheckEntry(cmd, CheckEntry.Y)
 
         pass
 

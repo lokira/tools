@@ -180,7 +180,7 @@ class CheckWindow(ttk.Frame):
         cur_entry.set_correct()
         cur_entry.set_comment("Correct")
         """
-        if cur_entry.etype == EntryType.table:
+        if cur_entry.etype == CheckEntry.TABLE:
             cur_entry.set_ref(cur_entry.get_t_data())
         else:
             path = report.save_figure(cur_entry.title)
@@ -206,7 +206,7 @@ class CheckWindow(ttk.Frame):
         m_comment = AskString(parent=self.master, title="Comment Required", message="Please input your comment:").go()
         if m_comment and m_comment.strip():
             """
-            if cur_entry.etype == EntryType.table:
+            if cur_entry.etype == CheckEntry.TABLE:
                 cur_entry.set_ref(cur_entry.get_t_data())
             else:
                 path = report.save_figure(cur_entry.title)
@@ -247,7 +247,7 @@ class CheckWindow(ttk.Frame):
         """
         plt.clf()
         plt.cla()
-        if entry.etype == EntryType.table:
+        if entry.etype == CheckEntry.TABLE:
             """
             t = SimpleTable(fra, rows=len(entry.get_t_data()), columns=3, data=entry.get_t_data())
             t.pack(side="top", fill="both")
@@ -262,11 +262,11 @@ class CheckWindow(ttk.Frame):
             canvas.draw()
             canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
         else:
-            if entry.etype == EntryType.xy:
+            if entry.etype == CheckEntry.XY:
                 plot_fmt_G(entry.get_data_G()[0], entry.get_data_G()[1])
                 plot_fmt(entry.get_data()[0], entry.get_data()[1])
                 plt.legend(["Golden", "DUT"])
-            elif entry.etype == EntryType.y:
+            elif entry.etype == CheckEntry.Y:
                 plot_fmt_G(entry.get_data_G())
                 plot_fmt(entry.get_data())
                 plt.legend(["Golden", "DUT"])

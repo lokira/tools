@@ -1,21 +1,19 @@
 from logger import *
 from enum import Enum
 
-EntryType = Enum('y', ('y', 'xy', 'table'))
-S_IGNORED = "Ignored"
-S_WRONG = "Wrong"
-S_CORRECT = "Correct"
-
 
 class CheckEntry(object):
-
+    Y, XY, TABLE = range(3)
+    S_IGNORED = "Ignored"
+    S_WRONG = "Wrong"
+    S_CORRECT = "Correct"
     def __init__(self, title, etype):
         self.title = title
         self.etype = etype
         # In prevent of data not loaded and index out of bound
         self.data = list()
         self.data_G = list()
-        if self.etype == EntryType.xy:
+        if self.etype == self.XY:
             self.data = list([[], []])
             self.data_G = list([[], []])
         self.t_data = list()
@@ -38,13 +36,13 @@ class CheckEntry(object):
         self.t_data = data
 
     def set_wrong(self):
-        self.conclusion = S_WRONG
+        self.conclusion = self.S_WRONG
 
     def set_correct(self):
-        self.conclusion = S_CORRECT
+        self.conclusion = self.S_CORRECT
 
     def set_ignore(self):
-        self.conclusion = S_IGNORED
+        self.conclusion = self.S_IGNORED
 
     def add_err_msg(self, msg):
         self.err_msg.append(msg)
@@ -77,10 +75,10 @@ class CheckEntry(object):
         return self.conclusion
 
     def is_wrong(self):
-        return self.conclusion == S_WRONG
+        return self.conclusion == self.S_WRONG
 
     def is_ignored(self):
-        return self.conclusion == S_IGNORED
+        return self.conclusion == self.S_IGNORED
 
     def get_title(self):
         return self.title
@@ -98,4 +96,7 @@ class CheckEntry(object):
             return self.title
         else:
             return "%s : %s" % (self.title, self.conclusion)
+
+    def to_json(self):
+        pass
 
