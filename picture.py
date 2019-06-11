@@ -235,10 +235,10 @@ class CheckWindow(ttk.Frame):
         # ===Draw buttons===
         """
         bfra = ttk.Frame(fra)
-        button = tkinter.Button(master=bfra, text="Wrong", command=self.wrong)
+        button = tkinter.Button(master=bfra, text="Wrong (x)", command=self.wrong)
         button.pack(side=tkinter.RIGHT, padx=5)
         self.master.bind('x', self.wrong)
-        button = tkinter.Button(master=bfra, text="Correct", command=self.correct)
+        button = tkinter.Button(master=bfra, text="Correct (c)", command=self.correct)
         button.pack(side=tkinter.RIGHT, padx=5)
         self.master.bind('c', self.correct)
         bfra.pack(side='bottom', fill='both')

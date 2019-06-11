@@ -18,7 +18,7 @@ def send_mail(entry_list, report_path):
     if var_box:
         for entry in entry_list:
             if entry.get_conclusion() == "Wrong":
-                table_str += "<tr><td padding=2x>"+entry.get_title()+"</td><td>"+entry.get_conclusion()+"</td></tr>"
+                table_str += "<tr><td padding=2x>"+entry.get_title()+"</td><td>"+entry.get_comment()+"</td></tr>"
         if table_str != "":
             table_str = "<table class=MsoTableGrid border=1>"\
                         +table_str+\

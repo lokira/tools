@@ -21,7 +21,7 @@ def main_test():
     draw golden and dut data
     send mail
     """
-    version = '1.4'
+    version = '1.5'
     try:
         init_logger()
         logger().info("DB Check started. Version %s.", version)
@@ -41,7 +41,9 @@ def main_test():
         req_pattern = re.compile(r"(?P<cmd>[^#]\S+)\s+(?P<tag>[0-5])")  # Not start with '#', tag in 0-5
 
         for line in db_req_file:
-            m = req_pattern.match(line)
+            if line.isspace():
+                continue
+            m = req_pattern.match(line.strip())
             if m is not None:
                 cmd = m.group("cmd")
                 tag = int(m.group("tag"))
