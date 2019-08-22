@@ -23,7 +23,7 @@ class DBEntry(object):
             def f(v):
                 return int(v)
             self.trans = f
-        elif "char" in type:
+        elif "char" in type or "CHR" in type:
             def f(v):
                 return v.strip('"').strip()
             self.trans = f
@@ -81,7 +81,7 @@ def read_dict(file_path):
     # Not recognize S E
     pattern = re.compile(r"(?P<cmd>/\S+)\s*[SPE]{0,2}\s*(?P<type>[S|U]8|[S|U]16|[S|U]32|[S|U]64|char)")  
     """
-    pattern = re.compile(r"(?P<cmd>/\S+)\s*[SPE\s]{0,3}\s*(?P<type>[S|U]8|[S|U]16|[S|U]32|[S|U]64|char)")
+    pattern = re.compile(r"(?P<cmd>/\S+)\s*[SPE\s]{0,3}\s*(?P<type>[S|U]8|[S|U]16|[S|U]32|[S|U]64|char|CHR)")
     for line in f:
         line_no += 1
         data = line.strip()
