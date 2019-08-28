@@ -4,7 +4,7 @@ from tkinter import ttk
 
 class FancyTreeview(ttk.Treeview):
 
-    def __init__(self, master=None, widths=None, columns=None, fn_run=None, fn_ignore=None, fn_select=None, **kw):
+    def __init__(self, master=None, widths=None, columns=None, **kw):
         self.master = master
         ttk.Treeview.__init__(self, master=master, columns=columns, **kw)
 
@@ -16,10 +16,42 @@ class FancyTreeview(ttk.Treeview):
         if widths is not None:
             self._set_columns_width(widths)
 
-        self._setup_context_menu(fn_run, fn_ignore)
+    def bind_treeviewselect(self, fn):
+        """
+        Bind action to item select event.
+        :param fn: function with arg event=None
+        """
+        self.bind('<<TreeviewSelect>>', fn)
 
-        self.bind('<<TreeviewSelect>>', fn_select)
-        self.bind('<Double-Button-1>', fn_run)
+    def bind_doubleclick(self, fn):
+        """
+        Bind action to item double clicked event.
+        :param fn: function with arg event=None
+        """
+        self.bind('<Double-Button-1>', fn)
+
+    def setup_context_menu(self, fn_name_list, fn_list):
+        """
+        Setup right click context menu.
+        :param fn_name_list: A list of menu action names. Can be empty.
+        :param fn_list: List of functions to add to menu. If no given name, using function name as menu action name.
+        """
+        if fn_list:
+            self.contextMenu = Menu(self, tearoff=0)
+            i = 0
+            for fn in fn_list:
+                try:
+                    self.contextMenu.add_command(label=fn_name_list[i], command=fn)
+                except IndexError as e:
+                    self.contextMenu.add_command(label=fn.__name__, command=fn)
+                i = i + 1
+            self.bind("<Button-3>", self._popup)
+
+    def set_row_strip(self, flag):
+        if flag:
+            self.tag_configure('odd', background='#F3F3F3')
+        else:
+            self.tag_configure('odd', background='#FFFFFF')
 
     def _set_columns_width(self, widths):
         if len(widths) == len(self._columns):
@@ -31,12 +63,6 @@ class FancyTreeview(ttk.Treeview):
             for header in headers:
                 self.heading(header, text=header)
                 self._columns.append(header)
-
-    def _setup_context_menu(self, fn_run, fn_ignore):
-        self.contextMenu = Menu(self, tearoff=0)
-        self.contextMenu.add_command(label="Run", command=fn_run)
-        self.contextMenu.add_command(label="Ignore/Un-ignore", command=fn_ignore)
-        self.bind("<Button-3>", self._popup)
 
     def _popup(self, event):
         """action in event of button 3 on tree view"""
@@ -57,21 +83,29 @@ class FancyTreeview(ttk.Treeview):
         for item in rows:
             iid = self.insert('', 'end', values=item)
             # initialize tags as a size 2 array
-            if int(iid.lstrip('I'), 16) % 2:
+            if self.get_dec_index(iid) % 2:
                 self.set_tag(iid, tags=['odd', ''])
             else:
                 self.set_tag(iid, tags=['even', ''])
 
+    def get_dec_index(self, iid):
+        # the index is in format like 'I001' and in hex
+        return int(iid.lstrip('I'), 16)
+
     def get_cur_iid(self):
+        # select first item if no one is selected
         selection = self.selection()
-        return selection[0]
+        if len(selection) > 0:
+            return selection[0]
+        else:
+            self.selection_set("I001")
+            return "I001"
 
     def get_cur_item(self):
         return self.item(self.get_cur_iid())
 
     def get_next_iid(self):
-        selection = self.selection()
-        next_iid = self.next(selection[0])
+        next_iid = self.next(self.get_cur_iid())
         return next_iid
 
     def get_next_item(self):

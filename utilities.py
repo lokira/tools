@@ -40,7 +40,6 @@ class DBEntry(object):
         return v
 
 
-
 def is_substring(s1, s2):
     """
     Judge if s1 is the substring of s2.

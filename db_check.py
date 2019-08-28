@@ -7,7 +7,7 @@ from logger import *
 from tkinter import messagebox
 from multiprocessing import Process
 from multiprocessing import freeze_support
-from picture import open_check_win
+from CheckWindow import open_check_win
 import re
 
 
@@ -21,7 +21,7 @@ def main_test():
     draw golden and dut data
     send mail
     """
-    version = '1.5'
+    version = '1.6a'
     try:
         init_logger()
         logger().info("DB Check started. Version %s.", version)
@@ -32,8 +32,12 @@ def main_test():
         (req_filename, path_Golden, path_DUT) = mg.mainGUI(version)
         logger().info('path_Golden_: ' + path_Golden)
         logger().info('path_DUT_: ' + path_DUT)
+
         dict_G = uti.read_dict(path_Golden)
         dict_D = uti.read_dict(path_DUT)
+
+        # differences in two db.
+        comp_res = compare_golden_with_dut(dict_G, dict_D)
 
         db_req_file = uti.open_file(req_filename)
         check_entry_list = list()
@@ -79,15 +83,38 @@ def main_test():
                 logger().info("This DB format is not supported.")
 
         db_req_file.close()
-        open_check_win(check_entry_list)
+        open_check_win(check_entry_list, comp_res, version)
         return
 
     except Exception as e:
         logger().exception("Unexpected error happened!")
-        var_box = messagebox.askyesno(title='Warning', message='Unexpected error happened!\nWould you like to send us the log to help us improve?')
+        var_box = messagebox.askyesno(title='Warning', message='Unexpected error happened!\nWould you like to '
+                                                               'send us the log to help us improve?')
         if var_box:
             mail.send_bug_report()
 
+
+def compare_golden_with_dut(golden_db, dut_db):
+    result = dict()
+
+    for entry in golden_db:
+        result[entry] = 0
+
+    for entry in dut_db:
+        e = result.pop(entry, None)
+        if e is None:
+            result[entry] = 1
+
+    logger().debug("Compare golden&DUT result: %s", result)
+
+    # convert to row list. for treeview usage.
+    fmt_data = list()
+    for entry in result:
+        row = list(["Not Exist", "Not Exist"])
+        row.insert(int(result[entry]), entry)
+        fmt_data.append(row)
+
+    return fmt_data
 
 if __name__ == '__main__':
     main_test()

@@ -1,5 +1,4 @@
 from logger import *
-from enum import Enum
 
 
 class CheckEntry(object):

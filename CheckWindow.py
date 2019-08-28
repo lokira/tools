@@ -10,8 +10,9 @@ import utilities as uti
 import tkinter
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
-from customized_ui import *
-from fancy_treeview import *
+from PopUp import *
+from FancyTreeview import *
+from CompareWindow import *
 
 
 root = None
@@ -67,10 +68,11 @@ class CheckWindow(ttk.Frame):
     """
     Main window of check.
     """
-    def __init__(self, entry_list, master=None, **kw):
+    def __init__(self, entry_list, compare_res, master=None, **kw):
         ttk.Frame.__init__(self, master=master, **kw)
         self.master = master
         self.entry_list = entry_list
+        self.compare_res = compare_res
         self._init_tree()
         for i, entry in enumerate(self.entry_list):
             self.tree.insert_rows([[entry.title, entry.conclusion, i]])
@@ -85,6 +87,7 @@ class CheckWindow(ttk.Frame):
         self.update_color()
         self.master.protocol("WM_DELETE_WINDOW", self._on_closed)
 
+
     def _init_tree(self):
         """
         Create a fancy tree view
@@ -93,10 +96,11 @@ class CheckWindow(ttk.Frame):
         self.tree = FancyTreeview(master=self.tree_frame,
                                   columns=['Item', 'Conclusion'],
                                   show='headings',
-                                  widths=[200, 40],
-                                  fn_run=self.fn_run,
-                                  fn_ignore=self.fn_toggle_ignore,
-                                  fn_select=self.fn_select)
+                                  widths=[200, 40])
+        self.tree.bind_treeviewselect(self.fn_select)
+        self.tree.bind_doubleclick(self.fn_run)
+        self.tree.setup_context_menu(["Run", "Ignore/Un-ignore"], [self.fn_run, self.fn_toggle_ignore])
+
         self.vsb = ttk.Scrollbar(master=self.tree_frame, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=self.vsb.set)
         self.tree.pack(side='left', fill='both', expand='yes')
@@ -104,9 +108,12 @@ class CheckWindow(ttk.Frame):
 
     def _init_toolbar(self):
         self.toolbar = Frame(self)
-        self.img = PhotoImage(file='./download1.png')
-        self.btn_gen_rep = Button(self.toolbar, compound='left', image=self.img, text="Generate\nReport", command=self.fn_generate_report)
-        self.btn_gen_rep.pack(side='left', padx=4, pady=2)
+        self.img1 = PhotoImage(file='./Icons/generate.png')
+        self.btn_gen_rep = Button(self.toolbar, compound='left', image=self.img1, text="Generate\nReport", command=self.fn_generate_report)
+        self.btn_gen_rep.pack(side='left', padx=4, pady=4)
+        self.img2 = PhotoImage(file='./Icons/compare.png')
+        self.btn_gen_rep = Button(self.toolbar, compound='left', image=self.img2, text="Compare\nEntry", command=self.show_compare_window)
+        self.btn_gen_rep.pack(side='left', padx=4, pady=4)
 
     def set_center(self, center_widget):
         """
@@ -299,6 +306,10 @@ class CheckWindow(ttk.Frame):
         self.tree.tag_configure('ignored', foreground='gray60')
         self.tree.tag_configure('odd', background='#F3F3F3')
 
+    def show_compare_window(self):
+        win = CompareWin(self.master, "Difference in Golden and DUT db", self.compare_res)
+        win.show()
+
     def _on_closed(self):
         """
         Called when quit button clicked.
@@ -365,10 +376,11 @@ def plot_fmt(*data, style='unknown'):
         return False
 
 
-def open_check_win(check_entry_list):
+def open_check_win(check_entry_list, compare_res, version):
     root = Tk()
-    root.title("DB Check")
+    root.title("DB Check - v%s" % version)
     root.geometry("820x610+10+10")
-    mainframe = CheckWindow(check_entry_list, master=root)
+    mainframe = CheckWindow(check_entry_list, compare_res, master=root)
     mainframe.pack(side='top', fill='both', expand='yes')
+    mainframe.fn_run()
     root.mainloop()
