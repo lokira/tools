@@ -70,6 +70,7 @@ class CheckWindow(ttk.Frame):
     """
     def __init__(self, entry_list, compare_res, master=None, **kw):
         ttk.Frame.__init__(self, master=master, **kw)
+        self.cur_entry = None
         self.master = master
         self.entry_list = entry_list
         self.compare_res = compare_res
@@ -97,7 +98,7 @@ class CheckWindow(ttk.Frame):
                                   show='headings',
                                   widths=[200, 40])
         self.tree.bind_treeviewselect(self.fn_select)
-        self.tree.bind_doubleclick(self.fn_run)
+        # self.tree.bind_doubleclick(self.fn_run)
         self.tree.setup_context_menu(["Run", "Ignore/Un-ignore"], [self.fn_run, self.fn_toggle_ignore])
 
         self.vsb = ttk.Scrollbar(master=self.tree_frame, orient="vertical", command=self.tree.yview)
@@ -121,6 +122,10 @@ class CheckWindow(ttk.Frame):
         self.center.destroy()
         self.center = center_widget
         self.center.pack(side='left', fill='both', expand='yes')
+
+    def refresh_status_bar(self):
+        entry = self.get_entry(self.tree.get_cur_item())
+        self.sbar.set(entry.get_status_str())
 
     def fn_run(self, event=None):
         """
@@ -147,20 +152,20 @@ class CheckWindow(ttk.Frame):
             next_item = self.tree.get_next_item()
             if next_item:
                 self.tree.go_next()
-                next_entry = self.get_entry(next_item)
-                self.show_plot(next_entry)
-        # Update status bar.
-        self.fn_select()
+        self.refresh_status_bar()
 
     def fn_select(self, event=None):
         """
         Event handler for select event of tree view.
         """
         entry = self.get_entry(self.tree.get_cur_item())
-        self.sbar.set(entry.get_status_str())
+        # To fire only when selection changed
+        if self.cur_entry is None or entry != self.cur_entry:
+            self.cur_entry = entry
+            self.sbar.set(entry.get_status_str())
+            self.show_plot(entry)
 
     def fn_generate_report(self):
-        # TODO Check data before generate.
         result = "PASSED"
         i = 0
         for entry in self.entry_list:
@@ -206,8 +211,8 @@ class CheckWindow(ttk.Frame):
         next_item = self.tree.get_next_item()
         if next_item:
             self.tree.go_next()
-            next_entry = self.get_entry(next_item)
-            self.show_plot(next_entry)
+            # next_entry = self.get_entry(next_item)
+            # self.show_plot(next_entry)
 
     def wrong(self, event=None):
         cur_item = self.tree.get_cur_item()
@@ -234,8 +239,8 @@ class CheckWindow(ttk.Frame):
             next_item = self.tree.get_next_item()
             if next_item:
                 self.tree.go_next()
-                next_entry = self.get_entry(next_item)
-                self.show_plot(next_entry)
+                # next_entry = self.get_entry(next_item)
+                # self.show_plot(next_entry)
         else:
             Alert(parent=self.master, title='Warning', message='Please input comments first!').go()
 
@@ -301,6 +306,7 @@ class CheckWindow(ttk.Frame):
             logger().error(str.join('\n', entry.err_msg))
 
     def get_entry(self, item):
+        # TODO can be changed to use dec index
         index = item.get("values")[2]
         return self.entry_list[index]
 
@@ -387,5 +393,4 @@ def open_check_win(check_entry_list, compare_res, version):
     mainframe = CheckWindow(check_entry_list, compare_res, master=root)
     mainframe.pack(side='top', fill='both', expand='yes')
     mainframe.tree.get_cur_iid(default=0)
-    mainframe.fn_run()
     root.mainloop()

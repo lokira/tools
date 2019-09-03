@@ -11,6 +11,7 @@ class CompareWin(tk.Toplevel):
         self.title(title)
         self.master = parent
         self.root = root
+        bfra = ttk.Frame(self)
         if len(dataset) > 0:
             self.tree_frame = Frame(master=self, width=5)
             self.treeview = FancyTreeview(master=self.tree_frame, columns=['golden', 'dut'], show='headings', widths=[250, 250])
@@ -25,11 +26,12 @@ class CompareWin(tk.Toplevel):
             self.treeview.pack(side='left', fill='both', expand='yes')
             self.vsb.pack(side='right', fill='y')
             self.tree_frame.pack(fill='both', expand='yes', padx=(15, 0), pady=(15, 0))
+            label = Label(master=bfra, text="* Ctrl+C to copy item")
+            label.pack(side='left')
         else:
             label = Label(master=self, text="No difference found in two files.")
             label.pack(padx=4, pady=70)
 
-        bfra = ttk.Frame(self)
         button = Button(master=bfra, text="  Close  ", command=self.destroy)
         button.pack(side='right', padx=10, pady=10)
         bfra.pack(side='bottom', padx=10, fill='both')
@@ -39,7 +41,10 @@ class CompareWin(tk.Toplevel):
         selected = self.treeview.get_cur_item()
         if selected is None:
             return
-        cmd = selected['values'][0]
+        if selected['values'][0] == 'Not Exist':
+            cmd = selected['values'][1]
+        else:
+            cmd = selected['values'][0]
         self.root.clipboard_clear()
         self.root.clipboard_append(cmd)
 
