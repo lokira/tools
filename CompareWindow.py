@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import ttk
 from FancyTreeview import *
 
 
@@ -7,10 +6,11 @@ class CompareWin(tk.Toplevel):
     _width = 500
     _height = 200
 
-    def __init__(self, parent, title, dataset):
+    def __init__(self, parent, title, dataset, root=None):
         super().__init__()
         self.title(title)
         self.master = parent
+        self.root = root
         if len(dataset) > 0:
             self.tree_frame = Frame(master=self, width=5)
             self.treeview = FancyTreeview(master=self.tree_frame, columns=['golden', 'dut'], show='headings', widths=[250, 250])
@@ -18,6 +18,8 @@ class CompareWin(tk.Toplevel):
             self.treeview.heading('dut', text="DUT")
             self.treeview.set_row_strip(True)
             self.treeview.insert_rows(dataset)
+            self.treeview.bind('<Control-KeyPress-C>', self.copy)
+            self.treeview.bind('<Control-KeyPress-c>', self.copy)
             self.vsb = ttk.Scrollbar(master=self.tree_frame, orient="vertical", command=self.treeview.yview)
             self.treeview.configure(yscrollcommand=self.vsb.set)
             self.treeview.pack(side='left', fill='both', expand='yes')
@@ -32,6 +34,14 @@ class CompareWin(tk.Toplevel):
         button.pack(side='right', padx=10, pady=10)
         bfra.pack(side='bottom', padx=10, fill='both')
         self.center()
+
+    def copy(self, event=None):
+        selected = self.treeview.get_cur_item()
+        if selected is None:
+            return
+        cmd = selected['values'][0]
+        self.root.clipboard_clear()
+        self.root.clipboard_append(cmd)
 
     def center(self):
         self.update_idletasks()

@@ -89,35 +89,80 @@ class FancyTreeview(ttk.Treeview):
                 self.set_tag(iid, tags=['even', ''])
 
     def get_dec_index(self, iid):
+        """
+        :param iid: iid of the item.
+        :return: Decimal index from 0 of the entry list.
+        """
         # the index is in format like 'I001' and in hex
-        return int(iid.lstrip('I'), 16)
+        return int(iid.lstrip('I'), 16) - 1
 
-    def get_cur_iid(self):
-        # select first item if no one is selected
+    def get_iid_from_index(self, index):
+        """
+        :param index: Decimal index from 0 of the entry list.
+        :return: Return corresponding iid in string.
+        """
+        return 'I'+format(index+1, "03X")
+
+    def get_cur_iid(self, default=None):
+        """
+        :param default: The decimal index of the item to select if no item is selected
+        :return: iid / None
+        """
+        # select item of the index <default>if no one is selected
         selection = self.selection()
         if len(selection) > 0:
             return selection[0]
         else:
-            self.selection_set("I001")
-            return "I001"
+            if default is not None:
+                iid = self.get_iid_from_index(default)
+                self.selection_set(iid)
+                return iid
+            else:
+                return None
 
-    def get_cur_item(self):
-        return self.item(self.get_cur_iid())
+    def get_cur_item(self, default=None):
+        return self.item(self.get_cur_iid(default=default))
 
     def get_next_iid(self):
+        """
+        :return: Next item's iid.
+        """
         next_iid = self.next(self.get_cur_iid())
         return next_iid
 
     def get_next_item(self):
+        """
+        :return: Item next to the selected one.
+        """
         if self.get_next_iid() == "":
             # It's already the last row!
             return None
         return self.item(self.get_next_iid())
 
     def go_next(self):
+        """
+        Select the next item.
+        """
         iid = self.get_next_iid()
         self.selection_set(iid)
         self.focus(iid)
+        self.see(iid)
+
+    def scroll_to(self, index):
+        """
+        :param index: Can be iid in string or decimal index in integer.
+        Scroll the yview to given iid/index.
+        """
+        if index is None:
+            index = 0
+        elif str(index).startswith('I'):  # It's iid.
+            index = self.get_dec_index(index)
+
+        self.yview_moveto(0)
+        self.yview_scroll(index, "units")
+
+    def scroll_to_selected(self):
+        self.scroll_to(self.get_dec_index(self.get_cur_iid()))
 
     def set_tag(self, iid, parity=None, status=None, tags=None):
         item = self.item(iid)

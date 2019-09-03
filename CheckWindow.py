@@ -87,7 +87,6 @@ class CheckWindow(ttk.Frame):
         self.update_color()
         self.master.protocol("WM_DELETE_WINDOW", self._on_closed)
 
-
     def _init_tree(self):
         """
         Create a fancy tree view
@@ -127,7 +126,7 @@ class CheckWindow(ttk.Frame):
         """
         Function for run action of tree view context menu.
         """
-        entry = self.get_entry(self.tree.get_cur_item())
+        entry = self.get_entry(self.tree.get_cur_item(default=0))
         self.show_plot(entry)
 
     def fn_toggle_ignore(self, event=None):
@@ -147,8 +146,8 @@ class CheckWindow(ttk.Frame):
         if entry.is_ignored():  # If un-ignore is applied, we stay at current entry
             next_item = self.tree.get_next_item()
             if next_item:
-                next_entry = self.get_entry(next_item)
                 self.tree.go_next()
+                next_entry = self.get_entry(next_item)
                 self.show_plot(next_entry)
         # Update status bar.
         self.fn_select()
@@ -163,13 +162,17 @@ class CheckWindow(ttk.Frame):
     def fn_generate_report(self):
         # TODO Check data before generate.
         result = "PASSED"
+        i = 0
         for entry in self.entry_list:
             if entry.get_conclusion() is "":
                 Alert(parent=self.master, title='DB Check',
                       message='Please check all the entries or set to ignored before generating report!').go()
+                self.tree.selection_set(self.tree.get_iid_from_index(i))
+                self.tree.scroll_to_selected()
                 return
             if entry.is_wrong():
                 result = "NOT PASSED"
+            i = i + 1
         report.generate_test_report(self.entry_list, result)
 
     def load_tree(self, rows):
@@ -202,8 +205,8 @@ class CheckWindow(ttk.Frame):
         # Move on to next item
         next_item = self.tree.get_next_item()
         if next_item:
-            next_entry = self.get_entry(next_item)
             self.tree.go_next()
+            next_entry = self.get_entry(next_item)
             self.show_plot(next_entry)
 
     def wrong(self, event=None):
@@ -230,8 +233,8 @@ class CheckWindow(ttk.Frame):
             # Move on to next item
             next_item = self.tree.get_next_item()
             if next_item:
-                next_entry = self.get_entry(next_item)
                 self.tree.go_next()
+                next_entry = self.get_entry(next_item)
                 self.show_plot(next_entry)
         else:
             Alert(parent=self.master, title='Warning', message='Please input comments first!').go()
@@ -307,7 +310,7 @@ class CheckWindow(ttk.Frame):
         self.tree.tag_configure('odd', background='#F3F3F3')
 
     def show_compare_window(self):
-        win = CompareWin(self.master, "Difference in Golden and DUT db", self.compare_res)
+        win = CompareWin(self.master, "Difference in Golden and DUT db", self.compare_res, root=root)
         win.show()
 
     def _on_closed(self):
@@ -377,10 +380,12 @@ def plot_fmt(*data, style='unknown'):
 
 
 def open_check_win(check_entry_list, compare_res, version):
+    global root
     root = Tk()
     root.title("DB Check - v%s" % version)
     root.geometry("820x610+10+10")
     mainframe = CheckWindow(check_entry_list, compare_res, master=root)
     mainframe.pack(side='top', fill='both', expand='yes')
+    mainframe.tree.get_cur_iid(default=0)
     mainframe.fn_run()
     root.mainloop()
