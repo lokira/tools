@@ -316,8 +316,8 @@ def req_5(dict_G, dict_D, cmd, check_entry_list):
             comp_res[s.strip()] = 2
 
     t_data = list()
-    t_data.append([DUT_S, GOLDEN_S, "Result"])
-    idx = 1
+    #t_data.append([DUT_S, GOLDEN_S, "Result"])
+    idx = 0
     for item in comp_res:
         t_data.append(["", "", ""])
         if comp_res.get(item) & 2:

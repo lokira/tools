@@ -27,6 +27,7 @@ result_path = ''
 document = Document()
 report_file = ''
 
+
 def store_parameter(product_number, tester, req_file, golden_file, dut_file, output_dir):
     """
     Store the parameters to module report.
@@ -61,47 +62,47 @@ def store_parameter(product_number, tester, req_file, golden_file, dut_file, out
     uti.create_dir(result_path)
 
 
-def save_tdata(cmdline, comments, t_data):
-    """
-    Save the table data array into the result array.
-    Arguments:
-        cmdline - command line
-        comments - comments for the command
-        t_data - table data array
-    """
-    global result_path
-    global document
-    global g_pictures
-    global g_comments
-    global g_commands
+# def save_tdata(cmdline, comments, t_data):
+#     """
+#     Save the table data array into the result array.
+#     Arguments:
+#         cmdline - command line
+#         comments - comments for the command
+#         t_data - table data array
+#     """
+#     global result_path
+#     global document
+#     global g_pictures
+#     global g_comments
+#     global g_commands
+#
+#     g_pictures.append(t_data)
+#     g_comments.append(comments)
+#     g_commands.append(cmdline)
+#     logger().debug("Data of command(%s) is saved." % cmdline)
+#     if comments != "Correct":
+#         global test_result
+#         test_result = "FAILED"
 
-    g_pictures.append(t_data)
-    g_comments.append(comments)
-    g_commands.append(cmdline)
-    logger().debug("Data of command(%s) is saved." % cmdline)
-    if comments != "Correct":
-        global test_result
-        test_result = "FAILED"
 
-
-def save_figure(cmdline):
-    """
-    Save the figure to a .png file.
-    Arguments:
-        cmdline - command line
-    """
-    global result_path
-
-    dir_existed = os.path.isdir(result_path)
-    if not dir_existed:
-        uti.create_dir(result_path)
-    figure_suffix = time.strftime("%Y%m%d_%H%M%S")
-    filename = os.path.abspath(result_path+'\\{}_{}.png'.format(cmdline.replace('/', '_').replace(':', '-'), figure_suffix))
-    plt.gcf().savefig(filename)
-
-    logger().debug("Figure of command(%s) is saved as:%s" % (cmdline, filename))
-
-    return filename
+# def save_figure(cmdline):
+#     """
+#     Save the figure to a .png file.
+#     Arguments:
+#         cmdline - command line
+#     """
+#     global result_path
+#
+#     dir_existed = os.path.isdir(result_path)
+#     if not dir_existed:
+#         uti.create_dir(result_path)
+#     figure_suffix = time.strftime("%Y%m%d_%H%M%S")
+#     filename = os.path.abspath(result_path+'\\{}_{}.png'.format(cmdline.replace('/', '_').replace(':', '-'), figure_suffix))
+#     plt.gcf().savefig(filename)
+#
+#     logger().debug("Figure of command(%s) is saved as:%s" % (cmdline, filename))
+#
+#     return filename
 
 
 def add_parameter():

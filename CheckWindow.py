@@ -107,13 +107,21 @@ class CheckWindow(ttk.Frame):
         self.vsb.pack(side='right', fill='y')
 
     def _init_toolbar(self):
+        """
+        Toolbar on the top. Buttons are placed here.
+        """
         self.toolbar = Frame(self)
+
         self.img1 = PhotoImage(file='./Icons/generate.png')
-        self.btn_gen_rep = Button(self.toolbar, compound='left', image=self.img1, text="Generate\nReport", command=self.fn_generate_report)
+        self.btn_gen_rep = Button(self.toolbar, compound='left', image=self.img1, text="Generate\nReport",
+                                  command=self.fn_generate_report)
         self.btn_gen_rep.pack(side='left', padx=4, pady=4)
+
         self.img2 = PhotoImage(file='./Icons/compare.png')
-        self.btn_gen_rep = Button(self.toolbar, compound='left', image=self.img2, text="Compare\nEntry", command=self.show_compare_window)
+        self.btn_gen_rep = Button(self.toolbar, compound='left', image=self.img2, text="Compare\nEntry",
+                                  command=self.show_compare_window)
         self.btn_gen_rep.pack(side='left', padx=4, pady=4)
+
 
     def set_center(self, center_widget):
         """
@@ -201,8 +209,9 @@ class CheckWindow(ttk.Frame):
             path = report.save_figure(cur_entry.title)
             cur_entry.set_ref(path)
         """
-        path = report.save_figure(cur_entry.title)
-        cur_entry.set_ref(path)
+        if cur_entry.ref is None:
+            cur_entry.save()
+
 
         self.set_conclusion(self.tree.get_cur_iid(), "OK")
         self.tree.set_tag(self.tree.get_cur_iid(), status='correct')
@@ -227,8 +236,8 @@ class CheckWindow(ttk.Frame):
                 path = report.save_figure(cur_entry.title)
                 cur_entry.set_ref(path)
             """
-            path = report.save_figure(cur_entry.title)
-            cur_entry.set_ref(path)
+            if cur_entry.ref is None:
+                cur_entry.save()
 
             logger().debug("NOK graph comment: %s", m_comment)
             cur_entry.set_comment(m_comment)
@@ -267,15 +276,31 @@ class CheckWindow(ttk.Frame):
             t = SimpleTable(fra, rows=len(entry.get_t_data()), columns=3, data=entry.get_t_data())
             t.pack(side="top", fill="both")
             """
+            table_frame = Frame(master=fra, width=5)
+            table = FancyTreeview(master=table_frame, columns=['golden', 'dut', 'result'],  show='headings', widths=[200, 200,50])
+            table.heading('golden', text="Golden")
+            table.heading('dut', text="DUT")
+            table.heading('result', text="Result")
+            table.set_row_strip(True)
+            table.insert_rows(entry.get_t_data())
+            table_vsb = ttk.Scrollbar(master=table_frame, orient="vertical", command=table.yview)
+            table.configure(yscrollcommand=table_vsb.set)
+            table.pack(side='left', fill='both', expand='yes', padx=(0,0), pady=(2,2))
+            table_vsb.pack(side='right', fill='y')
+            table_frame.pack(fill='both', expand='yes', padx=(0,10))
+            """
             fig, ax = plt.subplots()
             fig.patch.set_visible(False)
             ax.axis('off')
-            ax.axis('tight')
+            #ax.axis('tight')
             ax.table(cellText=entry.get_t_data(), loc='center')
-            # fig.tight_layout()
+            fig.tight_layout()
             canvas = FigureCanvasTkAgg(fig, master=fra)  # A tk.DrawingArea.
             canvas.draw()
             canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
+            fig.savefig("test.jpg")
+            print(fig.get_size_inches())
+            """
         else:
             if entry.etype == CheckEntry.XY:
                 plot_fmt_G(entry.get_data_G()[0], entry.get_data_G()[1])
@@ -296,7 +321,6 @@ class CheckWindow(ttk.Frame):
             toolbar = NavigationToolbar2Tk(canvas, fra)
             toolbar.update()
             canvas.get_tk_widget().pack(side='top', fill='both', expand='yes')
-
         self.set_center(fra)
         """
         # ===Show errors===

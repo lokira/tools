@@ -1,5 +1,8 @@
 from logger import *
-
+import report
+import utilities as uti
+import matplotlib.pyplot as plt
+import time
 
 class CheckEntry(object):
     Y, XY, TABLE = range(3)
@@ -95,6 +98,26 @@ class CheckEntry(object):
             return self.title
         else:
             return "%s : %s" % (self.title, self.conclusion)
+
+    def save(self):
+        # Maybe delete previous ref file
+        dir_existed = os.path.isdir(report.result_path)
+        if not dir_existed:
+            uti.create_dir(report.result_path)
+        suffix = time.strftime("%Y%m%d_%H%M%S")
+        if self.etype == self.TABLE:
+            filename = os.path.abspath(
+                report.result_path + '\\{}_{}.csv'.format(self.title.replace('/', '_').replace(':', '-'), suffix))
+            with open(filename, "w") as file:
+                for row in self.t_data:
+                    file.write(','.join(row)+"\n")
+        else:
+            filename = os.path.abspath(
+                report.result_path + '\\{}_{}.png'.format(self.title.replace('/', '_').replace(':', '-'), suffix))
+            plt.gcf().savefig(filename)
+            logger().debug("Figure of command(%s) is saved as:%s" % (self.title, filename))
+        self.ref = filename
+        return filename
 
     def to_json(self):
         pass
