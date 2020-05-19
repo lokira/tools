@@ -1,5 +1,5 @@
 """
-This module provide functions for updating softeware.
+This module provide functions for updating softeware. hi
 """
 import sys
 import os
